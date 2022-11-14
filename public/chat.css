@@ -1,0 +1,246 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+        
+
+/*************************************************************************
+ ***                    Début de la feuille de style                   ***
+ *************************************************************************/ 
+
+body {
+    font-family: sans-serif;
+}
+
+* {
+    box-sizing: border-box;   
+}
+body > div {
+    box-shadow: -10px 10px 20px #A0A0A0;
+    border: solid 1px #A0A0A0;
+}
+div {
+    padding: 10px;
+}
+#content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    height: 500px;
+    width: 700px;
+    background-color: beige;
+    padding: 10px;
+}
+#content h2, #content h3 {
+    position: absolute;
+    background-color: inherit;
+    height: 22px;
+    padding: 5px;
+    line-height: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px 5px 0 0;
+    border-top: inherit;
+    border-left: inherit;
+    border-right: inherit;
+}
+#content h2 {
+    top: -22px;
+    left: -1px;
+}
+#content h3 {
+    right: -11px;
+    top: -12px;
+    transform-origin: left center;
+    transform: translate(100%) rotate(90deg);
+}
+#content main {
+    position: relative;
+    height: calc(100% - 30px);
+    width: calc(100% - 170px);
+    background-color: white;
+    overflow-y: scroll;
+    line-height: 1.2;
+}
+#content main p {
+    line-height: 1;
+    font-size: 16px;
+    margin: 3px;
+}
+#content main .mp {
+    color: darkblue;   
+}
+#content main .moi {
+    color: green;   
+}
+#content main .system {
+    color: orange;   
+}
+#content main .chifoumi {
+    color: blueviolet;   
+}
+#content main img {
+    max-width: 50%;
+    vertical-align: text-top;
+}   
+
+/** Pied de zone de chat */        
+#content footer {
+    position: absolute; 
+    bottom: 0;
+    padding: 2px 0 6px 0; 
+    width: calc(100% - 20px);
+    background-color: inherit;
+}
+#content footer input {
+    font-size: 15px;
+}
+#content > footer input:first-child {
+    width: calc(100% - 180px);
+    font-size: 12px;
+}
+#content > footer input:last-child {
+    float: right;
+}
+        
+#content aside {
+    width: 160px;
+    float: right;
+    margin: 0px;
+    padding: 5px;
+    height: calc(100% - 30px);
+    background-color: white;
+    line-height: 1.2;
+    font-size: 14px;
+}
+#content aside p {
+    cursor: pointer;   
+    margin: 0;
+    padding: 0;
+}
+#content aside p[data-score]:after {
+    content: ' [' attr(data-score) ' pts]';
+    float: right;
+}
+#content aside p[data-score]:nth-child(1):before {
+    content: '\01F947';
+}
+#content aside p[data-score]:nth-child(2):before {
+    content: '\01F948';
+}
+#content aside p[data-score]:nth-child(3):before {
+    content: '\01F949';
+}
+        
+body > div, body > input[type=radio] {
+    display: none;   
+}
+        
+input[type=radio]:checked + div {
+    display: block;   
+}
+    
+        
+#logScreen {
+    background: rgba(200, 200, 200, 0.8);
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+#logScreen > div {
+    text-align: center;
+    width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    border: solid 2px #000;
+    border-radius: 10px;
+    box-shadow: 10px 10px 10px #000;
+    padding-top: 20px;
+}
+#logScreen input {
+    padding: 3px;
+    font-size: 80%;
+    margin: 10px;
+}
+#logScreen #pseudo {
+    width: 80%;   
+}
+
+
+/** Animation BUZZ **/
+.buzz {
+    animation-name: buzz;
+    animation-duration  : 0.10s;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 5;
+}
+@keyframes buzz {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    25% {
+        transform: translate(-55%, -50%);
+    }
+    75% {
+        transform: translate(-45%, -50%);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
