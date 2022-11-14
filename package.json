@@ -1,7 +1,7 @@
 {
-  "name": "tp4",
+  "name": "skyjoe",
   "version": "1.0.0",
-  "description": "Application chat + chifoumi",
+  "description": "Application Skyjoe",
   "main": "index.js",
   "scripts": {
     "test": "mocha rpsls.test.js",
@@ -10,12 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "socket.io": "^4.5.3"
   },
   "devDependencies": {
     "assert": "^2.0.0",
     "mocha": "^10.1.0",
     "request": "^2.88.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vad3L/Skyjo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vad3L/Skyjo/issues"
+  },
+  "homepage": "https://github.com/Vad3L/Skyjo#readme"
 }
