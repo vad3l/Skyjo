@@ -2,37 +2,37 @@
 <html>
 
 <head>
-    <title>Picross editor & player</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/lobby.css" type="text/css">
+    <title>Chat pour les L3</title>
+    <link rel="stylesheet" href="../css/lobby.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="../js/lobby.js"></script>
 </head>
 
 <body>
-    
-    <nav>
-        <section>
-            <h2>Créer une grille</h2>
-            <form action="picross.html" method="get">
-                <input type="hidden" name="edit">
-                <table>
-                    <tr><td>Lignes :</td><td><input type="number" name="lines" value="10" min="5" max="20"></td></tr>
-                    <tr><td>Colonnes :</td><td><input type="number" name="cols" value="10" min="5" max="20"></td></tr>
-                </table>
-                <input type="submit" value="Créer !">
-            </form>
-        </section>
-        <section>
-            <h2>Jouer une grille</h2>
-            <form action="picross.html" method="get">
-                Saisir le code de la grille :<br>
-                <textarea name="play"></textarea>
-                <p id="pError"></p>
-                <input type="submit" value="Jouer !">
-            </form>
-        </section>
-    </nav>
-
+    <input type="radio" name="btnScreen" id="radio1" checked>
+    <div id="logScreen">
+        <div id="connexion">
+            <p>Choisissez votre pseudo : <br>
+            <input type="text" id="pseudo" placeholder="Tapez ici votre pseudo" size="30">
+            <input type="button" value="Se connecter" id="btnConnecter">
+            </p>
+        </div>
+    </div>
+    <input type="radio" name="btnScreen" id="radio2">
+    <div id="content">
+        <h2>Chat des L3 - <span id="login"></span></h2>
+        <h3>Clients connectés</h3>
+        <aside>
+        </aside>
+        <main>
+        </main>
+        <footer>
+            <input type="text" id="monMessage">
+            <input type="button" value="Envoyer" id="btnEnvoyer">
+            <input type="button" value="Quitter" id="btnQuitter">
+        </footer>
+    </div>
 </body>
 
 </html>
