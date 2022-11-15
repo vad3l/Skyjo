@@ -1,0 +1,160 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/**********************************
+ *	Début de la feuille de style  *
+ **********************************/
+
+ :root {
+    --cell-size: 20px;
+    --font-size: 14px;
+ }
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    height: 99vh;
+    justify-content: space-evenly;
+    align-items: center;
+}
+nav section {
+    border-radius: 4vw;
+    background-color: lightgrey;
+    width: 30vw;
+    height: 30vh;
+    position: relative;
+    box-shadow: 10px 10px 10px #333;
+}
+nav section:nth-child(2) {
+    background-color: lightseagreen;
+    color: white;
+}
+nav section h2 {
+    font-size: 28px;
+    text-align: center;
+    margin: 2vw;
+}
+nav section table {
+    margin: 10px auto;
+}
+nav section td {
+    padding: 0.5vw;
+}
+nav section input[type="number"] {
+    width: 50px;
+    text-align: center;
+}
+nav section input[type="submit"] {
+    font-size: 16px;
+    width: 80px;
+    display: block;
+    position: absolute; 
+    cursor: pointer;
+    bottom: 20px;
+    left: calc(50% - 40px);
+}
+nav section form {
+    width: 70%;
+    margin: 2vw auto;
+}
+nav section textarea {
+    width: 100%;
+}
+
+main > p {
+    margin: 10px;
+}
+
+.grid {
+    margin: 10px auto;
+    font-size: var(--font-size);
+}
+
+.grid td {
+    vertical-align: middle;
+    text-align: center;
+    border: solid 1px #333;
+    padding: 2px;
+}
+
+.grid .error {
+    color: red;
+}
+.grid .error:empty:before {
+    content: '0';
+}
+.grid.finished {
+    color: green;
+}
+
+.grid td:not(:first-child, tr:first-child td) {
+    height: var(--cell-size);
+    width: var(--cell-size);
+ }
+
+.grid tbody tr:first-child td {
+    height: calc(4 * var(--cell-size));
+    vertical-align: bottom;
+}
+.grid tbody tr td:first-child {
+    min-width: calc(4 * var(--cell-size));
+    text-align: right;
+}
+
+.grid td:not(:first-child, tr:first-child td).clicked {
+    background-color: black;
+}
+
+#pError {
+    color: crimson;
+}

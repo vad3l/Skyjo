@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Picross editor & player</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="lobby.css" type="text/css">
+    <script src="lobby.js"></script>
+</head>
+
+<body>
+    
+    <nav>
+        <section>
+            <h2>Créer une grille</h2>
+            <form action="picross.html" method="get">
+                <input type="hidden" name="edit">
+                <table>
+                    <tr><td>Lignes :</td><td><input type="number" name="lines" value="10" min="5" max="20"></td></tr>
+                    <tr><td>Colonnes :</td><td><input type="number" name="cols" value="10" min="5" max="20"></td></tr>
+                </table>
+                <input type="submit" value="Créer !">
+            </form>
+        </section>
+        <section>
+            <h2>Jouer une grille</h2>
+            <form action="picross.html" method="get">
+                Saisir le code de la grille :<br>
+                <textarea name="play"></textarea>
+                <p id="pError"></p>
+                <input type="submit" value="Jouer !">
+            </form>
+        </section>
+    </nav>
+
+</body>
+
+</html>
