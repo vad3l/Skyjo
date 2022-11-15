@@ -14,7 +14,7 @@ const io = new Server(server);
 app.use(express.static('public'));
 // set up to 
 app.get('/', function(req, res) {  
-    res.sendFile(__dirname + '/public/chat.corrige.html');
+    res.sendFile(__dirname + '/public/chat.html');
 });
 
 
