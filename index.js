@@ -14,7 +14,7 @@ const io = new Server(server);
 app.use(express.static('public'));
 // set up to 
 app.get('/', function(req, res) {  
-    res.sendFile(__dirname + '/public/connexion.html');
+    res.sendFile(__dirname + '/public/html/connexion.html');
 });
 
 
@@ -170,3 +170,4 @@ io.on('connection', function (socket) {
     });
         
 });
+

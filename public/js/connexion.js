@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             document.getElementById("btnConnecter").disabled = false;
             // on vide les zones de saisie
             // go to
-            window.location = "lobby.html"
+            window.location = "../html/lobby.html"
         }
     });
     
