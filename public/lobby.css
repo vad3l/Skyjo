@@ -253,6 +253,11 @@ div {
 	overflow-y:scroll;
 }
 
+#scroll li:hover{
+	background-color:grey;
+	cursor:pointer;
+}
+
 nav {
     display: flex;
     flex-direction: row;
@@ -289,6 +294,10 @@ nav section td {
 }
 nav section input[type="number"] {
     width: 50px;
+}
+nav section input[type="submit"]{
+	width:150px;
+	margin:auto;
 }
     
 

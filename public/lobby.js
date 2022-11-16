@@ -2,6 +2,17 @@
 
 document.addEventListener("DOMContentLoaded", function(_e) {
 	
+	const player = {
+		host: false,
+		roomId: null,
+		username: "",
+		socketId: "",
+		turn: false,
+		win: false,
+		max: 0
+	};
+
+
 	// mettre les autres fenetres invisible
 	document.getElementById("pseudo").focus();
 	toggleDisplayOn("logScreen","block");
@@ -33,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         ":mask:" : "&#128567;"
     }
 
+
+	
     // réception du message de bienvenue
     sock.on("bienvenue", function(liste) {    
         if (currentUser) {
@@ -44,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             document.getElementById("monMessage").value = "";
 			toggleDisplayOn("lobby","flex");
             document.getElementById("monMessage").focus();
-            afficherListe(liste);
         }
     });
     // réception d'une erreur de connexion
@@ -66,15 +78,25 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             afficherListe(liste);
         }
     });
-    
+	
+
+	sock.on("list rooms", function(roomList){
+		if (currentUser){
+			console.log("je recois la list des rooms");
+			console.log(roomList);
+			afficherRoom(roomList);
+		}
+	});
+	
+    sock.on("player", function(id){
+		player.roomId=id;
+	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
         currentUser = null;
 
-		document.getElementById("lobby").style.display = "none";
-		document.getElementById("content").style.display = "block";
-		document.getElementById("logScreen").style.display = "none";
+		toggleDisplayOn("content","block");
 												
 		document.getElementById("pseudo").focus();
     });
@@ -102,10 +124,26 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         if (! user) return;
         currentUser = user; 
         // ouverture de la connexion
+		player.username = user;
         sock.emit("login", user);
+		sock.emit('get rooms');
         document.getElementById("btnConnecter").value = "En attente...";
         document.getElementById("btnConnecter").disabled = true;
     }
+
+	function afficherRoom(roomList){
+		if(!currentUser) return;
+		
+		let ul = document.getElementById("scroll");
+
+		for(let i = 0 ; i < roomList.length ; ++i){
+			let li = document.createElement("li");
+			li.innerHTML ="salon " +roomList[i].id+" - "+roomList[i].placeActuelle+"/"+roomList[i].placeMax;
+			li.setAttribute("value",roomList[i].id);
+			ul.appendChild(li);
+		}
+		console.log(roomList);
+	}
 
 
     /** 
@@ -183,11 +221,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Affichage de la liste de joueurs.
      */
     function afficherListe(newList) {
-        // liste des joueurs
-        users = Object.keys(newList);
         // affichage en utilisant l'attribut personnalisé data-score
         document.querySelector("#content aside").innerHTML = 
-            users.map(u => "<p>" + u + "</p>").join("");
+            newList.map(u => "<p>" + u.username + "</p>").join("");
     }
 
 
@@ -211,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
         
         // envoi
-        sock.emit("message", { to: to, text: msg });
+        sock.emit("message", { to: to, text: msg },player);
         
         // enregistrement de la commande dans l'historique
         historique.ajouter();
@@ -226,14 +262,35 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Quitter le chat et revenir à la page d'accueil.
      */
     function quitter() { 
-        if (confirm("Quitter le chat ?")) {
+        if (confirm("Quitter la partie en cour ?")) {
             currentUser = null;
-            sock.emit("logout");
-
-			document.getElementById("content").style.display = "none";
-			document.getElementById("logScreen").style.display = "block";
+            sock.emit("leave",player);
+			
+			toggleDisplayOn("lobby","flex");
 		}
     };    
+
+
+	function createRoom(){
+
+		player.host = true;
+		player.turn = true;
+		player.socketId = sock.id;
+		player.max = document.getElementById("nbPlayer").value;
+
+		toggleDisplayOn("content","block");
+		sock.emit("playerData",player);
+		
+		console.log(player);
+	}
+
+	function rejoindreRoom(id){
+		console.log(id);
+		player.roomId = id;
+		player.sockId = sock.id;
+		toggleDisplayOn("content","block");
+		sock.emit("playerData",player);
+	}
     
 
     // Objet singleton gérant l'auto-complétion
@@ -322,6 +379,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     document.getElementById("btnConnecter").addEventListener("click", connect);
     document.getElementById("btnQuitter").addEventListener("click", quitter);
     document.getElementById("btnEnvoyer").addEventListener("click", envoyer);
+	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
     
     /**
      *  Ecouteurs clavier
@@ -350,12 +408,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
                 completion.reset();
         }
     });
-    document.querySelector("#content aside").addEventListener("dblclick", function(e) {
-        if (e.target.tagName == "P") {
-            initierDefi(e.target.innerHTML);
+	document.querySelector("#scroll").addEventListener("dblclick", function(e) {
+		console.log("clicked");
+        if (e.target.tagName == "LI") {
+            rejoindreRoom(e.target.value);
         }
     });
-    
     
 });
     
