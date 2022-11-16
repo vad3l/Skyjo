@@ -3,9 +3,8 @@
 document.addEventListener("DOMContentLoaded", function(_e) {
 	
 	// mettre les autres fenetres invisible
-	document.getElementById("lobby").style.display = "none";
-	document.getElementById("content").style.display = "none";
-
+	document.getElementById("pseudo").focus();
+	toggleDisplayOn("logScreen","block");
     // socket ouverte vers le client
     var sock = io.connect();
     
@@ -43,9 +42,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             // on vide les zones de saisie
             document.querySelector("#content main").innerHTML = "";
             document.getElementById("monMessage").value = "";
-
-			document.getElementById("content").style.display = "block";
-			document.getElementById("logScreen").style.display = "none";
+			toggleDisplayOn("lobby","flex");
             document.getElementById("monMessage").focus();
             afficherListe(liste);
         }
@@ -82,6 +79,20 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("pseudo").focus();
     });
     
+	/**
+	 *	Met tous les elements invisible a part celui passer en parametre
+	 *	@param String		est l'id
+	 *	@param String		est l'attribut à mettre
+	 */
+	function toggleDisplayOn(id,display){
+		let childs = document.body.children;
+		for(let i = 0 ; i < childs.length ; ++i){
+			childs[i].style.display = "none";
+		}
+		
+		document.getElementById(id).style.display = display;
+	}
+
     /** 
      *  Connexion de l'utilisateur au chat.
      */

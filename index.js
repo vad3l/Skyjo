@@ -29,7 +29,6 @@ var clients = {};       // { id -> socket, ... }
  *              Gestion des défis Chi-Fou-Mi 
  ***************************************************************/
 
-var chifoumi = require("./rpsls");
 
 
 /**
@@ -38,7 +37,6 @@ var chifoumi = require("./rpsls");
  */
 function supprimer(id) {
     delete clients[id];
-    chifoumi.supprimer(id);
 }
 
 
@@ -63,17 +61,14 @@ io.on('connection', function (socket) {
         currentID = id;
         // initialisation
         clients[currentID] = socket;
-        chifoumi.ajouter(currentID);
         // log
         console.log("Nouvel utilisateur : " + currentID);
-        // scores 
-        var scores = JSON.parse(chifoumi.scoresJSON());
         // envoi d'un message de bienvenue à ce client
-        socket.emit("bienvenue", scores);
+        socket.emit("bienvenue");
         // envoi aux autres clients 
         socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a rejoint la discussion", date: Date.now() });
         // envoi de la nouvelle liste à tous les clients connectés 
-        socket.broadcast.emit("liste", scores);
+        socket.broadcast.emit("liste");
     });
     
     
@@ -104,33 +99,7 @@ io.on('connection', function (socket) {
     });
     
     
-    /**
-     *  Réception d'une demande de défi
-     */
-    socket.on("chifoumi", function(data) {
-        data.choice = data.choice.substring(1, data.choice.length - 1);
-        var res = chifoumi.defier(currentID, data.to, data.choice);
-        switch (res.status) {
-            case 1: 
-                clients[data.to].emit("chifoumi", currentID );
-            case -1: 
-            case -2: 
-                socket.emit("message", { from: 0, to: currentID, text: res.message, date: Date.now() });
-                break;
-            case 0:
-                if (res.resultat.vainqueur == null) {
-                    socket.emit("message", { from: 0, to: currentID, text: res.resultat.message, date: Date.now() });
-                    clients[data.to].emit("message", { from: 0, to: data.to, text: res.resultat.message, date: Date.now() });
-                }
-                else {
-                    clients[res.resultat.vainqueur].emit("message", { from: 0, to: res.resultat.vainqueur, text: res.resultat.message + " - c'est gagné", date: Date.now() });
-                    clients[res.resultat.perdant].emit("message", { from: 0, to: res.resultat.perdant, text: res.resultat.message + " - c'est perdu", date: Date.now() });
-                    io.sockets.emit("liste", JSON.parse(chifoumi.scoresJSON()));
-                }
-                break;
-        }
-    });
-    
+        
     /** 
      *  Gestion des déconnexions
      */
@@ -147,8 +116,6 @@ io.on('connection', function (socket) {
             supprimer(currentID);
             // désinscription du client
             currentID = null;
-             // envoi de la nouvelle liste pour mise à jour
-            socket.broadcast.emit("liste", JSON.parse(chifoumi.scoresJSON()));
         }
     });
     
@@ -163,8 +130,6 @@ io.on('connection', function (socket) {
             supprimer(currentID);
             // désinscription du client
             currentID = null;
-            // envoi de la nouvelle liste pour mise à jour
-            socket.broadcast.emit("liste", JSON.parse(chifoumi.scoresJSON()));
         }
         console.log("Client déconnecté");
     });
