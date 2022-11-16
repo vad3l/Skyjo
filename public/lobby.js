@@ -1,6 +1,10 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function(_e) {
+	
+	// mettre les autres fenetres invisible
+	document.getElementById("lobby").style.display = "none";
+	document.getElementById("content").style.display = "none";
 
     // socket ouverte vers le client
     var sock = io.connect();
@@ -39,8 +43,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             // on vide les zones de saisie
             document.querySelector("#content main").innerHTML = "";
             document.getElementById("monMessage").value = "";
-            document.getElementById("login").innerHTML = currentUser;
-            document.getElementById("radio2").checked = true;
+
+			document.getElementById("content").style.display = "block";
+			document.getElementById("logScreen").style.display = "none";
             document.getElementById("monMessage").focus();
             afficherListe(liste);
         }
@@ -65,30 +70,16 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
     });
     
-    // réception d'un défi
-    sock.on("chifoumi", function(adversaire) {
-        // petit effet spécial (class "buzz" à ajouter pour faire vibrer l'affichage)
-        document.getElementById("content").classList.add("buzz");
-        setTimeout(function() {
-            document.getElementById("content").classList.remove("buzz");
-        }, 500);
         
-        var btnRepondre = document.createElement("button");
-        btnRepondre.innerHTML = "lui répondre";
-        btnRepondre.addEventListener("click", function() { initierDefi(adversaire); });
-        var p = document.createElement("p");
-        p.classList.add("chifoumi");
-        p.innerHTML = getLocalTime(new Date()) + 
-                        " - [chifoumi] : " + adversaire + " te défie à Rock-Paper-Scissors-Lizard-Spock ";     
-        p.appendChild(btnRepondre);
-        document.querySelector("#content main").appendChild(p);
-    });
-    
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
         currentUser = null;
-        document.getElementById("radio1").checked = true;
-        document.getElementById("pseudo").focus();
+
+		document.getElementById("lobby").style.display = "none";
+		document.getElementById("content").style.display = "block";
+		document.getElementById("logScreen").style.display = "none";
+												
+		document.getElementById("pseudo").focus();
     });
     
     /** 
@@ -183,11 +174,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function afficherListe(newList) {
         // liste des joueurs
         users = Object.keys(newList);
-        // tri des joueurs en fonction de leur classement
-        users.sort(function(u1, u2) { return newList[u2] - newList[u1]; });
         // affichage en utilisant l'attribut personnalisé data-score
         document.querySelector("#content aside").innerHTML = 
-            users.map(u => "<p data-score='" + newList[u] + "'>" + u + "</p>").join("");
+            users.map(u => "<p>" + u + "</p>").join("");
     }
 
 
@@ -210,32 +199,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             msg = msg.substring(i);
         }
         
-        // Cas d'un chifoumi
-        if (msg.startsWith("/chifoumi")) {
-            var args = msg.split(" ").filter(e => e.length > 0);
-            if (args.length < 3) {
-                afficherMessage({from: null, text: "Usage : /chifoumi @adversaire :choix:", date: Date.now() });
-                return;
-            }
-            if (args[1].charAt(0) != "@") {
-                afficherMessage({from: null, text: "Le second argument doit être le nom de l'adversaire précédé de @", date: Date.now() });
-                return;
-            }
-            to = args[1].substr(1);
-            if (to == currentUser) {
-                afficherMessage({from: null, text: "Il est impossible de se défier soi-même !", date: Date.now() });
-                return;
-            }
-            if ([":rock:", ":scissors:", ":paper:", ":lizard:", ":spock:"].indexOf(args[2]) < 0) {
-                afficherMessage({from: null, text: "Le troisième argument est incorrect.", date: Date.now() });
-                return;
-            }
-            sock.emit("chifoumi", { to: to, choice: args[2] });
-        }
-        else {
-            // envoi
-            sock.emit("message", { to: to, text: msg });
-        }
+        // envoi
+        sock.emit("message", { to: to, text: msg });
+        
         // enregistrement de la commande dans l'historique
         historique.ajouter();
         // effacement de la zone de saisie
@@ -243,12 +209,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     }
 
     
-    function initierDefi(adversaire) {
-        document.getElementById("monMessage").value = "/chifoumi @" + adversaire + " :";
-        document.getElementById("monMessage").focus();
-        completion.reset();
-    }
-    
+      
     
     /**
      *  Quitter le chat et revenir à la page d'accueil.
@@ -257,8 +218,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         if (confirm("Quitter le chat ?")) {
             currentUser = null;
             sock.emit("logout");
-            document.getElementById("radio1").checked = true;
-        }
+
+			document.getElementById("content").style.display = "none";
+			document.getElementById("logScreen").style.display = "block";
+		}
     };    
     
 
@@ -382,9 +345,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
     });
     
-    // Au démarrage : force l'affichage de l'écran de connexion
-    document.getElementById("radio1").checked = true;
-    document.getElementById("pseudo").focus();
     
 });
     

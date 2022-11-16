@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Chat pour les L3</title>
-    <link rel="stylesheet" href="../css/lobby.css">
+    <link rel="stylesheet" href="lobby.css">
     <script src="/socket.io/socket.io.js"></script>
-    <script src="../js/lobby.js"></script>
+    <script src="lobby.js"></script>
 </head>
 
 <body>
-    <input type="radio" name="btnScreen" id="radio1" checked>
-    <div id="logScreen">
+    
+	<!--				log Screen				-->
+
+	<div id="logScreen">
         <div id="connexion">
             <p>Choisissez votre pseudo : <br>
             <input type="text" id="pseudo" placeholder="Tapez ici votre pseudo" size="30">
@@ -19,12 +21,15 @@
             </p>
         </div>
     </div>
-    <input type="radio" name="btnScreen" id="radio2">
-    <div id="content">
-        <h2>Chat des L3 - <span id="login"></span></h2>
-        <h3>Clients connectés</h3>
+    
+
+	<!--				chat box				-->
+
+	<div id="content">
+        <h3>Joueurs connectés</h3>
         <aside>
         </aside>
+        <h2>Chat</h2>
         <main>
         </main>
         <footer>
@@ -33,6 +38,32 @@
             <input type="button" value="Quitter" id="btnQuitter">
         </footer>
     </div>
+
+	<!--				lobby screen			-->
+
+	<nav id="lobby">
+        <section>
+            <h2>Créer une partie</h2>
+            <form action="picross.html" method="get">
+                <input type="hidden" name="edit">
+                <table>
+                    <tr><td>Lignes :</td><td><input type="number" name="lines" value="10" min="5" max="20"></td></tr>
+                    <tr><td>Colonnes :</td><td><input type="number" name="cols" value="10" min="5" max="20"></td></tr>
+                </table>
+                <input type="submit" value="Créer !">
+            </form>
+        </section>
+        <section>
+            <h2>Rejoindre une partie</h2>
+            <form action="picross.html" method="get">
+                <textarea name="play"></textarea>
+                <p id="pError"></p>
+                <input type="submit" value="Jouer !">
+            </form>
+        </section>
+    </nav>
+
+
 </body>
 
 </html>
