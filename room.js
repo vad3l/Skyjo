@@ -9,13 +9,13 @@ class Room {
         this.players = [];
         this.host = null;
         this.run = false;
-        this.cartes = null;
+        this.jeu = null;
     }
     
     createJeu() {
-        this.cartes = new Jeu();
+        this.jeu = new Jeu();
         this.players.forEach(p => {
-            p.main = new Main(this.cartes);
+            p.main = new Main(this.jeu);
         });
         console.log(this.players);
     }

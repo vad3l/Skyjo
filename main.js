@@ -1,6 +1,7 @@
 class Main {
-    constructor() {
-        this.cartes = [[1,2,3,4], [1,2,3,4], [1,2,3,4]];
+    constructor(jeu) {
+        console.log(jeu)
+        this.cartes = [[jeu.cartes[0],jeu.cartes[0],jeu.cartes[0],jeu.cartes[0]], [jeu.cartes[0],jeu.cartes[0],jeu.cartes[0],jeu.cartes[0]], [jeu.cartes[0],jeu.cartes[0],jeu.cartes[0],jeu.cartes[0]]];
     }
 }
 
