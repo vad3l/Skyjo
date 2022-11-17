@@ -99,38 +99,7 @@ io.on('connection', function (socket) {
             io.in(player.roomId).emit("message", { from: currentID, to: null, text: msg.text, date: Date.now() });
         }
     });
-    
-	socket.on("playerData",(player)=>{
-		//console.log(`playerData ${player.username}`);
-
-		let room = null;
-		if(player.roomId === null){
-			
-			room = createRoom(player);
-			player.roomId = room.id;
-			console.log(`create room - ${player.roomId} - ${player.username}`);
-			// emission pour donner l'id de la room au player
-			socket.emit("player",player.roomId);
-		}else{
-			
-			if(player.roomId < 0 || player.roomId >= rooms.length) {
-				return;
-			}
-			console.log(`connect room ( ${player.roomId} - ${player.username}`);
-			rooms[player.roomId].newPlayer(player)
-		}
-
-		console.log(player);
-		socket.join(player.roomId);
-		
-		// emission du message de bienvenue sur le chat
-		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
-		// emission pour donner la liste des rooms aux clients (maj nombre players room)
-		socket.broadcast.emit('list rooms',rooms);
-		// emission pour donner la liste des players de la room
-		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers());
-	});
-        
+     
     /** 
      *  Gestion des déconnexions
      */
@@ -157,8 +126,8 @@ io.on('connection', function (socket) {
 		rooms[player.roomId].deletePlayer(player);
 	}
 
-	function createRoom(player){
-		const room = new Room (rooms.length, player.max);
+	function createRoom(player, maxPlace){
+		const room = new Room (rooms.length, maxPlace);
 	
 		room.newPlayer(player);
 		room.setHost(player);
@@ -167,16 +136,11 @@ io.on('connection', function (socket) {
 		return room;
 	}
 
+	socket.on("createRoom", (player, maxPlace) => {
 
-
-	//ideale
-	socket.on("createRoom", (player) => {
-
-		let room = createRoom(player);
-		//player.roomId = room.id;
+		let room = createRoom(player, maxPlace);
+		
 		console.log(`create room - ${player.roomId} - ${player.username}`);
-		// emission pour donner l'id de la room au player
-		//socket.emit("player",player.roomId);
 
 		socket.join(room.id);
 	
@@ -188,22 +152,28 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("liste",rooms[room.id].getPlayers());
 	});
 
-	socket.on("JoinRoom", (idRoom) => {
-		if(idRoom < 0 || idRoom >= rooms.length) {
+	socket.on("JoinRoom", (player) => {
+		if(player.roomId < 0 || player.roomId >= rooms.length) {
 			return;
 		}
 		console.log(`connect room ( ${player.roomId} - ${player.username}`);
-		rooms[idRoom].newPlayer(player)
+		rooms[player.roomId].newPlayer(player);
 
-		socket.join(idRoom);
+		socket.join(player.roomId);
 		
 		// emission du message de bienvenue sur le chat
-		io.in(idRoom).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
 		socket.broadcast.emit('list rooms',rooms);
 		// emission pour donner la liste des players de la room
-		io.in(idRoom).emit("liste",rooms[idRoom].getPlayers());
+		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers());
 	});
+
+
+
+
+
+
 
 
 
