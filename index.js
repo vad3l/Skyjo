@@ -312,6 +312,7 @@ io.on('connection', function (socket) {
 				room = r;
 			}
 		});
+		
 		if(room !== undefined) {
 			room.run = true;
 			deck = [-2,5,3,4,8,6,0,9,10,-1,7,4]

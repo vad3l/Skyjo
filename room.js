@@ -1,3 +1,4 @@
+const Jeu = require("./jeu.js")
 class Room {
     constructor(id, capacite) {
         this.id = id;
@@ -6,6 +7,7 @@ class Room {
         this.players = [];
         this.host = null;
         this.run = false;
+        this.cartes = new Jeu();
     }
 
     getNbJoueur() {
