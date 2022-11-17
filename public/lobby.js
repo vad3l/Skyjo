@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             document.getElementById("monMessage").focus();
         }
     });
+    
     // réception d'une erreur de connexion
     sock.on("erreur-connexion", function(msg) {
         alert(msg);   
@@ -126,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // ouverture de la connexion
 		player.username = user;
         sock.emit("login", user);
-		sock.emit('get rooms');
+		//sock.emit('get rooms');
         document.getElementById("btnConnecter").value = "En attente...";
         document.getElementById("btnConnecter").disabled = true;
     }
@@ -138,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		for(let i = 0 ; i < roomList.length ; ++i){
 			let li = document.createElement("li");
-			li.innerHTML ="salon " +roomList[i].id+" - "+roomList[i].placeActuelle+"/"+roomList[i].placeMax;
+			li.innerHTML ="salon " +roomList[i].id+" - "+roomList[i].placePrise+"/"+roomList[i].placeMax;
 			li.setAttribute("value",roomList[i].id);
 			ul.appendChild(li);
 		}

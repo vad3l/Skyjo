@@ -5,6 +5,7 @@ const http = require('http');
 const server = app.listen(8080, function() {
     console.log("C'est parti ! En attente de connexion sur le port 8080...");
 });
+const Room = require("./room.js")
 
 // Ecoute sur les websockets
 const { Server } = require("socket.io");
@@ -23,7 +24,6 @@ app.get('/', function(req, res) {
  ***************************************************************/
 
 var clients = {};       // { id -> socket, ... }
-
 
 /***************************************************************
  *              Gestion des rooms
@@ -65,14 +65,13 @@ io.on('connection', function (socket) {
         console.log("Nouvel utilisateur : " + currentID);
 
 		socket.emit("bienvenue");
-		
-
+		// envoyer rooms
+		socket.emit('list rooms',rooms);
     });
 
 
 	socket.on('get rooms',() =>{
 		io.to(socket.id).emit('list rooms',rooms);
-
 	});
     
     /**
@@ -102,53 +101,114 @@ io.on('connection', function (socket) {
     });
     
 	socket.on("playerData",(player)=>{
-		console.log(`playerData ${player.username}`);
+		//console.log(`playerData ${player.username}`);
 
 		let room = null;
-		if(player.roomId == null){
-			room = createRoom(player);
-			console.log(`create room - ${room.id} - ${player.username}`);
-		}else{
-			room = rooms.find(r => r.id === player.roomId);
+		if(player.roomId === null){
 			
-			if(room === undefined){
+			room = createRoom(player);
+			player.roomId = room.id;
+			console.log(`create room - ${player.roomId} - ${player.username}`);
+			// emission pour donner l'id de la room au player
+			socket.emit("player",player.roomId);
+		}else{
+			
+			if(player.roomId < 0 || player.roomId >= rooms.length) {
 				return;
-				console.log("erreur cette room n'existe pas");
 			}
-			console.log(`connect room ( ${room.id} - ${player.username}`);
-
-			room.players.push(player);
-			room.placeActuelle++;
+			console.log(`connect room ( ${player.roomId} - ${player.username}`);
+			rooms[player.roomId].newPlayer(player)
 		}
 
 		console.log(player);
-		socket.join(room.id);
-		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
-		socket.emit("player",player.roomId);
+		socket.join(player.roomId);
 		
+		// emission du message de bienvenue sur le chat
+		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		// emission pour donner la liste des rooms aux clients (maj nombre players room)
 		socket.broadcast.emit('list rooms',rooms);
-		socket.emit('list rooms',rooms);
+		// emission pour donner la liste des players de la room
+		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers());
 	});
         
     /** 
      *  Gestion des déconnexions
      */
 
-
 	socket.on("leave",(player)=>{
 		if(currentID){
 			
-			io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-			supprimerRoom(player);
+			supprimerPlayerRoom(player);
 			
-			room = rooms.find(r => r.id === player.roomId);
-
-			io.in(player.roomId).emit("liste",room.players);
+			// emission du message de au revoir sur le chat
+			io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
+			// emission pour donner la liste des players de la room
+			io.in(player.roomId).emit("liste",rooms[player.roomId].players);
+			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			socket.broadcast.emit('list rooms',rooms);
-			socket.emit('list rooms',rooms);
 		}
 	});
     
+	/**
+	*  Supprime les infos associées à l'utilisateur passé en paramètre.
+	*  @param  string  id  l'identifiant de l'utilisateur à effacer
+	*/
+	function supprimerPlayerRoom(player) {	
+		rooms[player.roomId].deletePlayer(player);
+	}
+
+	function createRoom(player){
+		const room = new Room (rooms.length, player.max);
+	
+		room.newPlayer(player);
+		room.setHost(player);
+		rooms.push(room);
+	
+		return room;
+	}
+
+
+
+	//ideale
+	socket.on("createRoom", (player) => {
+
+		let room = createRoom(player);
+		//player.roomId = room.id;
+		console.log(`create room - ${player.roomId} - ${player.username}`);
+		// emission pour donner l'id de la room au player
+		//socket.emit("player",player.roomId);
+
+		socket.join(room.id);
+	
+		// emission du message de bienvenue sur le chat
+		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		// emission pour donner la liste des rooms aux clients (maj nombre players room)
+		socket.broadcast.emit('list rooms',rooms);
+		// emission pour donner la liste des players de la room
+		io.in(room.id).emit("liste",rooms[room.id].getPlayers());
+	});
+
+	socket.on("JoinRoom", (idRoom) => {
+		if(idRoom < 0 || idRoom >= rooms.length) {
+			return;
+		}
+		console.log(`connect room ( ${player.roomId} - ${player.username}`);
+		rooms[idRoom].newPlayer(player)
+
+		socket.join(idRoom);
+		
+		// emission du message de bienvenue sur le chat
+		io.in(idRoom).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		// emission pour donner la liste des rooms aux clients (maj nombre players room)
+		socket.broadcast.emit('list rooms',rooms);
+		// emission pour donner la liste des players de la room
+		io.in(idRoom).emit("liste",rooms[idRoom].getPlayers());
+	});
+
+
+
+	/*A RETOUCHER DANS LE FUTUR*/ 
+
     // fermeture
     socket.on("logout", (player)=> { 
         // si client était identifié (devrait toujours être le cas)
@@ -159,7 +219,7 @@ io.on('connection', function (socket) {
             // envoi de l'information de déconnexion
             socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
             // suppression de l'entrée
-            supprimerRoom(player);
+            supprimerPlayerRoom(player);
 			supprimer(currentID);
             // désinscription du client
             currentID = null;
@@ -177,7 +237,7 @@ io.on('connection', function (socket) {
             // envoi de l'information de déconnexion
             socket.broadcast.emit("message", { from: null, to: null, text: currentID + " vient de se déconnecter de l'application", date: Date.now() } );
             // suppression de l'entrée
-            supprimerRoom(player);
+            //supprimerPlayerRoom(player);
 			supprimer(currentID);
             // désinscription du clienta
             currentID = null;
@@ -191,45 +251,7 @@ io.on('connection', function (socket) {
     });
     
 
-	/**
-	*  Supprime les infos associées à l'utilisateur passé en paramètre.
-	*  @param  string  id  l'identifiant de l'utilisateur à effacer
-	*/
-	function supprimerRoom(player) {
-		console.log(player);
-		room = rooms.find(r => r.id === player.roomId);
-		if(room === undefined){
-			return;
-		}
-	    for( let i = 0; i < room.players.length; i++){ 
-                                   
-	        if ( room.players[i].username === player.username) { 
-	            room.players.splice(i, 1); 
-	            i--; 
-	        }
-	    }
-
-		rooms.forEach(r => {
-			r.players.forEach(p =>{
-				if(p.host && p.socketId === socket.id){
-					room = r;
-					rooms = rooms.filter(r => r !== room);
-				}
-			})
-		})
-	}
-
-
 
 });
 
-function createRoom(player){
-	const room = {id : rooms.length,players : [],placeActuelle : 0,placeMax :player.max};
 
-	player.roomId = room.id;
-	room.players.push(player);
-	room.placeActuelle++;
-	rooms.push(room);
-
-	return room;
-}
