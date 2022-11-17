@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     // tous les utilisateurs (utile pour la complétion) 
     var users = [];
+	
+	// host de la partie
+	var host = null;
     
     // tous les caractères spéciaux (utile pour les remplacements et la complétion) 
     var specialChars = {
@@ -80,9 +83,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
     });
     // réception de la mise à jour d'une liste
-    sock.on("liste", function(liste,host) {
+    sock.on("liste", function(liste,hoste) {
         if (currentUser) {
-            afficherListe(liste,host);
+			host=hoste;
+            afficherListe(liste,hoste);
         }
     });
 	
@@ -176,6 +180,21 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *			JEUX
 	 * ************************/
 	
+	function addStartButton(){
+		if(player.username === host){
+			let load = document.getElementById("load");
+			if(document.getElementById("btnLancerPartie") === null){
+				let button = document.createElement("input");
+				button.setAttribute("type","button");
+				button.setAttribute("id","btnLancerPartie");
+				button.value = "Lancer";
+				button.addEventListener("click",lancerPartie);
+				load.appendChild(button);
+			}
+		}
+	}
+
+
 	/****************************
 	 *			CHAT
 	 * *************************/
@@ -232,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
-		console.log(host);
+		addStartButton();
         document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
     }
 
@@ -322,7 +341,15 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *			JEUX
 	 * *******************/
 
-
+	function lancerPartie(){
+		
+		// lancer la partie
+		sock.emit("start",player.username);
+		document.getElementById("load").style.display = "none";
+		document.getElementById("jeux").style.display = "flex";
+		
+		console.log("clicked");
+	}
     
 	/**********************
 	 *			CHAT

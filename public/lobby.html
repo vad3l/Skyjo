@@ -27,15 +27,21 @@
 	<!--				Room					-->
 	<div id="room">
 		
-		<!--		Jeux		-->
+		<!--		Attente		-->
 		
+		<div id="load">
+			<p>En attente du lancement de la partie</p>
+			<svg id="loadSvg" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+				<path d="M24,44c-11.028,0 -20,-8.972 -20,-20c0,-11.028 8.972,-20 20,-20c11.028,0 20,8.972 20,20c0,11.028 -8.972,20 -20,20zM24,8c-8.822,0 -16,7.178 -16,16c0,8.822 7.178,16 16,16c8.822,0 16,-7.178 16,-16c0,-8.822 -7.178,-16 -16,-16z" fill="#cfd8dc"/>
+				<path d="M24,44c-11.028,0 -20,-8.972 -20,-20h4c0,8.822 7.178,16 16,16c8.822,0 16,-7.178 16,-16c0,-8.822 -7.178,-16 -16,-16v-4c11.028,0 20,8.972 20,20c0,11.028 -8.972,20 -20,20z" fill="#727272">
+			</svg>
+			
+		</div>
+
+		<!--		Jeux		-->
 		<div id="jeux">
-			<svg xmlns="http://www.w3.org/2000/svg" width="26" height="24" viewBox="0 0 24 24">
-
-				<path fill="none" d="M24 24H0V0h24v24z" opacity=".87" transform="rotate(180)"/>
-
-				<path d="M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z"/>
-
+			<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+				<path d="M20 44 0 24 20 4l2.8 2.85L5.65 24 22.8 41.15Z"/>
 			</svg>
 
 			<table>
@@ -61,6 +67,11 @@
 				</tbody>
 			</table>
 			
+			<svg xmlns="http://www.w4.org/2000/svg" height="48" width="48">
+				<path d="m15.2 43.9-2.8-2.85L29.55 23.9 12.4 6.75l2.8-2.85 20 20Z"/>
+			</svg>
+
+
 			<!--
 			<p class = "card card--face card--hover-effect"><span></span><span>8</span><span>8</span><span></span><span>8</span></p>
 			<p class = "card card--face card--hover-effect card--underline-value"><span></span><span>6</span><span>6</span><span></span><span>6</span></p>

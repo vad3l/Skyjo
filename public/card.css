@@ -118,13 +118,13 @@
 }
         
 .card--face > span:nth-child(2) {
-    left: 20px;
+    left: 15px;
     top: 10px; 
     transform: rotate(-180deg);
 }
         
 .card--face > span:last-child {
-    right: 20px;
+    right: 15px;
     bottom: 10px;
 }
   
