@@ -41,6 +41,17 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 
 	
+
+	/****************************************************
+	 *
+	 *
+	 *					SOCKET REÇUS
+	 *
+	 *
+	 * **************************************************/
+
+
+
     // réception du message de bienvenue
     sock.on("bienvenue", function(liste) {    
         if (currentUser) {
@@ -64,9 +75,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     // réception d'un message classique
     sock.on("message", function(msg) {
-		console.log("dehors");
         if (currentUser) {
-			console.log("dedans");
             afficherMessage(msg);
         }
     });
@@ -98,7 +107,26 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 												
 		document.getElementById("pseudo").focus();
     });
+
+
+
+	/***************************************************************************************
+	 *
+	 *
+	 *							Methode gestion affichage
+	 *
+	 *
+	 **************************************************************************************/
     
+	/****************************************************
+	 *
+	 *
+	 *						CHOISIR PAGE
+	 *
+	 *
+	 * *************************************************/
+
+
 	/**
 	 *	Met tous les elements invisible a part celui passer en parametre
 	 *	@param String		est l'id
@@ -113,22 +141,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById(id).style.display = display;
 	}
 
-    /** 
-     *  Connexion de l'utilisateur au chat.
-     */
-    function connect() {
-        // recupération du pseudo
-        var user = document.getElementById("pseudo").value.trim();
-        if (! user) return;
-        currentUser = user; 
-        // ouverture de la connexion
-		player.username = user;
-        sock.emit("login", user);
-		//sock.emit('get rooms');
-        document.getElementById("btnConnecter").value = "En attente...";
-        document.getElementById("btnConnecter").disabled = true;
-    }
-
+    /**************************************************
+	 *
+	 *					LOBBY
+	 *
+	 * ***********************************************/
 	function afficherRoom(roomList){
 		if(!currentUser) return;
 		
@@ -140,9 +157,24 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			li.setAttribute("value",roomList[i].id);
 			ul.appendChild(li);
 		}
-		console.log(roomList);
 	}
 
+
+
+
+	/**************************************************
+	 *
+	 *						ROOM
+	 *
+	 * ***********************************************/
+
+	/***************************
+	 *			JEUX
+	 * ************************/
+	
+	/****************************
+	 *			CHAT
+	 * *************************/
 
     /** 
      *  Affichage des messages 
@@ -187,6 +219,17 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // scroll pour que le texte ajouté soit visible à l'écran
         document.querySelector("main > p:last-child").scrollIntoView();
     };
+
+
+	/**
+     *  Affichage de la liste de joueurs.
+     */
+    function afficherListe(newList) {
+        // affichage en utilisant l'attribut personnalisé data-score
+        document.querySelector("#content aside").innerHTML = 
+            newList.map(u => "<p>" + u.username + "</p>").join("");
+    }
+
     
 
     function getLocalTime(date) {
@@ -210,16 +253,71 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         return txt;   
     }
 
-    
-    /**
-     *  Affichage de la liste de joueurs.
-     */
-    function afficherListe(newList) {
-        // affichage en utilisant l'attribut personnalisé data-score
-        document.querySelector("#content aside").innerHTML = 
-            newList.map(u => "<p>" + u.username + "</p>").join("");
-    }
 
+	/***************************************************************************************
+	 *
+	 *
+	 *										SOCKET ENVOIE 
+	 *
+	 *
+	 ***************************************************************************************/
+
+    /**********************************************
+	 *
+	 *					ROOM
+	 *
+	 *********************************************/
+
+	/**********************
+	 *		GERER
+	 * *******************/
+
+	/*
+	 * creer une room
+	 */
+	function createRoom(){
+
+		let capacity = document.getElementById("nbPlayer").value;
+
+		toggleDisplayOn("content","block");
+		sock.emit("createRoom",player,capacity);
+		
+		console.log(player);
+	}
+	
+	/*
+	 * rejoindre une room
+	 *
+	 * @param id est l'id de la room à rejoindre
+	 */
+	function rejoindreRoom(id){
+		console.log(id);
+		player.roomId = id;
+		toggleDisplayOn("content","block");
+		sock.emit("joinRoom",player);
+	}
+    
+	/*
+	 * quitter la room
+	 */
+	function quitterRoom() { 
+        if (confirm("Quitter la partie en cours ?")) {
+            sock.emit("leave",player);
+
+			
+			toggleDisplayOn("lobby","flex");
+		}
+    };
+
+	/*********************
+	 *			JEUX
+	 * *******************/
+
+
+    
+	/**********************
+	 *			CHAT
+	 * ********************/
 
     /**
      *  Envoi d'un message : 
@@ -227,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *      - Identification des cas spéciaux : @pseudo ... ou /chifoumi @pseudo :choix:
      *      - Envoi au serveur via la socket
      */ 
-    function envoyer() {
+    function envoyerMessage() {
         
         var msg = document.getElementById("monMessage").value.trim();
         if (!msg) return;   
@@ -250,10 +348,16 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     }
 
     
-      
+	/*******************************************
+	 *
+	 *					LOBBY
+	 *
+	 * ****************************************/
     
+	
+
     /**
-     *  Quitter le chat et revenir à la page d'accueil.
+     *  Quitter le l'appli et revenir à la page d'accueil.
      */
     function quitter() { 
         if (confirm("Quitter le lobby ?")) {
@@ -264,34 +368,39 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}
     };
 
+
+	/*********************
+	 *		GERER
+	 * *******************/
+
+	/** 
+     *  Connexion de l'utilisateur au chat.
+     */
+    function connectLobby() {
+        // recupération du pseudo
+        var user = document.getElementById("pseudo").value.trim();
+        if (! user) return;
+        currentUser = user; 
+        // ouverture de la connexion
+		player.username = user;
+        sock.emit("login", user);
+		//sock.emit('get rooms');
+        document.getElementById("btnConnecter").value = "En attente...";
+        document.getElementById("btnConnecter").disabled = true;
+    }
+
+
 	
 
-	function quitterRoom() { 
-        if (confirm("Quitter la partie en cours ?")) {
-            sock.emit("leave",player);
-			
-			toggleDisplayOn("lobby","flex");
-		}
-    };
+	/**********************************************************************************
+	 *
+	 *
+	 *
+	 *
+	 *
+	 * *********************************************************************************/
 
 
-	function createRoom(){
-
-		let capacity = document.getElementById("nbPlayer").value;
-
-		toggleDisplayOn("content","block");
-		sock.emit("createRoom",player,capacity);
-		
-		console.log(player);
-	}
-
-	function rejoindreRoom(id){
-		console.log(id);
-		player.roomId = id;
-		toggleDisplayOn("content","block");
-		sock.emit("joinRoom",player);
-	}
-    
 
     // Objet singleton gérant l'auto-complétion
     var completion = {
@@ -376,9 +485,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     /** 
      *  Mapping des boutons de l'interface avec des fonctions du client.
      */
-    document.getElementById("btnConnecter").addEventListener("click", connect);
+    document.getElementById("btnConnecter").addEventListener("click", connectLobby);
     document.getElementById("btnQuitter").addEventListener("click", quitterRoom);
-    document.getElementById("btnEnvoyer").addEventListener("click", envoyer);
+    document.getElementById("btnEnvoyer").addEventListener("click", envoyerMessage);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
     
     /**
