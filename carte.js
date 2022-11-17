@@ -1,7 +1,7 @@
 class Carte {
     constructor(value) {
         this.value = value;
-        this.back = true;
+        this.back = false;
         this.color = "";
     }
 
