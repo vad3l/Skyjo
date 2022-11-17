@@ -7,6 +7,10 @@ class Room {
         this.players = [];
         this.host = null;
         this.run = false;
+        this.cartes = null;
+    }
+    
+    createJeu() {
         this.cartes = new Jeu();
     }
 

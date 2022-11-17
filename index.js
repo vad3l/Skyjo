@@ -306,17 +306,15 @@ io.on('connection', function (socket) {
 	 *
 	 * ***********************************************/
 	 socket.on("start", (username)=>{
-		let room;
+	
 		rooms.forEach(r => {
 			if(r.host === username) {
-				room = r;
+				r.run = true;
+				r.createJeu();
+				deck = [-2,5,3,4,8,6,0,9,10,-1,7,4]
+				io.in(r.id).emit("start",deck);
 			}
 		});
-		
-		if(room !== undefined) {
-			room.run = true;
-			deck = [-2,5,3,4,8,6,0,9,10,-1,7,4]
-		    io.in(room.id).emit("start",deck);
-		}
+	
 	 });
 });

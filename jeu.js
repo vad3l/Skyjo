@@ -26,7 +26,7 @@ class Jeu {
             
     }
 
-    distribuer() {
+    distribuer(players) {
         
     }
 }
