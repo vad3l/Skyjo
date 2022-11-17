@@ -3,13 +3,8 @@
 document.addEventListener("DOMContentLoaded", function(_e) {
 	
 	const player = {
-		host: false,
 		roomId: null,
-		username: "",
-		socketId: "",
-		turn: false,
-		win: false,
-		max: 0
+		username: ""
 	};
 
 
@@ -180,11 +175,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             classe = "system";
             msg.from = "[admin]";
         }
-        else if (msg.from === 0) {
-            classe = "chifoumi";
-            msg.from = "[chifoumi]";
-        }
-        
+                
         // affichage de la date format ISO pour avoir les HH:MM:SS finales qu'on extrait ensuite
         var date = getLocalTime(msg.date);
         // remplacement des caractères spéciaux par des émoji
@@ -274,13 +265,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	function createRoom(){
 
-		player.host = true;
-		player.turn = true;
-		player.socketId = sock.id;
-		player.max = document.getElementById("nbPlayer").value;
+		let capacity = document.getElementById("nbPlayer").value;
 
 		toggleDisplayOn("content","block");
-		sock.emit("playerData",player);
+		sock.emit("createRoom",player,capacity);
 		
 		console.log(player);
 	}
@@ -288,9 +276,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function rejoindreRoom(id){
 		console.log(id);
 		player.roomId = id;
-		player.sockId = sock.id;
 		toggleDisplayOn("content","block");
-		sock.emit("playerData",player);
+		sock.emit("joinRoom",player);
 	}
     
 
