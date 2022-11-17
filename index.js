@@ -312,7 +312,7 @@ io.on('connection', function (socket) {
 				r.run = true;
 				r.createJeu();
 				
-				io.in(r.id).emit("start",r.getPlayers);
+				io.in(r.id).emit("start",r.getPlayers());
 			}
 		});
 	
