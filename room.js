@@ -36,10 +36,6 @@ class Room {
         this.host = username;
     }
 
-    setRun(val) {
-        this.run = val;
-    }
-
     isFull() {
         return this.placeMax == this.placePrise;
     }

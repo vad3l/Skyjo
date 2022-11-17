@@ -306,9 +306,9 @@ io.on('connection', function (socket) {
 	 * ***********************************************/
 	 socket.on("start", (username)=>{
 		let room = rooms.filter(r => r.host === username);
-
+		
 		if(room !== undefined) {
-			room.setRun(true);
+			room.run = true;
 		}
 	 });
 });
