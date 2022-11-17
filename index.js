@@ -294,7 +294,7 @@ io.on('connection', function (socket) {
 	}
 
 	function getRoomAvailable() {
-		let z = rooms.filter(r => !r.isFull())
+		let z = rooms.filter(r => r.isFull())
 		return z.filter(r => !r.run)
 	}
 
