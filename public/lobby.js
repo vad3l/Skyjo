@@ -298,11 +298,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 */
 	function rejoindreRoom(id){
 		console.log(id);
-		player.roomId = id;
 		// nettoie le chat 
 		document.querySelector("#content main").innerHTML = ""; 
 		toggleDisplayOn("room","flex");
-		sock.emit("joinRoom",player);
+		sock.emit("joinRoom",player, id);
 	}
     
 	/*

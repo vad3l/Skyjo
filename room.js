@@ -11,7 +11,7 @@ class Room {
         return this.joueurs.length;
     }
 
-    newPlayer(player) {      
+    addPlayer(player) {      
         this.players.push(player);
         this.placePrise++;
     }

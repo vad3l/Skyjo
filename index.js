@@ -70,16 +70,94 @@ io.on('connection', function (socket) {
 		socket.emit('list rooms',rooms);
     });
 
-
+	/*
 	socket.on('get rooms',() =>{
 		io.to(socket.id).emit('list rooms',rooms);
-	});
+	});*/
     
+    /** 
+     *  Gestion des déconnexions
+     */   
+
+	 // fermeture
+	 socket.on("logout", (player)=> { 
+        // si client était identifié (devrait toujours être le cas)
+        if (currentID) {
+			console.log(player);
+			let room = rooms.find(r => r.id === player.roomId);
+            console.log("Sortie de l'utilisateur " + currentID);
+            
+			if(room !== null) { //aprteint a une room
+				supprimerPlayerRoom(player);
+				console.log(currentID + " quitte la room " + player.roomId);
+
+				checkRoom(rooms[player.roomId]);
+				
+				// emission pour donner la liste des rooms aux clients (maj nombre players room)
+				socket.broadcast.emit('list rooms',rooms);
+				io.to(socket.id).emit('list rooms',rooms);
+			}
+            
+			// suppression de l'entrée
+			supprimer(currentID);
+
+            // désinscription du client
+            currentID = null;
+        }
+    });
+
+
+	// fermeture
+	socket.on("disconnect", ()=> { 
+		// si client était identifié (devrait toujours être le cas)
+		if (currentID) {
+			let player = {roomId: null, username: currentID}
+		
+			rooms.forEach(room => {
+				room.players.forEach(player2 => {
+					if(player2.username === currentID) {
+						console.log("Sortie de l'utilisateur " + currentID);
+						player.roomId =  room.id;
+					}
+				});
+			});
+			
+			let room = rooms.find(r => r.id === player.roomId);
+			
+			if(room !== undefined) { //aprteint a room
+				supprimerPlayerRoom(player);
+				console.log(currentID + " quitte la room " + player.roomId);
+				
+				checkRoom(rooms[player.roomId])
+				
+				
+				// emission pour donner la liste des rooms aux clients (maj nombre players room)
+				socket.broadcast.emit('list rooms',rooms);
+				io.to(socket.id).emit('list rooms',rooms);
+			}
+			
+			// suppression de l'entrée
+			supprimer(currentID);
+
+			// désinscription du client
+			currentID = null;
+		}
+
+		console.log("Client déconnecté");
+	});
+
+	    
+	/**************************************************
+	 *
+	 *						chat
+	 *
+	 * ***********************************************/
+
     /**
      *  Réception d'un message et transmission à tous.
      *  @param  msg     Object  le message à transférer à tous  
      */
-    socket.on("message", function(msg,player) {
+	 socket.on("message", function(msg,player) {
         console.log("Reçu message");   
         // si message privé, envoi seulement au destinataire
         if (msg.to != null) {
@@ -100,12 +178,61 @@ io.on('connection', function (socket) {
             io.in(player.roomId).emit("message", { from: currentID, to: null, text: msg.text, date: Date.now() });
         }
     });
-     
-    /** 
-     *  Gestion des déconnexions
-     */
+ 
 
-	socket.on("leave", async (player)=>{
+	/**************************************************
+	 *
+	 *						ROOM
+	 *
+	 * ***********************************************/
+
+	
+	 socket.on("createRoom", (player, maxPlace) => {
+		
+		// création de la room
+		let room = createRoom(player, maxPlace);
+		
+		// id de la room
+		player.roomId = room.id;
+
+		// afficher coter serveur creation room
+		console.log(`${currentID} create room ${player.roomId} - ${maxPlace} places`);
+
+		socket.join(room.id);
+			
+		socket.emit("roomId",player.roomId);
+		
+		// emission du message de bienvenue sur le chat
+		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		// emission pour donner la liste des rooms aux clients (maj nombre players room)
+		socket.broadcast.emit('list rooms',rooms);
+		// emission pour donner la liste des players de la room et le nom du host
+		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
+	});
+
+	socket.on("joinRoom", (player, number) => {
+		if(number < 0 || number >= rooms.length) {
+			return;
+		}
+				
+		player.roomId = number;
+		socket.emit("roomId",player.roomId);
+
+		console.log(`${player.username} connect room  ${player.roomId}`);
+		rooms[number].addPlayer(player);
+		
+		socket.join(number);
+		
+
+		// emission du message de bienvenue sur le chat
+		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
+		// emission pour donner la liste des rooms aux clients (maj nombre players room)
+		socket.broadcast.emit('list rooms',rooms);
+		// emission pour donner la liste des players de la room
+		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers(), rooms[number].host);
+	});
+
+	socket.on("leave", (player)=>{
 		if(currentID){
 			
 			//supprimer le player dans la room
@@ -114,26 +241,31 @@ io.on('connection', function (socket) {
 			//remettre le roomId à 0
 			socket.emit("roomId",null);
 			
-			if(rooms[player.roomId].placePrise !== 0) {
-				// emission du message de au revoir sur le chat
-				io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-				// emission pour donner la liste des players de la room
-				io.in(player.roomId).emit("liste",rooms[player.roomId].players, rooms[player.roomId].host);
-			}else {
-				console.log("delete room -> ", player.roomId)
-				rooms = rooms.filter(r => r.id !== player.roomId);
-			}
+			console.log(currentID + " quitte la room " + player.roomId);
+			checkRoom(rooms[player.roomId]);
 			
-			console.log("quiit room " + player.roomId);
 			socket.leave(player.roomId);
 			
-			console.log(rooms)
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			socket.broadcast.emit('list rooms',rooms);
 			io.to(socket.id).emit('list rooms',rooms);
 		}
 	});
-    
+ 	
+	/**
+	 * check si la room et vide est emet les messages 
+	 */
+	 function checkRoom(room) {
+		if(room.placePrise !== 0) {
+			// emission du message de au revoir sur le chat
+			io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
+			// emission pour donner la liste des players de la room
+			io.in(room.id).emit("liste",rooms[room.id].players, rooms[room.id].host);
+		}else {
+			console.log("delete room -> " + room.id)
+			rooms = rooms.filter(r => r.id !== room.id);
+		}
+	}
 	/**
 	*  Supprime les infos associées à l'utilisateur passé en paramètre.
 	*  @param  string  id  l'identifiant de l'utilisateur à effacer
@@ -145,139 +277,10 @@ io.on('connection', function (socket) {
 	function createRoom(player, maxPlace){
 		const room = new Room (rooms.length, maxPlace);
 		
-		room.newPlayer(player);
+		room.addPlayer(player);
 		room.setHost(player);
 		rooms.push(room);
 	
 		return room;
 	}
-
-	socket.on("createRoom", (player, maxPlace) => {
-		
-		// création de la room
-		let room = createRoom(player, maxPlace);
-		
-		// id de la room
-		player.roomId = room.id;
-
-		// afficher coter serveur creation room
-		console.log(`create room - ${player.roomId} - ${player.username}`);
-
-		socket.join(room.id);
-			
-		socket.emit("roomId",player.roomId);
-		
-		// emission du message de bienvenue sur le chat
-		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
-		// emission pour donner la liste des rooms aux clients (maj nombre players room)
-		socket.broadcast.emit('list rooms',rooms);
-		// emission pour donner la liste des players de la room
-		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
-	});
-
-	socket.on("joinRoom", (player) => {
-		if(player.roomId < 0 || player.roomId >= rooms.length) {
-			return;
-		}
-		console.log(`connect room ( ${player.roomId} - ${player.username}`);
-		rooms[player.roomId].newPlayer(player);
-		
-		console.log(player);
-
-		socket.join(player.roomId);
-		
-		// emission du message de bienvenue sur le chat
-		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
-		// emission pour donner la liste des rooms aux clients (maj nombre players room)
-		socket.broadcast.emit('list rooms',rooms);
-		// emission pour donner la liste des players de la room
-		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers(), rooms[player.roomId].host);
-	});
-
-
-	 // fermeture
-	 socket.on("logout", (player)=> { 
-        // si client était identifié (devrait toujours être le cas)
-        if (currentID) {
-			console.log(player);
-			let room = rooms.find(r => r.id === player.roomId);
-            console.log("Sortie de l'utilisateur " + currentID);
-            
-			if(room !== null) { //aprtint a room
-				supprimerPlayerRoom(player);
-				
-				if(rooms[player.roomId].placePrise !== 0) {
-					// envoi de l'information de déconnexion
-					socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-					//envoie de la nouvelle liste à jour
-					io.in(room.id).emit("liste",room.players, room.host);
-				}else {
-					console.log("delete room -> ", player.roomId)
-					rooms = rooms.filter(r => r.id !== player.roomId);
-				}
-				
-				// emission pour donner la liste des rooms aux clients (maj nombre players room)
-				socket.broadcast.emit('list rooms',rooms);
-				io.to(socket.id).emit('list rooms',rooms);
-			}
-            
-			// suppression de l'entrée
-			supprimer(currentID);
-
-            // désinscription du client
-            currentID = null;
-        }
-    });
-
-
-	// fermeture
-	socket.on("disconnect", ()=> { 
-	// si client était identifié (devrait toujours être le cas)
-	if (currentID) {
-		let player = {roomId: null, username: currentID}
-	
-		rooms.forEach(room => {
-			console.log("room" + room.players)
-			room.players.forEach(player2 => {
-				if(player2.username === currentID) {
-					console.log("Sortie de l'utilisateur " + currentID);
-					player.roomId =  room.id;
-				}
-			});
-		});
-		
-		console.log(player);
-		let room = rooms.find(r => r.id === player.roomId);
-		
-		if(room !== undefined) { //aprteint a room
-			supprimerPlayerRoom(player);
-			
-			if(rooms[player.roomId].placePrise !== 0) {
-				// envoi de l'information de déconnexion
-				socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-				//envoie de la nouvelle liste à jour
-				io.in(room.id).emit("liste",room.players, room.host);
-			}else {
-				console.log("delete room -> ", player.roomId)
-				rooms = rooms.filter(r => r.id !== player.roomId);
-			}
-			
-			// emission pour donner la liste des rooms aux clients (maj nombre players room)
-			socket.broadcast.emit('list rooms',rooms);
-			io.to(socket.id).emit('list rooms',rooms);
-		}
-		
-		// suppression de l'entrée
-		supprimer(currentID);
-
-		// désinscription du client
-		currentID = null;
-	}
-
-	console.log("Client déconnecté");
 });
-
-		
-});
-
-
