@@ -63,11 +63,31 @@ body > div {
     box-shadow: -10px 10px 20px #A0A0A0;
     border: solid 1px #A0A0A0;
 }
-div {
-    padding: 10px;
+
+
+/*****************************************
+ *
+ *
+ *					JEUX
+ *
+ *
+ * **************************************/
+
+#room{
+	display:flex;
+	flex-direction:column;
+}
+
+#jeux table tbody tr{
+	display:flex;
 }
 
 
+/*********************
+ *
+ *		Chat
+ *
+ * ******************/
 
 
 @media (max-width: 900px) {
