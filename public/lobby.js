@@ -64,7 +64,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     // réception d'un message classique
     sock.on("message", function(msg) {
+		console.log("dehors");
         if (currentUser) {
+			console.log("dedans");
             afficherMessage(msg);
         }
     });
@@ -254,13 +256,23 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Quitter le chat et revenir à la page d'accueil.
      */
     function quitter() { 
-        if (confirm("Quitter la partie en cour ?")) {
+        if (confirm("Quitter le lobby ?")) {
             currentUser = null;
+            sock.emit("logout",player);
+			
+			toggleDisplayOn("logScreen","block");
+		}
+    };
+
+	
+
+	function quitterRoom() { 
+        if (confirm("Quitter la partie en cours ?")) {
             sock.emit("leave",player);
 			
 			toggleDisplayOn("lobby","flex");
 		}
-    };    
+    };
 
 
 	function createRoom(){
@@ -365,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Mapping des boutons de l'interface avec des fonctions du client.
      */
     document.getElementById("btnConnecter").addEventListener("click", connect);
-    document.getElementById("btnQuitter").addEventListener("click", quitter);
+    document.getElementById("btnQuitter").addEventListener("click", quitterRoom);
     document.getElementById("btnEnvoyer").addEventListener("click", envoyer);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
     
