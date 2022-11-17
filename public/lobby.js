@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}
 	});
 	
-    sock.on("player", function(id){
+    sock.on("roomId", function(id){
 		player.roomId=id;
 	});
         

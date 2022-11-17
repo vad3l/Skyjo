@@ -95,7 +95,7 @@ io.on('connection', function (socket) {
         }
         // sinon, envoi à tous les gens connectés
         else {
-            console.log(" --> broadcast");
+            console.log(" --> room :",player.roomId);
             io.in(player.roomId).emit("message", { from: currentID, to: null, text: msg.text, date: Date.now() });
         }
     });
@@ -107,7 +107,11 @@ io.on('connection', function (socket) {
 	socket.on("leave",(player)=>{
 		if(currentID){
 			
+			//supprimer le player dans la room
 			supprimerPlayerRoom(player);
+			
+			//remettre le roomId à 0
+			socket.emit("roomId",null);
 			
 			// emission du message de au revoir sur le chat
 			io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
@@ -128,7 +132,7 @@ io.on('connection', function (socket) {
 
 	function createRoom(player, maxPlace){
 		const room = new Room (rooms.length, maxPlace);
-	
+		
 		room.newPlayer(player);
 		room.setHost(player);
 		rooms.push(room);
@@ -137,13 +141,20 @@ io.on('connection', function (socket) {
 	}
 
 	socket.on("createRoom", (player, maxPlace) => {
-
+		
+		// création de la room
 		let room = createRoom(player, maxPlace);
 		
+		// id de la room
+		player.roomId = room.id;
+
+		// afficher coter serveur creation room
 		console.log(`create room - ${player.roomId} - ${player.username}`);
 
 		socket.join(room.id);
-	
+			
+		socket.emit("roomId",player.roomId);
+		
 		// emission du message de bienvenue sur le chat
 		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
@@ -158,6 +169,8 @@ io.on('connection', function (socket) {
 		}
 		console.log(`connect room ( ${player.roomId} - ${player.username}`);
 		rooms[player.roomId].newPlayer(player);
+		
+		console.log(player);
 
 		socket.join(player.roomId);
 		
