@@ -113,10 +113,16 @@ io.on('connection', function (socket) {
 			//remettre le roomId à 0
 			socket.emit("roomId",null);
 			
-			// emission du message de au revoir sur le chat
-			io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-			// emission pour donner la liste des players de la room
-			io.in(player.roomId).emit("liste",rooms[player.roomId].players);
+			if(rooms[player.roomId].placePrise !== 0) {
+				// emission du message de au revoir sur le chat
+				io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
+				// emission pour donner la liste des players de la room
+				io.in(player.roomId).emit("liste",rooms[player.roomId].players);
+			}else {
+				console.log("delete room -> ", player.roomId)
+				rooms = rooms.filter(r => r.id !== player.roomId);
+			}
+			
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			socket.broadcast.emit('list rooms',rooms);
 		}
@@ -183,58 +189,40 @@ io.on('connection', function (socket) {
 	});
 
 
-
-
-
-
-
-
-
-	/*A RETOUCHER DANS LE FUTUR*/ 
-
-    // fermeture
-    socket.on("logout", (player)=> { 
+	 // fermeture
+	 socket.on("logout", (player)=> { 
         // si client était identifié (devrait toujours être le cas)
         if (currentID) {
 			console.log(player);
-			room = rooms.find(r => r.id === player.roomId);
+			let room = rooms.find(r => r.id === player.roomId);
             console.log("Sortie de l'utilisateur " + currentID);
-            // envoi de l'information de déconnexion
-            socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-            // suppression de l'entrée
-            supprimerPlayerRoom(player);
+            
+			if(room !== null) { //aprtint a room
+				supprimerPlayerRoom(player);
+				
+				if(rooms[player.roomId].placePrise !== 0) {
+					// envoi de l'information de déconnexion
+					socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
+					//envoie de la nouvelle liste à jour
+					io.in(room.id).emit("liste",room.players);
+				}else {
+					console.log("delete room -> ", player.roomId)
+					rooms = rooms.filter(r => r.id !== player.roomId);
+				}
+				
+				// emission pour donner la liste des rooms aux clients (maj nombre players room)
+				socket.broadcast.emit('list rooms',rooms);
+			}
+            
+			// suppression de l'entrée
 			supprimer(currentID);
+
             // désinscription du client
             currentID = null;
-			//envoie de la nouvelle liste à jour
-			
-			io.in(room.id).emit("liste",room.players);
         }
     });
-    
-    // déconnexion de la socket
-    socket.on("disconnect",(player)=> { 
-        // si client était identifié
-        if (currentID) {
-			room = rooms.find(r => r.id === player.roomId);
-            // envoi de l'information de déconnexion
-            socket.broadcast.emit("message", { from: null, to: null, text: currentID + " vient de se déconnecter de l'application", date: Date.now() } );
-            // suppression de l'entrée
-            //supprimerPlayerRoom(player);
-			supprimer(currentID);
-            // désinscription du clienta
-            currentID = null;
-			//envoie de la nouvelle liste à jour
-			if(room != undefined){
 
-				io.in(room.id).emit("liste",room.players);
-			}
-		}
-        console.log("Client déconnecté");
-    });
-    
-
-
+	
 });
 
 
