@@ -80,9 +80,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
     });
     // réception de la mise à jour d'une liste
-    sock.on("liste", function(liste) {
+    sock.on("liste", function(liste,host) {
         if (currentUser) {
-            afficherListe(liste);
+            afficherListe(liste,host);
         }
     });
 	
@@ -230,9 +230,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	/**
      *  Affichage de la liste de joueurs.
      */
-    function afficherListe(newList) {
+    function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
-        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + u.username + "</p>").join("");
+		console.log(host);
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + ((u.username === host) ? u.username+" *":u.username)+ "</p>").join("");
     }
 
     

@@ -78,6 +78,11 @@ body > div {
 	flex-direction:column;
 }
 
+#jeux{
+	display:flex;
+	align-items:baseline;
+}
+
 #jeux table tbody tr{
 	display:flex;
 }
