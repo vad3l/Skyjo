@@ -184,6 +184,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // si réception du message alors que l'on est déconnecté du service
         if (!currentUser) return;   
         
+		
+
         // affichage des nouveaux messages 
         var bcMessages = document.querySelector("#content main");
 
@@ -226,8 +228,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function afficherListe(newList) {
         // affichage en utilisant l'attribut personnalisé data-score
-        document.querySelector("#content aside").innerHTML = 
-            newList.map(u => "<p>" + u.username + "</p>").join("");
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + u.username + "</p>").join("");
     }
 
     
@@ -303,7 +304,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function quitterRoom() { 
         if (confirm("Quitter la partie en cours ?")) {
             sock.emit("leave",player);
-
+			
+			// nettoie le chat 
+			document.querySelector("#content main").innerHTML = ""; 
 			
 			toggleDisplayOn("lobby","flex");
 		}
@@ -495,7 +498,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     document.getElementById("pseudo").addEventListener("keydown", function(e) {
         if (e.keyCode == 13) // touche entrée
-            connect();
+            connectLobby();
     });
     document.getElementById("monMessage").addEventListener("keydown", function(e) {
         switch (e.keyCode) {
@@ -512,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
                 historique.suivant();
                 break;
             case 13 :   // touche entrée
-                envoyer();
+                envoyerMessage();
             default: 
                 completion.reset();
         }
