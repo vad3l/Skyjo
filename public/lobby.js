@@ -149,9 +149,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 * ***********************************************/
 	function afficherRoom(roomList){
 		if(!currentUser) return;
-			
-		let ul = document.getElementById("scroll");
 		
+		//récupére l'element scroll
+		let ul = document.getElementById("scroll");
+		//vide ce qu'il y avait avant dedans
 		ul.innerHTML = "";
 
 		for(let i = 0 ; i < roomList.length ; ++i){
@@ -297,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function rejoindreRoom(id){
 		console.log(id);
 		player.roomId = id;
-		toggleDisplayOn("content","block");
+		toggleDisplayOn("room","flex");
 		sock.emit("joinRoom",player);
 	}
     
@@ -492,8 +493,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Mapping des boutons de l'interface avec des fonctions du client.
      */
     document.getElementById("btnConnecter").addEventListener("click", connectLobby);
-    document.getElementById("btnQuitter").addEventListener("click", quitterRoom);
-    document.getElementById("btnEnvoyer").addEventListener("click", envoyerMessage);
+    document.getElementById("btnQuitterRoom").addEventListener("click", quitterRoom);
+    document.getElementById("btnEnvoyerMessage").addEventListener("click", envoyerMessage);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
     
     /**
