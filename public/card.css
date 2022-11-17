@@ -1,0 +1,109 @@
+.card {
+    background: #6931f6;
+    border: 5px solid white;
+    border-radius: 10px;
+    cursor: default;
+    height: 175px;
+    user-select: none;
+    /*max-font-size: 1rem;*/
+    max-height: 175px;
+    max-width: 100px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    width: 100px; }
+
+.card.card--hover-effect {
+    cursor: pointer;
+	transition: all 50ms linear;
+}
+
+.card.card--hover-effect:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); 
+}
+
+.card.card--face {  
+    align-items: center;
+	display: flex;
+    justify-content: center;
+    position: relative; 
+}
+      
+
+.card.card.card--face > span:first-child {
+    left: 2px;
+    top: 5px;
+}
+       
+.card.card.card--face > span:nth-child(4) {
+    right: 2px;
+    bottom: 5px;
+}
+
+
+.card.card.card--face > span:nth-child(4), .card.card.card--face > span:first-child {
+    width: 45px;
+    height: 35px;
+    background: white;
+    border-radius: 45px / 35px;
+    transform: rotate(-210deg);
+}
+
+.card.card--face > span:nth-child(3) {
+    font-size: 2.5em; 
+}
+
+.card.card--face > span {
+    font-size: 1.5em;
+    position: absolute; 
+}
+        
+.card.card--face > span:nth-child(2) {
+    left: 20px;
+    top: 10px; 
+    transform: rotate(-180deg);
+}
+        
+.card.card--face > span:last-child {
+    right: 20px;
+    bottom: 10px;
+}
+  
+  
+.card.card--back {
+    background: radial-gradient(closest-side, #db1226, #ebf8e1, #643cf6);
+    align-items: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column; 
+}
+      
+.card.card--back > span {
+    font-size: 2em;
+    position: absolute;
+    width: fit-content; 
+}
+        
+.card.card--back > span:first-child {
+    top: 25px;
+    transform: rotate(-210deg); 
+}
+
+.card.card--back > span:last-child {
+    bottom: 25px;
+    transform: rotate(-30deg); 
+}
+
+.card.card--underline-value > span {
+    text-decoration: underline; 
+}
+
+#plateau {
+    background-color: antiquewhite;
+    width: 1250px;
+    height: 700px;
+    margin-left: 100px;
+    position: relative;
+}

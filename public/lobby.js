@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		let capacity = document.getElementById("nbPlayer").value;
 
-		toggleDisplayOn("content","block");
+		toggleDisplayOn("room","flex");
 		sock.emit("createRoom",player,capacity);
 		
 		console.log(player);
