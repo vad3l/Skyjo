@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			console.log("je recois la list des rooms");
 			console.log(roomList);
 			afficherRoom(roomList);
+			
 		}
 	});
 	
@@ -148,8 +149,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 * ***********************************************/
 	function afficherRoom(roomList){
 		if(!currentUser) return;
-		
+			
 		let ul = document.getElementById("scroll");
+		
+		ul.innerHTML = "";
 
 		for(let i = 0 ; i < roomList.length ; ++i){
 			let li = document.createElement("li");
