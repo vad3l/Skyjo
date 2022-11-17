@@ -25,7 +25,7 @@ class Jeu {
     }
 
     shuffle() {
-            
+       this.cartes.sort(() => Math.random() - 0.5);
     }
 
     distribuer(players) {
@@ -38,9 +38,7 @@ class Jeu {
             players.forEach(p => {
                 p.main.addCarte(this.cartes.shift());
             })
-        }
-        console.log(players)
-        
+        }        
     }
 
 
