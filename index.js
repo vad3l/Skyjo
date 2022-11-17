@@ -152,7 +152,7 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("liste",rooms[room.id].getPlayers());
 	});
 
-	socket.on("JoinRoom", (player) => {
+	socket.on("joinRoom", (player) => {
 		if(player.roomId < 0 || player.roomId >= rooms.length) {
 			return;
 		}
