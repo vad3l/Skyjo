@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	const player = {
 		roomId: null,
 		username: "",
-		mains:null
+		main:null
 	};
 
 
