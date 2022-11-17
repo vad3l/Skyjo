@@ -9,6 +9,7 @@ const Room = require("./room.js")
 
 // Ecoute sur les websockets
 const { Server } = require("socket.io");
+const { group } = require('console');
 const io = new Server(server);
 
 // Configuration d'express pour utiliser le répertoire "public"
@@ -104,7 +105,7 @@ io.on('connection', function (socket) {
      *  Gestion des déconnexions
      */
 
-	socket.on("leave",(player)=>{
+	socket.on("leave", async (player)=>{
 		if(currentID){
 			
 			//supprimer le player dans la room
@@ -123,10 +124,13 @@ io.on('connection', function (socket) {
 				rooms = rooms.filter(r => r.id !== player.roomId);
 			}
 			
+			console.log("quiit room " + player.roomId);
 			socket.leave(player.roomId);
-
+			
+			console.log(rooms)
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			socket.broadcast.emit('list rooms',rooms);
+			io.to(socket.id).emit('list rooms',rooms);
 		}
 	});
     
@@ -214,6 +218,7 @@ io.on('connection', function (socket) {
 				
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				socket.broadcast.emit('list rooms',rooms);
+				io.to(socket.id).emit('list rooms',rooms);
 			}
             
 			// suppression de l'entrée
@@ -225,52 +230,53 @@ io.on('connection', function (socket) {
     });
 
 
-		 // fermeture
-		 socket.on("disconnect", ()=> { 
-			// si client était identifié (devrait toujours être le cas)
-			if (currentID) {
-				let player = {roomId: null, username: currentID}
-			
-				rooms.forEach(room => {
-					console.log("room" + room.players)
-					room.players.forEach(player2 => {
-						if(player2.username === currentID) {
-							console.log("Sortie de l'utilisateur " + currentID);
-							player.roomId =  room.id;
-						}
-					});
-				});
-				
-				console.log(player);
-				let room = rooms.find(r => r.id === player.roomId);
-				
-				if(room !== undefined) { //aprteint a room
-					supprimerPlayerRoom(player);
-					
-					if(rooms[player.roomId].placePrise !== 0) {
-						// envoi de l'information de déconnexion
-						socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
-						//envoie de la nouvelle liste à jour
-						io.in(room.id).emit("liste",room.players);
-					}else {
-						console.log("delete room -> ", player.roomId)
-						rooms = rooms.filter(r => r.id !== player.roomId);
-					}
-					
-					// emission pour donner la liste des rooms aux clients (maj nombre players room)
-					socket.broadcast.emit('list rooms',rooms);
+	// fermeture
+	socket.on("disconnect", ()=> { 
+	// si client était identifié (devrait toujours être le cas)
+	if (currentID) {
+		let player = {roomId: null, username: currentID}
+	
+		rooms.forEach(room => {
+			console.log("room" + room.players)
+			room.players.forEach(player2 => {
+				if(player2.username === currentID) {
+					console.log("Sortie de l'utilisateur " + currentID);
+					player.roomId =  room.id;
 				}
-				
-				// suppression de l'entrée
-				supprimer(currentID);
-	
-				// désinscription du client
-				currentID = null;
-			}
-
-			console.log("Client déconnecté");
+			});
 		});
-	
+		
+		console.log(player);
+		let room = rooms.find(r => r.id === player.roomId);
+		
+		if(room !== undefined) { //aprteint a room
+			supprimerPlayerRoom(player);
+			
+			if(rooms[player.roomId].placePrise !== 0) {
+				// envoi de l'information de déconnexion
+				socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
+				//envoie de la nouvelle liste à jour
+				io.in(room.id).emit("liste",room.players);
+			}else {
+				console.log("delete room -> ", player.roomId)
+				rooms = rooms.filter(r => r.id !== player.roomId);
+			}
+			
+			// emission pour donner la liste des rooms aux clients (maj nombre players room)
+			socket.broadcast.emit('list rooms',rooms);
+			io.to(socket.id).emit('list rooms',rooms);
+		}
+		
+		// suppression de l'entrée
+		supprimer(currentID);
+
+		// désinscription du client
+		currentID = null;
+	}
+
+	console.log("Client déconnecté");
+});
+
 		
 });
 
