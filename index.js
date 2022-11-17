@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
 
 		socket.emit("bienvenue");
 		// envoyer rooms
-		socket.emit('list rooms',rooms);
+		socket.emit('list rooms',getRoomAvailable());
     });
 
 	/*
@@ -94,8 +94,9 @@ io.on('connection', function (socket) {
 				checkRoom(rooms[player.roomId]);
 				
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
-				socket.broadcast.emit('list rooms',rooms);
-				io.to(socket.id).emit('list rooms',rooms);
+				let roomAvailable = getRoomAvailable();
+				socket.broadcast.emit('list rooms', roomAvailable);
+				io.to(socket.id).emit('list rooms', roomAvailable);
 			}
             
 			// suppression de l'entrée
@@ -132,8 +133,9 @@ io.on('connection', function (socket) {
 				
 				
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
-				socket.broadcast.emit('list rooms',rooms);
-				io.to(socket.id).emit('list rooms',rooms);
+				let roomAvailable = getRoomAvailable()
+				socket.broadcast.emit('list rooms', roomAvailable);
+				io.to(socket.id).emit('list rooms', roomAvailable);
 			}
 			
 			// suppression de l'entrée
@@ -188,7 +190,12 @@ io.on('connection', function (socket) {
 
 	
 	 socket.on("createRoom", (player, maxPlace) => {
-		
+		if(maxPlace > 5) {
+			maxPlace = 5;
+		}
+		if(maxPlace < 2) {
+			maxPlace = 2;
+		}
 		// création de la room
 		let room = createRoom(player, maxPlace);
 		
@@ -205,7 +212,7 @@ io.on('connection', function (socket) {
 		// emission du message de bienvenue sur le chat
 		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
-		socket.broadcast.emit('list rooms',rooms);
+		socket.broadcast.emit('list rooms',getRoomAvailable());
 		// emission pour donner la liste des players de la room et le nom du host
 		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
 	});
@@ -220,14 +227,13 @@ io.on('connection', function (socket) {
 
 		console.log(`${player.username} connect room  ${player.roomId}`);
 		rooms[number].addPlayer(player);
-		
+
 		socket.join(number);
 		
-
 		// emission du message de bienvenue sur le chat
 		io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
-		socket.broadcast.emit('list rooms',rooms);
+		socket.broadcast.emit('list rooms',getRoomAvailable());
 		// emission pour donner la liste des players de la room
 		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers(), rooms[number].host);
 	});
@@ -242,13 +248,15 @@ io.on('connection', function (socket) {
 			socket.emit("roomId",null);
 			
 			console.log(currentID + " quitte la room " + player.roomId);
+			console.log(rooms[player.roomId])
 			checkRoom(rooms[player.roomId]);
 			
 			socket.leave(player.roomId);
 			
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
-			socket.broadcast.emit('list rooms',rooms);
-			io.to(socket.id).emit('list rooms',rooms);
+			let roomAvailable = getRoomAvailable()
+			socket.broadcast.emit('list rooms', roomAvailable);
+			io.to(socket.id).emit('list rooms', roomAvailable);
 		}
 	});
  	
@@ -266,21 +274,41 @@ io.on('connection', function (socket) {
 			rooms = rooms.filter(r => r.id !== room.id);
 		}
 	}
+
 	/**
 	*  Supprime les infos associées à l'utilisateur passé en paramètre.
 	*  @param  string  id  l'identifiant de l'utilisateur à effacer
 	*/
 	function supprimerPlayerRoom(player) {	
-		rooms[player.roomId].deletePlayer(player);
+		rooms[player.roomId].deletePlayer(player.username);
 	}
 
 	function createRoom(player, maxPlace){
 		const room = new Room (rooms.length, maxPlace);
 		
 		room.addPlayer(player);
-		room.setHost(player);
+		room.setHost(player.username);
 		rooms.push(room);
 	
 		return room;
 	}
+
+	function getRoomAvailable() {
+		let z = rooms.filter(r => !r.isFull())
+		return z.filter(r => !r.run)
+	}
+
+	
+	/**************************************************
+	 *
+	 *						game
+	 *
+	 * ***********************************************/
+	 socket.on("start", (username)=>{
+		let room = rooms.filter(r => r.host === username);
+
+		if(room !== undefined) {
+			room.setRun(true);
+		}
+	 });
 });

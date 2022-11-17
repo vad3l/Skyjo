@@ -5,6 +5,7 @@ class Room {
         this.placeMax = capacite;
         this.players = [];
         this.host = null;
+        this.run = false;
     }
 
     getNbJoueur() {
@@ -17,16 +18,30 @@ class Room {
     }
 
     deletePlayer(playerDelete) {
-        this.players = this.players.filter(p => p.username !== playerDelete.username)
+        this.players = this.players.filter(p => p.username !== playerDelete);
         this.placePrise--;
+        if(playerDelete === this.host) {
+            this.players.forEach(p => {
+                this.setHost(p.username);
+                return;
+            });
+        }
     }
 
     getPlayers() {
         return this.players;
     }
 
-    setHost(player) {
-        this.host = player.username;
+    setHost(username) {
+        this.host = username;
+    }
+
+    setRun(val) {
+        this.run = val;
+    }
+
+    isFull() {
+        return this.placeMax == this.placePrise;
     }
 }
 
