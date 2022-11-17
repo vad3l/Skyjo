@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
 		console.log(host);
-        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + ((u.username === host) ? u.username+" *":u.username)+ "</p>").join("");
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
     }
 
     
