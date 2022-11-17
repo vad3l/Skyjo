@@ -103,6 +103,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     sock.on("roomId", function(id){
 		player.roomId=id;
 	});
+
+	sock.on("start", function(deck){
+		document.getElementById("load").style.display = "none";
+		document.getElementById("jeux").style.display ="flex";
+
+	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
@@ -180,17 +186,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *			JEUX
 	 * ************************/
 	
-	function addStartButton(){
+	function updateStartButton(){
+		console.log("host :"+host);
+		console.log("user :"+player.username);
 		if(player.username === host){
-			let load = document.getElementById("load");
-			if(document.getElementById("btnLancerPartie") === null){
-				let button = document.createElement("input");
-				button.setAttribute("type","button");
-				button.setAttribute("id","btnLancerPartie");
-				button.value = "Lancer";
-				button.addEventListener("click",lancerPartie);
-				load.appendChild(button);
-			}
+			document.getElementById("btnLancerPartie").style.display = "block"; 
+		}else{
+			document.getElementById("btnLancerPartie").style.display = "none"; 
 		}
 	}
 
@@ -251,8 +253,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
-		addStartButton();
-        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
+		updateStartButton();
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p"+(u.username === player.username ? " style =\"color:#00ffcd\"":"")+">" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
     }
 
     
@@ -306,6 +308,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		toggleDisplayOn("room","flex");
 		sock.emit("createRoom",player,capacity);
+		// afficher la div load obligatoirement
+		document.getElementById("load").style.display = "flex";
+		document.getElementById("jeux").style.display = "none"; 
 		
 		console.log(player);
 	}
@@ -319,6 +324,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		console.log(id);
 		// nettoie le chat 
 		document.querySelector("#content main").innerHTML = ""; 
+		// afficher la div load obligatoirement
+		document.getElementById("load").style.display = "flex";
+		document.getElementById("jeux").style.display = "none";
 		toggleDisplayOn("room","flex");
 		sock.emit("joinRoom",player, id);
 	}
@@ -345,10 +353,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		// lancer la partie
 		sock.emit("start",player.username);
-		document.getElementById("load").style.display = "none";
-		document.getElementById("jeux").style.display = "flex";
-		
-		console.log("clicked");
 	}
     
 	/**********************
@@ -525,6 +529,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     document.getElementById("btnQuitterRoom").addEventListener("click", quitterRoom);
     document.getElementById("btnEnvoyerMessage").addEventListener("click", envoyerMessage);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
+	document.getElementById("btnLancerPartie").addEventListener("click",lancerPartie);
     
     /**
      *  Ecouteurs clavier
