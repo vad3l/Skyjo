@@ -123,6 +123,8 @@ io.on('connection', function (socket) {
 				rooms = rooms.filter(r => r.id !== player.roomId);
 			}
 			
+			socket.leave(player.roomId);
+
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			socket.broadcast.emit('list rooms',rooms);
 		}
