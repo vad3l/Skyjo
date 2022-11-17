@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			console.log("je recois la list des rooms");
 			console.log(roomList);
 			afficherRoom(roomList);
+			
 		}
 	});
 	
@@ -149,7 +150,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function afficherRoom(roomList){
 		if(!currentUser) return;
 		
+		//récupére l'element scroll
 		let ul = document.getElementById("scroll");
+		//vide ce qu'il y avait avant dedans
+		ul.innerHTML = "";
 
 		for(let i = 0 ; i < roomList.length ; ++i){
 			let li = document.createElement("li");
@@ -184,6 +188,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // si réception du message alors que l'on est déconnecté du service
         if (!currentUser) return;   
         
+		
+
         // affichage des nouveaux messages 
         var bcMessages = document.querySelector("#content main");
 
@@ -226,8 +232,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function afficherListe(newList) {
         // affichage en utilisant l'attribut personnalisé data-score
-        document.querySelector("#content aside").innerHTML = 
-            newList.map(u => "<p>" + u.username + "</p>").join("");
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p>" + u.username + "</p>").join("");
     }
 
     
@@ -293,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function rejoindreRoom(id){
 		console.log(id);
 		player.roomId = id;
-		toggleDisplayOn("content","block");
+		toggleDisplayOn("room","flex");
 		sock.emit("joinRoom",player);
 	}
     
@@ -303,7 +308,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function quitterRoom() { 
         if (confirm("Quitter la partie en cours ?")) {
             sock.emit("leave",player);
-
+			
+			// nettoie le chat 
+			document.querySelector("#content main").innerHTML = ""; 
 			
 			toggleDisplayOn("lobby","flex");
 		}
@@ -486,8 +493,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Mapping des boutons de l'interface avec des fonctions du client.
      */
     document.getElementById("btnConnecter").addEventListener("click", connectLobby);
-    document.getElementById("btnQuitter").addEventListener("click", quitterRoom);
-    document.getElementById("btnEnvoyer").addEventListener("click", envoyerMessage);
+    document.getElementById("btnQuitterRoom").addEventListener("click", quitterRoom);
+    document.getElementById("btnEnvoyerMessage").addEventListener("click", envoyerMessage);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
     
     /**
@@ -495,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     document.getElementById("pseudo").addEventListener("keydown", function(e) {
         if (e.keyCode == 13) // touche entrée
-            connect();
+            connectLobby();
     });
     document.getElementById("monMessage").addEventListener("keydown", function(e) {
         switch (e.keyCode) {
@@ -512,7 +519,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
                 historique.suivant();
                 break;
             case 13 :   // touche entrée
-                envoyer();
+                envoyerMessage();
             default: 
                 completion.reset();
         }
