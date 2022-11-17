@@ -1,5 +1,4 @@
 const Jeu = require("./jeu.js")
-const Main = require("./main.js")
 
 class Room {
     constructor(id, capacite) {
@@ -14,10 +13,8 @@ class Room {
     
     createJeu() {
         this.jeu = new Jeu();
-        this.players.forEach(p => {
-            p.main = new Main(this.jeu);
-        });
-        console.log(this.players);
+        this.jeu.shuffle();
+        this.jeu.distribuer(this.players);
     }
 
     getNbJoueur() {
