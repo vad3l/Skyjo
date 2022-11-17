@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	
 	const player = {
 		roomId: null,
-		username: ""
+		username: "",
+		mains:null
 	};
 
 
@@ -107,6 +108,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("start", function(deck){
 		document.getElementById("load").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
+
+		console.log(deck);
 
 	});
         

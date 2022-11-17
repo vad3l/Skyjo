@@ -84,7 +84,20 @@ body > div {
 	align-items:center;
 }
 
-#jeux table tbody tr{
+#plateau{
+	display:flex;
+	align-items:center;
+}
+
+#heap{
+	margin-right: 50px;
+}
+
+#heap div{
+	text-align:center;
+}
+
+#plateau table tbody tr{
 	display:flex;
 }
 

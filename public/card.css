@@ -157,11 +157,3 @@
 .card--underline-value > span {
     text-decoration: underline; 
 }
-
-#plateau {
-    background-color: antiquewhite;
-    width: 1250px;
-    height: 700px;
-    margin-left: 100px;
-    position: relative;
-}
