@@ -26,7 +26,7 @@ class Room {
     }
 
     setHost(player) {
-        this.host = player;
+        this.host = player.username;
     }
 }
 

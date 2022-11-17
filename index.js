@@ -118,7 +118,7 @@ io.on('connection', function (socket) {
 				// emission du message de au revoir sur le chat
 				io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
 				// emission pour donner la liste des players de la room
-				io.in(player.roomId).emit("liste",rooms[player.roomId].players);
+				io.in(player.roomId).emit("liste",rooms[player.roomId].players, rooms[player.roomId].host);
 			}else {
 				console.log("delete room -> ", player.roomId)
 				rooms = rooms.filter(r => r.id !== player.roomId);
@@ -172,7 +172,7 @@ io.on('connection', function (socket) {
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
 		socket.broadcast.emit('list rooms',rooms);
 		// emission pour donner la liste des players de la room
-		io.in(room.id).emit("liste",rooms[room.id].getPlayers());
+		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
 	});
 
 	socket.on("joinRoom", (player) => {
@@ -191,7 +191,7 @@ io.on('connection', function (socket) {
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
 		socket.broadcast.emit('list rooms',rooms);
 		// emission pour donner la liste des players de la room
-		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers());
+		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers(), rooms[player.roomId].host);
 	});
 
 
@@ -210,7 +210,7 @@ io.on('connection', function (socket) {
 					// envoi de l'information de déconnexion
 					socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
 					//envoie de la nouvelle liste à jour
-					io.in(room.id).emit("liste",room.players);
+					io.in(room.id).emit("liste",room.players, room.host);
 				}else {
 					console.log("delete room -> ", player.roomId)
 					rooms = rooms.filter(r => r.id !== player.roomId);
@@ -256,7 +256,7 @@ io.on('connection', function (socket) {
 				// envoi de l'information de déconnexion
 				socket.broadcast.emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
 				//envoie de la nouvelle liste à jour
-				io.in(room.id).emit("liste",room.players);
+				io.in(room.id).emit("liste",room.players, room.host);
 			}else {
 				console.log("delete room -> ", player.roomId)
 				rooms = rooms.filter(r => r.id !== player.roomId);
