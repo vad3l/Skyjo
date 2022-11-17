@@ -8,7 +8,7 @@ class Jeu {
         for (let i = 0; i < 5; i++) {
             carte = new Carte(-2);
             carte.setColor();
-            this.cartes.push(carte)   
+            this.cartes.push(carte);   
         }
         for (let i = 0; i < 15; i++) {
             carte = new Carte(0);

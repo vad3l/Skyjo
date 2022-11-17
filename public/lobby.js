@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     // tous les utilisateurs (utile pour la complétion) 
     var users = [];
 	
+	// toutes les mains des joueurs 
+	var jeu = null;
+
 	// host de la partie
 	var host = null;
     
@@ -108,9 +111,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("start", function(deck){
 		document.getElementById("load").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
-
-		console.log(deck);
-
+		jeu=deck;
+		
+		afficherMain(player.username);
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -189,6 +192,63 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *			JEUX
 	 * ************************/
 	
+
+	function afficherMain(username){
+		let tbody = document.querySelector("#plateau table tbody");
+		console.log(jeu);
+		jeu.forEach(r =>{
+			console.log(r);
+			if(r.username === username){
+				r.main.cartes.forEach(lignes =>{
+					let tr = document.createElement("tr");
+					lignes.forEach(carte =>{
+						let td = document.createElement("td");
+						// si la carte est retourner
+						if(carte.back){
+							td.setAttribute("class","card card--back card--hover-effect");
+							
+							// premier span
+							let span = document.createElement("span");
+							span.innerHTML = "Skyjo";
+							td.appendChild(span);
+
+							// deuxieme span
+							span = document.createElement("span");
+							span.innerHTML = "Skyjo";
+							td.appendChild(span);
+
+
+						}else{
+							td.setAttribute("class","card card--face card--hover-effect");
+							// premier span
+							td.appendChild(document.createElement("span"));
+
+							// deuxieme span
+							let span = document.createElement("span");
+							span.innerHTML = "8";
+							td.appendChild(span);
+
+							// troisieme span
+							span = document.createElement("span");
+							span.innerHTML = "8";
+							td.appendChild(span);
+
+							// quatrieme span
+							td.appendChild(document.createElement("span"));
+
+							// cinquieme span
+							span = document.createElement("span");
+							span.innerHTML = "8";
+							td.appendChild(span);
+						}
+						tr.appendChild(td);
+					});
+					tbody.appendChild(tr);
+				});
+			}
+		});
+	}
+
 	function updateStartButton(){
 		console.log("host :"+host);
 		console.log("user :"+player.username);
