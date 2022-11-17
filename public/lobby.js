@@ -225,12 +225,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 							// deuxieme span
 							let span = document.createElement("span");
-							span.innerHTML = "8";
+							span.innerHTML = carte.value;
 							td.appendChild(span);
 
 							// troisieme span
 							span = document.createElement("span");
-							span.innerHTML = "8";
+							span.innerHTML = carte.value;
 							td.appendChild(span);
 
 							// quatrieme span
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 							// cinquieme span
 							span = document.createElement("span");
-							span.innerHTML = "8";
+							span.innerHTML = carte.value;
 							td.appendChild(span);
 						}
 						tr.appendChild(td);
