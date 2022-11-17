@@ -272,6 +272,7 @@ io.on('connection', function (socket) {
 		}else {
 			console.log("delete room -> " + room.id)
 			rooms = rooms.filter(r => r.id !== room.id);
+			console.log(rooms)
 		}
 	}
 
@@ -305,8 +306,12 @@ io.on('connection', function (socket) {
 	 *
 	 * ***********************************************/
 	 socket.on("start", (username)=>{
-		let room = rooms.filter(r => r.host === username);
-		
+		let room;
+		rooms.forEach(r => {
+			if(r.host === username) {
+				room = r;
+			}
+		});
 		if(room !== undefined) {
 			room.run = true;
 		}
