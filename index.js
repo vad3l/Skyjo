@@ -226,7 +226,7 @@ io.on('connection', function (socket) {
 
 
 		 // fermeture
-		 socket.on("disconnect", (player)=> { 
+		 socket.on("disconnect", ()=> { 
 			// si client était identifié (devrait toujours être le cas)
 			if (currentID) {
 				let player = {roomId: null, username: currentID}
@@ -243,7 +243,6 @@ io.on('connection', function (socket) {
 				
 				console.log(player);
 				let room = rooms.find(r => r.id === player.roomId);
-				console.log(room);
 				
 				if(room !== undefined) { //aprteint a room
 					supprimerPlayerRoom(player);
