@@ -395,7 +395,7 @@ io.on('connection', function (socket) {
 		});
 
 		room.pickedPioche();
-		io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
 	socket.on("pickedDefausse", (player) => {
@@ -409,7 +409,7 @@ io.on('connection', function (socket) {
 		});
 
 		room.pickedDefausse();
-		io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 	});
 	  
 });
