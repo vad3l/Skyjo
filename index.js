@@ -312,13 +312,21 @@ io.on('connection', function (socket) {
 				r.run = true;
 				r.createJeu();
 				
-				io.in(r.id).emit("start",r.getPlayers());
-				io.in(r.id).emit("turnStart");
-				io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
-				io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
-				io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
+                if(r.id.placePrise === 1) {
+				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tout seul. PS : Trouve toi des amis)", date: Date.now() });    
+				}else {
+				    io.in(r.id).emit("start",r.getPlayers());
+				    io.in(r.id).emit("turnStart");
+				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
+				}
 			}
 		});
 	
+	 });
+
+	 socket.on("turnCarte", (carte, player) => {
+		
 	 });
 });

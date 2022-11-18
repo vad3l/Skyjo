@@ -52,7 +52,6 @@ class Jeu {
         carte.retourner();
         this.discard.push(carte);
         this.discard.push(null);
-        
     }
     
     getDiscard2Cards() {

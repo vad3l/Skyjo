@@ -9,6 +9,7 @@ class Room {
         this.host = null;
         this.run = false;
         this.jeu = null;
+        this.turn = null;
     }
     
     createJeu() {
