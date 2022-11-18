@@ -272,7 +272,7 @@ io.on('connection', function (socket) {
 		}else {
 			console.log("delete room -> " + room.id)
 			rooms = rooms.filter(r => r.id !== room.id);
-			console.log(rooms)
+			//console.log(rooms)
 		}
 	}
 
