@@ -16,7 +16,7 @@ class Jeu {
             this.pioche.push(carte)   
         }
         for (let i = -1; i <= 12; i++) {
-            if(i !==0) {
+            if(i !== 0) {
                 for (let j = 0; j < 10; j++) {
                     carte = new Carte(i);
                     carte.setColor();
@@ -24,8 +24,9 @@ class Jeu {
                }
             }
         }
-        this.pioche.push(null);
+        
         this.discard = [];
+        this.carteTmp;
     }
 
     shuffle() {
@@ -54,6 +55,14 @@ class Jeu {
         this.discard.push(null);
     }
     
+    pickedPioche() {
+        this.carteTmp = this.pioche.shift();
+    }
+    
+    pickedDefausse() {
+        this.carteTmp = this.pioche.shift();
+    }
+
     getDiscard2Cards() {
         return [this.discard[0], this.discard[1]];
     }

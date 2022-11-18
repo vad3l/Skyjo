@@ -72,9 +72,13 @@ class Room {
         
     }
 
+    pickedPioche() {
+        this.jeu.majPioche();
+   }
 
-
-
+   pickedDefausse() {
+       this.jeu.majDefausse();
+   }
 
 
     getPlayers() {

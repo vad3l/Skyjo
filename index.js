@@ -369,17 +369,41 @@ io.on('connection', function (socket) {
 			    console.log("room " + room.id + "turn 1 finit");
                 
 				io.in(room.id).emit("startTurn", room.getPlayers());
-				io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
-				io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+				
 				io.in(room.id).emit("message", { from: null, to: null, text: "fin du tour 1", date: Date.now() });
 			}
 		}else {
             // maj pioche and discard
-            //io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+            
+			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
-
 		}
 	});
+    
+	socket.on("piochePioche", (player) => {
+        let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
 
+		room.pickedPioche();
+		io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+	});
+
+	socket.on("piocheDefause", (player) => {
+        let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+
+		room.pickedDefausse();
+		io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+	});
 	  
 });
