@@ -6,6 +6,7 @@ class Main {
 
     addCarte(carte) {
         let size = this.cartes.length;
+        
         switch (size) {
             case 0:
                 this.cartes.push(new Array());
@@ -34,18 +35,22 @@ class Main {
             this.points = 0;
             e.forEach(carte => {
                 if(carte !== null && carte.back === false) {
-                   this.points += a.value;
+                   this.points += carte.value;
                 }
             });
         });
     }
 
     verifierMain() {
-        //console.log(this.cartes);
-        for (let i = 4; i < 4; i++) {
-            console.log("carte",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
-            if(this.cartes[0][i].value === this.cartes[1][i].value === this.cartes[2][i].value) {
-                this.carte[0][i] = this.carte[1][i] = this.carte[2][i] = null;
+        for (let i = 0; i < 4; i++) {
+            console.log(this.cartes[0][i]);
+            console.log(this.cartes[1][i]);
+            console.log(this.cartes[2][i]);
+            if(this.cartes[0][i].value === this.cartes[1][i].value === this.cartes[2][i].value ) {
+                this.carte[0][i] = null;
+                this.carte[1][i] = null;
+                this.carte[2][i] = null;
+                console.log( "enlever line "  + this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
             }
         }
         
@@ -53,14 +58,20 @@ class Main {
 
     getNbCartesRetourne() {
         let nb = 0;
-        for (let i = 0; i < 4; ++i) {
-            for (let j = 0; j < 3; ++j) {
-                if(this.carte[i][j] !== null && !this.cartes[i][j].back) {
+        for (let i = 0; i < 3; ++i) {
+            for (let j = 0; j < 4; ++j) {
+                if(this.cartes[i][j] !== null && !this.cartes[i][j].back) {
                     nb++;
                 }
             }
         }
         return nb;
+    }
+
+    majMain(cardsChange) {
+        cardsChange.forEach(c => {
+            this.cartes[c.ligne][c.colonne].back = false;
+        });
     }
 }
 module.exports = Main;

@@ -3,6 +3,7 @@ class Carte {
         this.value = value;
         this.back = true;
         this.color = "";
+        this.choosed = false;
     }
 
     setColor() {

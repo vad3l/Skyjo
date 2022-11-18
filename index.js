@@ -230,9 +230,9 @@ io.on('connection', function (socket) {
             return;
 		}
 
-		console.log(`${player.username} connect room  ${player.roomId}`);
-
 		player.roomId = room.id;
+
+		console.log(`${player.username} connect room  ${player.roomId}`);
 
 		socket.emit("roomId",room.id);
 
@@ -350,18 +350,33 @@ io.on('connection', function (socket) {
 	 });
 
 	 socket.on("turnEnd", (player, pioche, discard) => {
-		// retourner carte player
-		r[player.roomId].majMain(player)
-
-		if(r.turn1) {
+		//console.log("laaaaaaaaaaaaaaaaaa")
+		
+		let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+		
+		room.majMain(player)
+        
+		if(room.turn1) {
             // verifier tout le monde retourner carte 
-			if (r.verifierTurn1()) {
-                r.turn1 = false; // tour 1 terminer
+			if (room.verifierTurn1() === true) {
+                room.turn1 = false; // tour 1 terminer
+			    console.log("room " + room.id + "turn 1 finit");
+                
+				io.in(room.id).emit("message", { from: null, to: null, text: "Turn 1 finit", date: Date.now() });
 			}
 		}else {
-             // maj pioche and discard
-
+            // maj pioche and discard
+            //io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
 
 		}
-	 });
+	});
+
+	  
 });

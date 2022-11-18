@@ -50,22 +50,26 @@ class Room {
     }
     
     verifierTurn1() {
+        let bool = true;
         this.players.forEach(p => {
-            if(p.main.getNbCartesRetourne() < 2) {
-                return false;
+            //console.log("nb vcarte retourne : ", p.main.getNbCartesRetourne())
+            if(p.main.getNbCartesRetourne() != 2) {
+                bool = false;
             }
         });
-        return true;
+        return bool;
     }
 
     majMain(player) {
-        for(let i =0; i < this.players.length; ++i) {
-            if(this.players[i].username === player.username) {
-                this.players.main = player.main;
-                this.players[i].main.calculatePoints();
-                return;
+        //console.log(player)
+        let cardsChange = [player.phase.card1, player.phase.card2]
+        this.players.forEach(p => {
+            if(player.username === p.username) {
+                p.main.majMain(cardsChange);
+                p.main.calculatePoints();
             }
-        }
+        });
+        
     }
 
 
