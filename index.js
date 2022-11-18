@@ -384,8 +384,7 @@ io.on('connection', function (socket) {
 	});
     
 
-
-	socket.on("piochePioche", (player) => {
+	socket.on("pickedPioche", (player) => {
         console.log(player.username + "pioche dans la pioche")
 		let room;
 		
@@ -399,7 +398,7 @@ io.on('connection', function (socket) {
 		io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 	});
 
-	socket.on("piocheDefausse", (player) => {
+	socket.on("pickedDefausse", (player) => {
         console.log(player.username + "pioche dans la defause")
 		let room;
 		

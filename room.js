@@ -73,11 +73,11 @@ class Room {
     }
 
     pickedPioche() {
-        this.jeu.majPioche();
+        this.jeu.pickedPioche();
    }
 
    pickedDefausse() {
-       this.jeu.majDefausse();
+       this.jeu.pickedDefausse();
    }
 
 

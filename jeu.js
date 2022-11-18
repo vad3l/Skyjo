@@ -57,11 +57,13 @@ class Jeu {
     }
     
     pickedPioche() {
-        this.carteTmp = this.pioche.shift();
+        this.pioche[0].retourner();
+        //this.carteTmp = this.pioche.shift();
     }
     
     pickedDefausse() {
-        this.carteTmp = this.pioche.shift();
+        this.discard[0].retourner();
+        //this.carteTmp = this.pioche.shift();
     }
 
     getDiscard2Cards() {
