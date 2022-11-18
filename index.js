@@ -217,24 +217,25 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
 	});
 
-	socket.on("joinRoom", (player, number) => {
-		console.log("nmuber: ", number)
-		if(number < 0 || number >= rooms.length) {
-			return;
-		}
+	socket.on("joinRoom", (player, number) => {	
 				
-		player.roomId = number;
-
-		console.log(`${player.username} connect room  ${player.roomId}`);
-
-		socket.emit("roomId",player.roomId);
-        
 		let room;
 		rooms.forEach(r => {
 			if(r.id === number) {
                 room = r;
 			}
 		});
+        
+		if(room) {
+            return;
+		}
+
+		console.log(`${player.username} connect room  ${player.roomId}`);
+		
+		player.roomId = room.id;
+
+		socket.emit("roomId",room.id);
+
 		room.addPlayer(player);
 
 		socket.join(number);
