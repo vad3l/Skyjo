@@ -85,12 +85,15 @@ class Room {
         let player;
         this.players.forEach(p => {
             let point = p.main.calculatePoints(); 
+            console.log("pont", point)
             if(point > min ){
                min = point;
                player = p.username;
+               console.log("p",player);
             }
         });
-      return player;
+        
+        return player;
    }
 
     getPlayers() {

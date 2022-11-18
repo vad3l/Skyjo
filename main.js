@@ -39,6 +39,8 @@ class Main {
                 }
             });
         });
+
+        return this.points;
     }
 
     verifierMain() {
