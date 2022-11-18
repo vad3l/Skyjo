@@ -141,6 +141,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		player.phase= {name:"start",card1:null,card2:null};
 		jouerTour();
 	});
+
+	sock.on("startTurn",function(game){
+		jeu = game; 
+	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
@@ -552,10 +556,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				let td = document.getElementById("plateau").getElementsByTagName("td");
 				if(!player.phase.card1){
 					td[4*l+c].classList.add("choosed");
-					player.phase.card1 = joueurs.main.cartes[l][c];
+					player.phase.card1 = {ligne:l,colonne:c};
 				}else if(!player.phase.card2){
 					td[4*l+c].classList.add("choosed");
-					player.phase.card2 = joueurs.main.cartes[l][c];
+					player.phase.card2 = {ligne:l,colonne:c};
 				}else{
 					sock.emit("turnEnd",player,pioche,discard);
 				}
