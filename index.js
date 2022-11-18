@@ -338,10 +338,9 @@ io.on('connection', function (socket) {
 				}else {
 					r.run = true;
 				    r.createJeu();
-				    io.in(r.id).emit("start",r.getPlayers());
-				    io.in(r.id).emit("startTurn1");
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+				    io.in(r.id).emit("startTurn1", r.getPlayers());
 				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
 				}
 			}
