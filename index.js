@@ -350,7 +350,7 @@ io.on('connection', function (socket) {
 	 });
 
 	 socket.on("endTurn", (player, pioche, discard) => {
-		//console.log("laaaaaaaaaaaaaaaaaa")
+		console.log("recu endturn")
 		
 		let room;
 		
@@ -366,7 +366,7 @@ io.on('connection', function (socket) {
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
-			    console.log("room " + room.id + "turn 1 finit");
+			    console.log("room " + room.id + " turn 1 finit");
                 
 				io.in(room.id).emit("startTurn", room.getPlayers());
 				
@@ -381,7 +381,8 @@ io.on('connection', function (socket) {
 	});
     
 	socket.on("piochePioche", (player) => {
-        let room;
+        console.log(player.username + "pioche dans la pioche")
+		let room;
 		
 		rooms.forEach(r => {
 			if(r.id === player.roomId) {
@@ -393,8 +394,9 @@ io.on('connection', function (socket) {
 		io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 	});
 
-	socket.on("piocheDefause", (player) => {
-        let room;
+	socket.on("piocheDefausse", (player) => {
+        console.log(player.username + "pioche dans la defause")
+		let room;
 		
 		rooms.forEach(r => {
 			if(r.id === player.roomId) {
