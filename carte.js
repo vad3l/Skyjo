@@ -1,7 +1,7 @@
 class Carte {
     constructor(value) {
         this.value = value;
-        this.back = false;
+        this.back = true;
         this.color = "";
     }
 
@@ -53,6 +53,15 @@ class Carte {
                 this.color = "#ff6855";
                 break;
 		}
+    }
+
+    retourner() {
+        if(this.back) {
+            this.back = false;
+        }
+        else {
+            this.back = true;
+        }
     }
 }
 
