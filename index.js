@@ -369,8 +369,8 @@ io.on('connection', function (socket) {
 			    console.log("room " + room.id + "turn 1 finit");
                 
 				io.in(room.id).emit("startTurn", room.getPlayers());
-				io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
-				io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+				io.in(room.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+				io.in(room.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				io.in(room.id).emit("message", { from: null, to: null, text: "fin du tour 1", date: Date.now() });
 			}
 		}else {
