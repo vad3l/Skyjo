@@ -74,6 +74,8 @@ header{
 
 #btnLogout:hover{
 	cursor:pointer;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); 
 }
 
 #btnLogout{

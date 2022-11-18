@@ -115,7 +115,7 @@ io.on('connection', function (socket) {
 			let player = {roomId: null, username: currentID}
 		
 			rooms.forEach(room => {
-				room.players.forEach(player2 => {
+				room.getPlayers().forEach(player2 => {
 					if(player2.username === currentID) {
 						console.log("Sortie de l'utilisateur " + currentID);
 						player.roomId =  room.id;

@@ -18,10 +18,6 @@ class Room {
         this.jeu.distribuer(this.players);
     }
 
-    getNbJoueur() {
-        return this.joueurs.length;
-    }
-
     addPlayer(player) {      
         this.players.push(player);
         this.placePrise++;
