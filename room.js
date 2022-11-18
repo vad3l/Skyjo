@@ -15,7 +15,8 @@ class Room {
         this.jeu = new Jeu();
         this.jeu.shuffle();
         this.jeu.shuffle();
-        this.jeu.distribuer(this.players);
+        this.jeu.distribute(this.players);
+        this.calculatePoints();
     }
 
     addPlayer(player) {      
@@ -34,16 +35,38 @@ class Room {
         }
     }
 
-    getPlayers() {
-        return this.players;
-    }
-
     setHost(username) {
         this.host = username;
     }
 
     isFull() {
         return this.placeMax == this.placePrise;
+    }
+    
+    calculatePoints() {
+        this.players.forEach(p => {
+            p.main.calculPoints();
+        });
+    }
+
+    getPlayers() {
+        return this.players;
+    }
+
+    getDiscard() {
+        return this.jeu.getDiscard();
+    }
+
+    getPioche2Cards() {
+        return this.jeu.getPioche2Cards();
+    }
+
+    getSizePioche() {
+        return this.jeu.getSizePioche(); 
+    }
+
+    getSizeDicard() {
+        return this.jeu.getSizeDicard();
     }
 }
 
