@@ -24,7 +24,7 @@ class Jeu {
                }
             }
         }
-
+        this.pioche.push(null);
         this.discard = [];
     }
 
@@ -36,14 +36,18 @@ class Jeu {
         players.forEach(p => {
             p.main = new Main();
         });
-        console.log("l : ",this.pioche.length)
+        
         for (let i = 0; i < 12; i++) {
             players.forEach(p => {
                 let c= this.pioche.shift();
                 p.main.addCarte(c);
             })
         }
-        console.log("l : ",this.pioche.length)
+
+        players.forEach(p => {
+            p.main.verifierMain();
+        });
+
         let carte = this.pioche.shift();
         carte.retourner();
         this.discard.push(carte);
@@ -51,8 +55,8 @@ class Jeu {
         
     }
     
-    getDiscard() {
-        return this.discard;
+    getDiscard2Cards() {
+        return [this.discard[0], this.discard[1]];
     }
     
     getPioche2Cards() {
@@ -60,7 +64,14 @@ class Jeu {
     }
 
     getSizePioche() {
-        return this.pioche.length; 
+        let size = 0;
+        this.pioche.forEach(p => {
+            if(p !== null) {
+               ++size;
+            }
+        });
+
+        return size; 
     }
 
     getSizeDicard() {

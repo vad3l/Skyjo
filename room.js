@@ -53,8 +53,8 @@ class Room {
         return this.players;
     }
 
-    getDiscard() {
-        return this.jeu.getDiscard();
+    getDiscard2Cards() {
+        return this.jeu.getDiscard2Cards();
     }
 
     getPioche2Cards() {
