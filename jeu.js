@@ -42,8 +42,9 @@ class Jeu {
             })
         }
         
-        this.discard.push(null);
         this.discard.push(this.pioche.shift());
+        this.discard.push(null);
+        
     }
     
     getDiscard() {
@@ -51,7 +52,7 @@ class Jeu {
     }
     
     getPioche2Cards() {
-        return [this.pioche[1], this.pioche[0]];
+        return [this.pioche[0], this.pioche[1]];
     }
 
     getSizePioche() {
