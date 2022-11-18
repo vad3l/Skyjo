@@ -143,7 +143,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	});
 
 	sock.on("startTurn",function(game){
-		jeu = game; 
+		jeu = game;
+		afficherJeu(player.username);
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -277,10 +278,17 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 
 	function afficherCarte(carte,td){
+
+		if(carte.choosed){
+			td.classList.add("choosed");
+		}
+
+
 		// si la carte est retourner
 		if(carte.back){
-			td.setAttribute("class","card card--back");
-							
+			td.classList.add("card");
+			td.classList.add("card--back");
+			
 			// premier span
 			let span = document.createElement("span");
 			span.innerHTML = "Skyjo";
@@ -294,9 +302,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		}else{
 			if(carte.value === 6 || carte.value === 9){
-				td.setAttribute("class","card card--face card--underline-value");
+				td.classList.add("card");
+				td.classList.add("card--face");
+				td.classList.add("card--underline-value")
 			}else{
-				td.setAttribute("class","card card--face");
+				td.classList.add("card");
+				td.classList.add("card--face")
 			}
 			td.style.background = carte.color;
 			// premier span
@@ -544,7 +555,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 	}
 
-	function turnCard(e){
+	function playTurn1(e){
         
 		
 
@@ -553,19 +564,24 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		jeu.forEach(joueurs =>{
 			if(joueurs.username === player.username){
-				let td = document.getElementById("plateau").getElementsByTagName("td");
 				if(!player.phase.card1){
-					td[4*l+c].classList.add("choosed");
+					joueurs.main.cartes[l][c].choosed = true;				
 					player.phase.card1 = {ligne:l,colonne:c};
 				}else if(!player.phase.card2){
-					td[4*l+c].classList.add("choosed");
+					joueurs.main.cartes[l][c].choosed = true;				
 					player.phase.card2 = {ligne:l,colonne:c};
 				}
 			}
 		})
 		if(player.phase.card1 && player.phase.card2){
-			sock.emit("turnEnd",player,pioche,discard);
+			sock.emit("endTurn",player,pioche,discard);
 		}
+
+		afficherJeu(player.username);
+	}
+
+	function playTurn(){
+		
 	}
 
 
@@ -577,7 +593,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				let td = document.getElementById("plateau").getElementsByTagName("td");
 				for(let i = 0 ; i < td.length ; ++i){
 					td[i].classList.add("card--hover-effect");
-					td[i].addEventListener("click",turnCard.bind(null, {"target":td[i]}));
+					td[i].addEventListener("click",playTurn1.bind(null, {"target":td[i]}));
 				}
 			}
 
@@ -585,7 +601,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
 				
-				car
+				cardDefausse.classList.add("card--hover-effect");
+				cardPioche.classList.add("card--hover-effect");
+
+				cardDefausse.addEventListener("click", playTurn);
+				cardPioche.addEventListener("click", playTurn);
 			
 			}
 		}
