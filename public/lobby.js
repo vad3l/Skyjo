@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	const player = {
 		roomId: null,
 		username: "",
+		phase: "",
 		main:null
 	};
 
@@ -93,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             afficherListe(liste,hoste);
         }
     });
-	
 
 	sock.on("list rooms", function(roomList){
 		if (currentUser){
@@ -122,11 +122,16 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("defausse",function(defausse,taille){
 		afficherDefausse(defausse,taille);
-	})
+	});
 
 	sock.on("pioche",function(pioche,taille){
 		afficherPioche(pioche,taille);
-	})
+	});
+
+	sock.on("startTurn1",function(){
+		player.phase="start";
+		jouerTour("start");
+	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
@@ -208,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		afficherNomScore(username);
 		afficherMain(username);
+		jouerTour(player.phase);
 
 	}
 	
@@ -227,12 +233,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	}
 
 	function afficherDefausse(defausse,taille){
+		
 		console.log("defausse");
 		console.log(defausse);
 		console.log(taille)
 
 		let divDefausse = document.getElementById("defausse");
-
+		divDefausse.innerHTML ="";
 		let p = document.createElement("p");
 		p = afficherCarte(defausse[0],p);
 
@@ -241,12 +248,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	}
 
 	function afficherPioche(pioche,taille){
+		
 		console.log("pioche");
 		console.log(pioche);
-		
 		console.log(taille);
-		let divPioche = document.getElementById("pioche");
 
+		let divPioche = document.getElementById("pioche");
+		divPioche.innerHTML = "";
 		let p = document.createElement("p");
 		p = afficherCarte(pioche[0],p);
 
@@ -258,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function afficherCarte(carte,td){
 		// si la carte est retourner
 		if(carte.back){
-			td.setAttribute("class","card card--back card--hover-effect");
+			td.setAttribute("class","card card--back");
 							
 			// premier span
 			let span = document.createElement("span");
@@ -273,9 +281,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		}else{
 			if(carte.value === 6 || carte.value === 9){
-				td.setAttribute("class","card card--face card--hover-effect card--underline-value");
+				td.setAttribute("class","card card--face card--underline-value");
 			}else{
-				td.setAttribute("class","card card--face card--hover-effect");
+				td.setAttribute("class","card card--face");
 			}
 			td.style.background = carte.color;
 			// premier span
@@ -308,8 +316,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		tbody.innerHTML ="";
 		jeu.forEach(r =>{
 			if(r.username === username){
+				//compteur de carte
+				let l = 0;
 				r.main.cartes.forEach(lignes =>{
 					let tr = document.createElement("tr");
+					let c = 0;
 					lignes.forEach(carte =>{
 						let td = document.createElement("td");
 						if(carte != null){
@@ -317,8 +328,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 						}else{
 							td.setAttribute("class","card-remove");
 						}
+						td.dataset.c = c;
+						td.dataset.l = l;
 						tr.appendChild(td);
+						c++;
 					});
+					l++;
 					tbody.appendChild(tr);
 				});
 			}
@@ -513,6 +528,41 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		// lancer la partie
 		sock.emit("start",player.username);
+		
+	}
+
+	function turnCard(e){
+        
+
+
+		let l = Number(e.target.dataset.l);
+		let c = Number(e.target.dataset.c);
+
+		console.log("ligne :"+l+"\ncolonne :"+c);
+		console.log(e.target);
+
+		console.log(e.target.innerHTML);
+		jeu.forEach(joueurs =>{
+			if(joueurs.username === player.username){
+				joueurs.main.cartes[l][c].back = false;
+			}
+		})
+		
+		afficherJeu(player.username);
+
+	}
+
+
+	function jouerTour(turn){
+		if(turn === "start"){
+			if(player.username === document.getElementById("username").innerHTML){
+			let td = document.getElementById("plateau").getElementsByTagName("td");
+			for(let i = 0 ; i < td.length ; ++i){
+				td[i].classList.add("card--hover-effect");
+				td[i].addEventListener("click",turnCard.bind(null, {"target":td[i]}));
+			}
+			}
+		}
 	}
     
 	/**********************
@@ -693,6 +743,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	document.getElementById("btnLogout").addEventListener("click",quitter);
 	document.getElementById("btnLeft").addEventListener("click",function(){swipeMain("left")});
 	document.getElementById("btnRight").addEventListener("click",function(){swipeMain("right");});
+
     
     /**
      *  Ecouteurs clavier
