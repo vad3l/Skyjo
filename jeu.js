@@ -31,7 +31,6 @@ class Jeu {
     }
 
     distribute(players) {
-        let nbPlayers = players.length;
         players.forEach(p => {
             p.main = new Main();
         });
@@ -42,7 +41,9 @@ class Jeu {
             })
         }
         
-        this.discard.push(this.pioche.shift());
+        let carte = this.pioche.shift();
+        carte.retourner();
+        this.discard.push(carte);
         this.discard.push(null);
         
     }
@@ -60,7 +61,7 @@ class Jeu {
     }
 
     getSizeDicard() {
-        let size ;
+        let size =0;
         this.discard.forEach(d => {
             if(d !== null) {
                 ++size;
