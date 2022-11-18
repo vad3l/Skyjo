@@ -67,7 +67,7 @@ class Jeu {
     
     pickedPioche() {
         let carte = this.pioche.shift();
-        carte.retourner();
+        carte.choosed = false;
         this.discard.unshift(carte);
     }
 
