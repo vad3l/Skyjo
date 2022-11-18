@@ -309,12 +309,12 @@ io.on('connection', function (socket) {
 	
 		rooms.forEach(r => {
 			if(r.host === username) {
-				r.run = true;
-				r.createJeu();
-				
-                if(r.id.placePrise === 1) {
-				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tout seul. PS : Trouve toi des amis)", date: Date.now() });    
+			    console.log("taille", r.placePrise)
+                if(r.placePrise === 1) {
+				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tout seul. <br> <i>       PS : Trouve toi des amis</i>", date: Date.now() });    
 				}else {
+					r.run = true;
+				    r.createJeu();
 				    io.in(r.id).emit("start",r.getPlayers());
 				    io.in(r.id).emit("turnStart");
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());

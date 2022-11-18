@@ -41,7 +41,7 @@ class Main {
     }
 
     verifierMain() {
-        console.log(this.cartes);
+        //console.log(this.cartes);
         for (let i = 4; i < 4; i++) {
             console.log("carte",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
             if(this.cartes[0][i].value === this.cartes[1][i].value === this.cartes[2][i].value) {
