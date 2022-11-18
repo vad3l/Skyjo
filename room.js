@@ -87,10 +87,10 @@ class Room {
             let point = p.main.calculatePoints(); 
             if(point > min ){
                min = point;
-               player = p;
+               player = p.username;
             }
         });
-      return player.username;
+      return player;
    }
 
     getPlayers() {
