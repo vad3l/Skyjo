@@ -365,17 +365,21 @@ io.on('connection', function (socket) {
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
-			    console.log("room " + room.id + " turn 1 finit");
                 
-				io.in(room.id).emit("startTurn2", room.getPlayers(), room.determinePlayerStart());
+				room.hierarchisePlayers();
+		        let nom = room.getPlayers()[0].username;
+				io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 				
-				io.in(room.id).emit("message", { from: null, to: null, text: "fin du tour 1", date: Date.now() });
+				io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
+				io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
 			}else {
 				io.in(room.id).emit("endTurnJoueur", room.getPlayers());
 			}
 		}else {
             // maj pioche and discard
-            
+            let nom = "truc";
+		    io.in(room.id).emit("startTurn", room.getPlayers(), nom);
+			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
 			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
 		}

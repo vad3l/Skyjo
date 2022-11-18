@@ -80,20 +80,10 @@ class Room {
        this.jeu.pickedDefausse();
    }
 
-   determinePlayerStart() {
-        let min = -1;
-        let player;
-        this.players.forEach(p => {
-            let point = p.main.calculatePoints(); 
-            console.log("pont", point)
-            if(point > min ){
-               min = point;
-               player = p.username;
-               console.log("p",player);
-            }
-        });
+   hierarchisePlayers() {
         
-        return player;
+        this.players.sort((a, b) => a.points + b.points);
+        console.log(this.players);
    }
 
     getPlayers() {
