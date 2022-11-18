@@ -132,6 +132,16 @@ header{
 	margin-bottom: 20px;
 }
 
+#plateau svg{
+	-webkit-transition: fill 0.5s ease-out;
+	fill:#a0a0a0;
+}
+
+#plateau svg:hover{
+	cursor:pointer;
+	fill:black;
+}
+
 #heap{
 	margin-right: 50px;
 	display:flex;
@@ -156,7 +166,7 @@ header{
 	display:flex;
 	flex-direction:column;
 	align-items: center;
-	margin:  auto;
+	margin: 20px auto auto auto;
 	gap:30px;
 	border:1px solid #555;
 	width:500px;
@@ -250,12 +260,12 @@ header{
 }
 #content h2 {
     top: -54px;
-    left: -11px;
+    left: -10px;
 	width:50px;
 }
 #content h3 {
     right: 106px;
-    top: -22px;
+    top: -21px;
 	left:535px;
 	width: 164px;
     transform-origin: left center;
@@ -481,16 +491,16 @@ nav section input[type="submit"]{
 }
 @keyframes buzz {
     0% {
-        transform: translate(-50%, -50%);
+        transform: translate(0%, 0%);
     }
     25% {
-        transform: translate(-55%, -50%);
+        transform: translate(5%, 0%);
     }
     75% {
-        transform: translate(-45%, -50%);
+        transform: translate(-5%, 0%);
     }
     100% {
-        transform: translate(-50%, -50%);
+        transform: translate(0%, 0%);
     }
 }
 

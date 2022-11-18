@@ -115,6 +115,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		afficherMain(player.username);
 		afficherPoint(player.username);
+
+		document.getElementById("content").classList.add("buzz");
+        setTimeout(function() {
+            document.getElementById("content").classList.remove("buzz");
+        }, 500);
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -320,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // affichage du message
         bcMessages.innerHTML += "<p class='" + classe + "'>" + date + " - " + msg.from + " : " + msg.text + "</p>"; 
         // scroll pour que le texte ajouté soit visible à l'écran
-        document.querySelector("main > p:last-child").scrollIntoView();
+        //document.querySelector("main > p:last-child").scrollIntoView();
     };
 
 
@@ -386,7 +391,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		sock.emit("createRoom",player,capacity);
 		// afficher la div load obligatoirement
 		document.getElementById("load").style.display = "flex";
-		document.getElementById("jeux").style.display = "none"; 
+		document.getElementById("jeux").style.display = "none";
 		
 		console.log(player);
 	}
@@ -476,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Quitter le l'appli et revenir à la page d'accueil.
      */
     function quitter() { 
-        if (confirm("Quitter le lobby ?")) {
+        if (confirm("Quitter l'application ?")) {
             currentUser = null;
             sock.emit("logout",player);
 
