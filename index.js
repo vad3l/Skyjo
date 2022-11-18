@@ -425,7 +425,7 @@ io.on('connection', function (socket) {
 			}
 		});
 
-		room.majDefausse(carte)
+		//room.majDefausse(carte)
 		if(choice === "pioche") {    
             room.pickedPioche();
 			io.in(room.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
