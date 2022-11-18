@@ -58,11 +58,12 @@ class Jeu {
     
     pickedPioche() {
         this.pioche[0].retourner();
+        this.pioche[0].choosed =true;
         //this.carteTmp = this.pioche.shift();
     }
     
     pickedDefausse() {
-        this.discard[0].retourner();
+        this.discard[0].choosed =true;
         //this.carteTmp = this.pioche.shift();
     }
 
