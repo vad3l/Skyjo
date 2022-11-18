@@ -156,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			childs[i].style.display = "none";
 		}
 		
+		document.getElementsByTagName("header")[0].style.display = "block";
 		document.getElementById(id).style.display = display;
 	}
 
@@ -478,8 +479,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         if (confirm("Quitter le lobby ?")) {
             currentUser = null;
             sock.emit("logout",player);
-			
+
 			toggleDisplayOn("logScreen","block");
+			document.getElementById("logScreen").style.display ="block";
 		}
     };
 
@@ -605,6 +607,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     document.getElementById("btnEnvoyerMessage").addEventListener("click", envoyerMessage);
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
 	document.getElementById("btnLancerPartie").addEventListener("click",lancerPartie);
+	document.getElementById("btnLogout").addEventListener("click",quitter);
     
     /**
      *  Ecouteurs clavier

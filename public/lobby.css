@@ -64,6 +64,15 @@ body > div {
     border: solid 1px #A0A0A0;
 }
 
+header{
+	display:none;
+	height : 80px;
+	background : grey;
+}
+
+#btnLogout:hover{
+	cursor: pointer;
+}
 
 /*****************************************
  *
@@ -72,6 +81,25 @@ body > div {
  *
  *
  * **************************************/
+
+@media (max-width: 900px) {
+
+	#jeux{
+		flex-direction: column-reverse;
+	}
+
+	#heap{
+		margin:20px 0 0 0 !important;
+	}
+	
+	#heap div:first-child{
+		margin-right: 10px;
+	}
+
+	#load{
+		width : 100vw !important;
+	}
+}
 
 #room{
 	display:flex;
@@ -96,6 +124,7 @@ body > div {
 
 #heap{
 	margin-right: 50px;
+	display:flex;
 }
 
 #heap div{
