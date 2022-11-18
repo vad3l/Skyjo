@@ -15,7 +15,15 @@
 	}
 
 
-	
+	.card-remove{
+		width:65px !important;
+		max-width:65px !important;
+		min-width:65px !important;
+		height :90px !important;
+		max-height:90px !important;
+		min-height:90px !important;
+	}
+
 
 	.card--face > span:nth-child(2) {
 		left: 7px !important;
@@ -56,6 +64,15 @@
 
 }
 
+.card-remove{
+	width:100px;
+	max-width:100px;
+	min-width:100px;
+	height :175px;
+	max-height:175px;
+	min-height:175px;
+}
+
 .card {
     background: #6931f6;
     border: 5px solid white;
@@ -69,7 +86,8 @@
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-    width: 100px; }
+    width: 100px; 
+}
 
 .card--hover-effect {
     cursor: pointer;
