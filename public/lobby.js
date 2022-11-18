@@ -111,14 +111,22 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
 		
-		afficherMain(player.username);
-		afficherNom(player.username);
+		afficherJeu(player.username);
 
 		document.getElementById("content").classList.add("buzz");
         setTimeout(function() {
             document.getElementById("content").classList.remove("buzz");
         }, 500);
 	});
+
+
+	sock.on("defausse",function(defausse,taille){
+		afficherDefausse(defausse,taille);
+	})
+
+	sock.on("pioche",function(pioche,taille){
+		afficherPioche(pioche,taille);
+	})
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
@@ -196,11 +204,103 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	/***************************
 	 *			JEUX
 	 * ************************/
+	function afficherJeu(username){
+		
+		afficherNomScore(username);
+		afficherMain(username);
+
+	}
 	
-	
-	function afficherNom(username){
+	function afficherNomScore(username){
 		let p = document.querySelector("#plateau #username");
 		p.innerHTML = username;
+		
+		let point = document.getElementById("points");
+		
+		point.innerHTML = jeu.filter(jeu => jeu.username === username)[0].main.points;
+
+		if(username === player.username){
+			p.style.color= "cyan";
+		}else{
+			p.style.color = "black";
+		}
+	}
+
+	function afficherDefausse(defausse,taille){
+		console.log("defausse");
+		console.log(defausse);
+		console.log(taille)
+
+		let divDefausse = document.getElementById("defausse");
+
+		let p = document.createElement("p");
+		p = afficherCarte(defausse[0],p);
+
+		divDefausse.appendChild(p);
+
+	}
+
+	function afficherPioche(pioche,taille){
+		console.log("pioche");
+		console.log(pioche);
+		
+		console.log(taille);
+		let divPioche = document.getElementById("pioche");
+
+		let p = document.createElement("p");
+		p = afficherCarte(pioche[0],p);
+
+		divPioche.appendChild(p);
+
+	}
+
+
+	function afficherCarte(carte,td){
+		// si la carte est retourner
+		if(carte.back){
+			td.setAttribute("class","card card--back card--hover-effect");
+							
+			// premier span
+			let span = document.createElement("span");
+			span.innerHTML = "Skyjo";
+			td.appendChild(span);
+
+			// deuxieme span
+			span = document.createElement("span");
+			span.innerHTML = "Skyjo";
+			td.appendChild(span);
+
+
+		}else{
+			if(carte.value === 6 || carte.value === 9){
+				td.setAttribute("class","card card--face card--hover-effect card--underline-value");
+			}else{
+				td.setAttribute("class","card card--face card--hover-effect");
+			}
+			td.style.background = carte.color;
+			// premier span
+			td.appendChild(document.createElement("span"));
+
+			// deuxieme span
+			let span = document.createElement("span");
+			span.innerHTML = carte.value;
+			td.appendChild(span);
+
+			// troisieme span
+			span = document.createElement("span");
+			span.innerHTML = carte.value;
+			td.appendChild(span);
+
+			// quatrieme span
+			td.appendChild(document.createElement("span"));
+
+			// cinquieme span
+			span = document.createElement("span");
+			span.innerHTML = carte.value;
+			td.appendChild(span);
+		}
+		return td;
+
 	}
 
 	function afficherMain(username){
@@ -212,49 +312,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					let tr = document.createElement("tr");
 					lignes.forEach(carte =>{
 						let td = document.createElement("td");
-						// si la carte est retourner
-						if(carte.back){
-							td.setAttribute("class","card card--back card--hover-effect");
-							
-							// premier span
-							let span = document.createElement("span");
-							span.innerHTML = "Skyjo";
-							td.appendChild(span);
-
-							// deuxieme span
-							span = document.createElement("span");
-							span.innerHTML = "Skyjo";
-							td.appendChild(span);
-
-
-						}else{
-							if(carte.value === 6 || carte.value === 9){
-								td.setAttribute("class","card card--face card--hover-effect card--underline-value");
-							}else{
-								td.setAttribute("class","card card--face card--hover-effect");
-							}
-							td.style.background = carte.color;
-							// premier span
-							td.appendChild(document.createElement("span"));
-
-							// deuxieme span
-							let span = document.createElement("span");
-							span.innerHTML = carte.value;
-							td.appendChild(span);
-
-							// troisieme span
-							span = document.createElement("span");
-							span.innerHTML = carte.value;
-							td.appendChild(span);
-
-							// quatrieme span
-							td.appendChild(document.createElement("span"));
-
-							// cinquieme span
-							span = document.createElement("span");
-							span.innerHTML = carte.value;
-							td.appendChild(span);
-						}
+						td = afficherCarte(carte,td);
 						tr.appendChild(td);
 					});
 					tbody.appendChild(tr);
@@ -263,6 +321,30 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		});
 	}
 
+	function swipeMain(choice){
+		console.log(jeu);
+
+		let localUser = document.getElementById("username").innerHTML;
+		console.log("current :"+localUser);
+
+		for(let i = 0 ; i < jeu.length ; ++i){
+			if(jeu[i].username === localUser){
+				if(choice === "left"){
+					if(i === 0){
+						afficherJeu(jeu[jeu.length-1].username);
+					}else{
+						afficherJeu(jeu[i-1].username);
+					}
+				}else{
+					if(i === jeu.length-1){
+						afficherJeu(jeu[0].username);
+					}else{
+						afficherJeu(jeu[i+1].username);
+					}
+				}
+			}
+		}
+	}
 
 	function updateStartButton(){
 		if(player.username === host){
@@ -605,6 +687,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	document.getElementById("btnCreateRoom").addEventListener("click",createRoom);
 	document.getElementById("btnLancerPartie").addEventListener("click",lancerPartie);
 	document.getElementById("btnLogout").addEventListener("click",quitter);
+	document.getElementById("btnLeft").addEventListener("click",function(){swipeMain("left")});
+	document.getElementById("btnRight").addEventListener("click",function(){swipeMain("right");});
     
     /**
      *  Ecouteurs clavier
