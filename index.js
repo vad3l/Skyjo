@@ -433,7 +433,7 @@ io.on('connection', function (socket) {
 
 		}
 		
-		io.in(room.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
 		//io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 		//io.in(r.id).emit("startTurn1", r.getPlayers());
