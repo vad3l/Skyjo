@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			childs[i].style.display = "none";
 		}
 		
-		document.getElementsByTagName("header")[0].style.display = "block";
+		if(id !== "logScreen"){document.getElementsByTagName("header")[0].style.display = "flex";}
 		document.getElementById(id).style.display = display;
 	}
 
@@ -481,7 +481,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             sock.emit("logout",player);
 
 			toggleDisplayOn("logScreen","block");
-			document.getElementById("logScreen").style.display ="block";
 		}
     };
 

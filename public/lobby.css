@@ -66,12 +66,22 @@ body > div {
 
 header{
 	display:none;
+	align-items:center;
+	justify-content:center;
 	height : 80px;
 	background : grey;
 }
 
 #btnLogout:hover{
-	cursor: pointer;
+	cursor:pointer;
+}
+
+#btnLogout{
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	font-size: 16px;
 }
 
 /*****************************************
