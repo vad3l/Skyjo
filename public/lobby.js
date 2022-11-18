@@ -114,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		jeu=deck;
 		
 		afficherMain(player.username);
+		afficherPoint(player.username);
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -192,9 +193,15 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *			JEUX
 	 * ************************/
 	
+	
+	function afficherPoint(username){
+		let p = document.querySelector("#plateau #username");
+		p.innerHTML = username;
+	}
 
 	function afficherMain(username){
 		let tbody = document.querySelector("#plateau table tbody");
+		tbody.innerHTML ="";
 		console.log(jeu);
 		jeu.forEach(r =>{
 			console.log(r);
@@ -219,7 +226,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 
 						}else{
-							td.setAttribute("class","card card--face card--hover-effect");
+							if(carte.value === 6 || carte.value === 9){
+								td.setAttribute("class","card card--face card--hover-effect card--underline-value");
+							}else{
+								td.setAttribute("class","card card--face card--hover-effect");
+							}
+							td.style.background = carte.color;
 							// premier span
 							td.appendChild(document.createElement("span"));
 

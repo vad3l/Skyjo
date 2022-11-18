@@ -89,6 +89,11 @@ body > div {
 	align-items:center;
 }
 
+#plateau div p{
+	text-align:center;
+	margin-bottom: 20px;
+}
+
 #heap{
 	margin-right: 50px;
 }
@@ -97,7 +102,7 @@ body > div {
 	text-align:center;
 }
 
-#plateau table tbody tr{
+#plateau div table tbody tr{
 	display:flex;
 }
 
