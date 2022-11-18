@@ -31,8 +31,8 @@ class Main {
     }
 
     calculatePoints() {
+        this.points = 0;
         this.cartes.forEach(e => {
-            this.points = 0;
             e.forEach(carte => {
                 if(carte !== null && carte.back === false) {
                    this.points += carte.value;
