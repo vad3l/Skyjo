@@ -349,8 +349,8 @@ io.on('connection', function (socket) {
 	
 	 });
 
-	 socket.on("endTurn", (player, pioche, discard) => {
-		console.log("recu endturn")
+	 socket.on("endTurnJoueur", (player, pioche, discard) => {
+		console.log("recu endturnjoueur")
 		
 		let room;
 		
@@ -368,9 +368,11 @@ io.on('connection', function (socket) {
                 room.turn1 = false; // tour 1 terminer
 			    console.log("room " + room.id + " turn 1 finit");
                 
-				io.in(room.id).emit("startTurn", room.getPlayers());
+				io.in(room.id).emit("startTurn2", room.getPlayers());
 				
 				io.in(room.id).emit("message", { from: null, to: null, text: "fin du tour 1", date: Date.now() });
+			}else {
+				io.in(room.id).emit("endTurnJoueur", room.getPlayers());
 			}
 		}else {
             // maj pioche and discard
@@ -378,8 +380,12 @@ io.on('connection', function (socket) {
 			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
 		}
+
+
 	});
     
+
+
 	socket.on("piochePioche", (player) => {
         console.log(player.username + "pioche dans la pioche")
 		let room;
