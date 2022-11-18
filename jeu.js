@@ -24,7 +24,6 @@ class Jeu {
                }
             }
         }
-        this.pioche.push(null);
         this.discard = [];
     }
 
@@ -40,6 +39,7 @@ class Jeu {
         for (let i = 0; i < 12; i++) {
             players.forEach(p => {
                 let c= this.pioche.shift();
+				console.log(c);
                 p.main.addCarte(c);
             })
         }

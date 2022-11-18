@@ -145,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("startTurn",function(game){
 		jeu = game;
 		afficherJeu(player.username);
+		player.phase={name:"normal",card1:null,card2:null};
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -567,7 +568,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				if(!player.phase.card1){
 					joueurs.main.cartes[l][c].choosed = true;				
 					player.phase.card1 = {ligne:l,colonne:c};
-				}else if(!player.phase.card2){
+				}else if(!player.phase.card2 && (player.phase.card1.l != l && player.phase.card1.c != c)){
 					joueurs.main.cartes[l][c].choosed = true;				
 					player.phase.card2 = {ligne:l,colonne:c};
 				}
