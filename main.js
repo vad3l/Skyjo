@@ -1,6 +1,7 @@
 class Main {
     constructor() {
         this.cartes = [];
+        this.points = null;
     }
 
     addCarte(carte) {
@@ -26,6 +27,17 @@ class Main {
                 this.cartes[2].push(carte);
                 break;
         }
+    }
+
+    calculPoints() {
+        this.cartes.forEach(e => {
+            e.forEach(a => {
+                if(a.back === false) {
+                   this.points += a.value;
+                }
+            });
+        });
+        console.log("point : ",this.points)
     }
 }
 module.exports = Main;
