@@ -546,7 +546,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	function turnCard(e){
         
-
+		
 
 		let l = Number(e.target.dataset.l);
 		let c = Number(e.target.dataset.c);
@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				}
 			}
 		})
-		if(!player.phase.card1 && ! player.phase.card2){
+		if(player.phase.card1 && player.phase.card2){
 			sock.emit("turnEnd",player,pioche,discard);
 		}
 	}
@@ -584,7 +584,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			if(player.phase.name === "normal"){
 				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
-
+				
+				car
+			
 			}
 		}
 	}
