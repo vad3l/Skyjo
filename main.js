@@ -42,10 +42,9 @@ class Main {
     }
 
     verifierMain() {
+        console.log(this.cartes)
         for (let i = 0; i < 4; i++) {
-            console.log(this.cartes[0][i]);
-            console.log(this.cartes[1][i]);
-            console.log(this.cartes[2][i]);
+            
             if(this.cartes[0][i].value === this.cartes[1][i].value === this.cartes[2][i].value ) {
                 this.carte[0][i] = null;
                 this.carte[1][i] = null;
