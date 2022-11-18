@@ -97,8 +97,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("list rooms", function(roomList){
 		if (currentUser){
-			console.log("je recois la list des rooms");
-			console.log(roomList);
 			afficherRoom(roomList);
 			
 		}
@@ -114,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		jeu=deck;
 		
 		afficherMain(player.username);
-		afficherPoint(player.username);
+		afficherNom(player.username);
 
 		document.getElementById("content").classList.add("buzz");
         setTimeout(function() {
@@ -200,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 * ************************/
 	
 	
-	function afficherPoint(username){
+	function afficherNom(username){
 		let p = document.querySelector("#plateau #username");
 		p.innerHTML = username;
 	}
@@ -208,9 +206,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function afficherMain(username){
 		let tbody = document.querySelector("#plateau table tbody");
 		tbody.innerHTML ="";
-		console.log(jeu);
 		jeu.forEach(r =>{
-			console.log(r);
 			if(r.username === username){
 				r.main.cartes.forEach(lignes =>{
 					let tr = document.createElement("tr");
@@ -267,9 +263,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		});
 	}
 
+
 	function updateStartButton(){
-		console.log("host :"+host);
-		console.log("user :"+player.username);
 		if(player.username === host){
 			document.getElementById("btnLancerPartie").style.display = "block"; 
 		}else{
@@ -393,7 +388,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("load").style.display = "flex";
 		document.getElementById("jeux").style.display = "none";
 		
-		console.log(player);
 	}
 	
 	/*
@@ -402,7 +396,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 * @param id est l'id de la room à rejoindre
 	 */
 	function rejoindreRoom(id){
-		console.log(id);
 		// nettoie le chat 
 		document.querySelector("#content main").innerHTML = ""; 
 		// afficher la div load obligatoirement
@@ -641,7 +634,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         }
     });
 	document.querySelector("#scroll").addEventListener("dblclick", function(e) {
-		console.log("clicked");
         if (e.target.tagName == "LI") {
             rejoindreRoom(e.target.value);
         }
