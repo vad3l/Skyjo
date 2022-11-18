@@ -14,6 +14,7 @@ class Room {
     createJeu() {
         this.jeu = new Jeu();
         this.jeu.shuffle();
+        this.jeu.shuffle();
         this.jeu.distribuer(this.players);
     }
 

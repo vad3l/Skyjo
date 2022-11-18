@@ -38,7 +38,11 @@ class Jeu {
             players.forEach(p => {
                 p.main.addCarte(this.cartes.shift());
             })
-        }        
+        }
+        
+        players.forEach(p => {
+            p.main.calculPoints();
+        });
     }
 
 
