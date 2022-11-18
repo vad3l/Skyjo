@@ -90,7 +90,7 @@ class Room {
                player = p;
             }
         });
-      return p.username;
+      return player.username;
    }
 
     getPlayers() {
