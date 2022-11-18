@@ -80,6 +80,18 @@ class Room {
        this.jeu.pickedDefausse();
    }
 
+   determinePlayerStart() {
+        let min = -1;
+        let player;
+        this.players.forEach(p => {
+            let point = p.main.calculatePoints(); 
+            if(point > min ){
+               min = point;
+               player = p;
+            }
+        });
+      return p.username;
+   }
 
     getPlayers() {
         return this.players;

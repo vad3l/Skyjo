@@ -367,7 +367,7 @@ io.on('connection', function (socket) {
                 room.turn1 = false; // tour 1 terminer
 			    console.log("room " + room.id + " turn 1 finit");
                 
-				io.in(room.id).emit("startTurn2", room.getPlayers());
+				io.in(room.id).emit("startTurn2", room.getPlayers(), room.determinePlayerStart());
 				
 				io.in(room.id).emit("message", { from: null, to: null, text: "fin du tour 1", date: Date.now() });
 			}else {
