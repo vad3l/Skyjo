@@ -219,19 +219,19 @@ io.on('connection', function (socket) {
 
 	socket.on("joinRoom", (player, number) => {	
 				
-		let room;
+		let room = null;
 		rooms.forEach(r => {
 			if(r.id === number) {
                 room = r;
 			}
 		});
         
-		if(room) {
+		if(!room) {
             return;
 		}
 
 		console.log(`${player.username} connect room  ${player.roomId}`);
-		
+
 		player.roomId = room.id;
 
 		socket.emit("roomId",room.id);
