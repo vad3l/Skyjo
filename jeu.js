@@ -41,7 +41,8 @@ class Jeu {
                 p.main.addCarte(this.pioche.shift());
             })
         }
-    
+        
+        this.discard.push(null);
         this.discard.push(this.pioche.shift());
     }
     
@@ -50,7 +51,7 @@ class Jeu {
     }
     
     getPioche2Cards() {
-        return [this.pioche[0], this.pioche[1]];
+        return [this.pioche[1], this.pioche[0]];
     }
 
     getSizePioche() {
@@ -58,6 +59,12 @@ class Jeu {
     }
 
     getSizeDicard() {
+        let size ;
+        this.discard.forEach(d => {
+            if(d !== null) {
+                ++size;
+            }
+        });
         return this.discard.length;
     }
 }
