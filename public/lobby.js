@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		afficherJeu(player.username);
 	});
 
-	sock.on("startTurn2",function(game,username){
+	sock.on("startTurn",function(game,username){
 		console.log("anthonyest null :"+username);
 		jeu = game;
 		player.phase={name:"normal",card1:null,card2:null,turn:username};
@@ -597,15 +597,22 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 		let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
 		
-
-		if(e.target === cardPioche){
-			sock.emit("pickedPioche",player);
-			console.log(pioche);
-		}else if(e.target === cardDefausse){
-			sock.emit("pickedDefausse",player);
+		if(!player.phase.card1){
+			if(e.target === cardPioche){
+				sock.emit("pickedPioche",player);
+				player.phase.card1 = pioche[0];
+				cardPioche.removeEventListener("click",playTurn);
+			}else if(e.target === cardDefausse){
+				sock.emit("pickedDefausse",player);
+				player.phase.card2 = discard[0];
+				cardDefausse.removeEventListener("click",playTurn);
+			}
+		}else if(!player.phase.card2){
+			 if(e.target === cardDefausse){
+				sock.emit("putDefausse",pioche[0],"defausse");
+				cardDefausse.removeEventListener("click",playTurn);
+			 }
 		}
-		console.log(e.target);
-		
 	}
 
 
@@ -639,7 +646,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				cardPioche.addEventListener("click",playTurn.bind(null, {"target":cardPioche}));
 				
 			}
-		
 		}
 	}
     
