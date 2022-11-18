@@ -32,8 +32,8 @@ class Main {
     calculatePoints() {
         this.cartes.forEach(e => {
             this.points = 0;
-            e.forEach(a => {
-                if(a.back === false) {
+            e.forEach(carte => {
+                if(carte !== null && carte.back === false) {
                    this.points += a.value;
                 }
             });
@@ -49,6 +49,18 @@ class Main {
             }
         }
         
+    }
+
+    getNbCartesRetourne() {
+        let nb = 0;
+        for (let i = 0; i < 4; ++i) {
+            for (let j = 0; j < 3; ++j) {
+                if(this.carte[i][j] !== null && !this.cartes[i][j].back) {
+                    nb++;
+                }
+            }
+        }
+        return nb;
     }
 }
 module.exports = Main;

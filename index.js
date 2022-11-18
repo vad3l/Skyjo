@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
 				supprimerPlayerRoom(player);
 				console.log(currentID + " quitte la room " + player.roomId);
 
-				checkRoom(rooms[player.roomId]);
+				checkRoom(player.roomId);
 				
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				let roomAvailable = getRoomAvailable();
@@ -129,9 +129,9 @@ io.on('connection', function (socket) {
 				supprimerPlayerRoom(player);
 				console.log(currentID + " quitte la room " + player.roomId);
 				
-				checkRoom(rooms[player.roomId])
+				checkRoom(player.roomId);
 				
-				
+
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				let roomAvailable = getRoomAvailable()
 				socket.broadcast.emit('list rooms', roomAvailable);
@@ -199,11 +199,11 @@ io.on('connection', function (socket) {
 		// création de la room
 		let room = createRoom(player, maxPlace);
 		
+		// afficher coter serveur creation room
+		console.log(`${currentID} create room ${room.id} - ${maxPlace} places`);
+
 		// id de la room
 		player.roomId = room.id;
-
-		// afficher coter serveur creation room
-		console.log(`${currentID} create room ${player.roomId} - ${maxPlace} places`);
 
 		socket.join(room.id);
 			
@@ -218,15 +218,24 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on("joinRoom", (player, number) => {
+		console.log("nmuber: ", number)
 		if(number < 0 || number >= rooms.length) {
 			return;
 		}
 				
 		player.roomId = number;
-		socket.emit("roomId",player.roomId);
 
 		console.log(`${player.username} connect room  ${player.roomId}`);
-		rooms[number].addPlayer(player);
+
+		socket.emit("roomId",player.roomId);
+        
+		let room;
+		rooms.forEach(r => {
+			if(r.id === number) {
+                room = r;
+			}
+		});
+		room.addPlayer(player);
 
 		socket.join(number);
 		
@@ -235,7 +244,7 @@ io.on('connection', function (socket) {
 		// emission pour donner la liste des rooms aux clients (maj nombre players room)
 		socket.broadcast.emit('list rooms',getRoomAvailable());
 		// emission pour donner la liste des players de la room
-		io.in(player.roomId).emit("liste",rooms[player.roomId].getPlayers(), rooms[number].host);
+		io.in(room.id).emit("liste",room.getPlayers(), room.host);
 	});
 
 	socket.on("leave", (player)=>{
@@ -248,8 +257,8 @@ io.on('connection', function (socket) {
 			socket.emit("roomId",null);
 			
 			console.log(currentID + " quitte la room " + player.roomId);
-			console.log(rooms[player.roomId])
-			checkRoom(rooms[player.roomId]);
+			
+			checkRoom(player.roomId);
 			
 			socket.leave(player.roomId);
 			
@@ -263,12 +272,19 @@ io.on('connection', function (socket) {
 	/**
 	 * check si la room et vide est emet les messages 
 	 */
-	 function checkRoom(room) {
+	 function checkRoom(playerRoomId) {
+		let room;
+		for (let i = 0; i < rooms.length; ++i) {
+		    if(rooms[i].id === playerRoomId) {
+                room = rooms[i];
+			}
+		}
+
 		if(room.placePrise !== 0) {
 			// emission du message de au revoir sur le chat
 			io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
 			// emission pour donner la liste des players de la room
-			io.in(room.id).emit("liste",rooms[room.id].players, rooms[room.id].host);
+			io.in(room.id).emit("liste",room.getPlayers(), room.host);
 		}else {
 			console.log("delete room -> " + room.id)
 			rooms = rooms.filter(r => r.id !== room.id);
@@ -281,7 +297,13 @@ io.on('connection', function (socket) {
 	*  @param  string  id  l'identifiant de l'utilisateur à effacer
 	*/
 	function supprimerPlayerRoom(player) {	
-		rooms[player.roomId].deletePlayer(player.username);
+		let room;
+		this.rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+		room.deletePlayer(player.username);
 	}
 
 	function createRoom(player, maxPlace){
@@ -309,14 +331,14 @@ io.on('connection', function (socket) {
 	
 		rooms.forEach(r => {
 			if(r.host === username) {
-			    console.log("taille", r.placePrise)
-                if(r.placePrise === 1) {
-				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tout seul. <br> <i>       PS : Trouve toi des amis</i>", date: Date.now() });    
+			    
+                if(r.placePrise === 0) { //! remttre1
+				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
 				    r.createJeu();
 				    io.in(r.id).emit("start",r.getPlayers());
-				    io.in(r.id).emit("turnStart");
+				    io.in(r.id).emit("startTurn1");
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
@@ -326,7 +348,19 @@ io.on('connection', function (socket) {
 	
 	 });
 
-	 socket.on("turnCarte", (carte, player) => {
-		
+	 socket.on("turnEnd", (player, pioche, discard) => {
+		// retourner carte player
+		r[player.roomId].majMain(player)
+
+		if(r.turn1) {
+            // verifier tout le monde retourner carte 
+			if (r.verifierTurn1()) {
+                r.turn1 = false; // tour 1 terminer
+			}
+		}else {
+             // maj pioche and discard
+
+
+		}
 	 });
 });

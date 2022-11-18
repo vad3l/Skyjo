@@ -9,7 +9,7 @@ class Room {
         this.host = null;
         this.run = false;
         this.jeu = null;
-        this.turn = null;
+        this.turn1 = false;
     }
     
     createJeu() {
@@ -17,7 +17,12 @@ class Room {
         this.jeu.shuffle();
         this.jeu.shuffle();
         this.jeu.distribute(this.players);
-        this.calculatePoints();
+        
+        this.players.forEach(p => {
+            p.main.calculatePoints();
+        });
+
+        this.turn1 = true;
     }
 
     addPlayer(player) {      
@@ -44,11 +49,29 @@ class Room {
         return this.placeMax == this.placePrise;
     }
     
-    calculatePoints() {
+    verifierTurn1() {
         this.players.forEach(p => {
-            p.main.calculatePoints();
+            if(p.main.getNbCartesRetourne() < 2) {
+                return false;
+            }
         });
+        return true;
     }
+
+    majMain(player) {
+        for(let i =0; i < this.players.length; ++i) {
+            if(this.players[i].username === player.username) {
+                this.players.main = player.main;
+                this.players[i].main.calculatePoints();
+                return;
+            }
+        }
+    }
+
+
+
+
+
 
     getPlayers() {
         return this.players;
