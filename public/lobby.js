@@ -560,24 +560,31 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				}else if(!player.phase.card2){
 					td[4*l+c].classList.add("choosed");
 					player.phase.card2 = {ligne:l,colonne:c};
-				}else{
-					sock.emit("turnEnd",player,pioche,discard);
 				}
 			}
 		})
-		
-
+		if(!player.phase.card1 && ! player.phase.card2){
+			sock.emit("turnEnd",player,pioche,discard);
+		}
 	}
 
 
 	function jouerTour(){
-		if(player.phase != null &&  player.phase.name === "start" ){
-			if(player.username === document.getElementById("username").innerHTML){
+		if(player.phase === null ){return;}
+		
+		if(player.username === document.getElementById("username").innerHTML){
+			if(player.phase.name === "start"){
 				let td = document.getElementById("plateau").getElementsByTagName("td");
 				for(let i = 0 ; i < td.length ; ++i){
 					td[i].classList.add("card--hover-effect");
 					td[i].addEventListener("click",turnCard.bind(null, {"target":td[i]}));
 				}
+			}
+
+			if(player.phase.name === "normal"){
+				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
+				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
+
 			}
 		}
 	}
