@@ -5,9 +5,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	const player = {
 		roomId: null,
 		username: "",
-		phase: "",
+		phase: null,
 		main:null
 	};
+
 
 
 	// mettre les autres fenetres invisible
@@ -18,6 +19,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     // utilisateur courant 
     var currentUser = null;
+
+	// pioche
+	var pioche = null;
+
+	// discard
+	var discard = null;
     
     // tous les utilisateurs (utile pour la complétion) 
     var users = [];
@@ -121,16 +128,18 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 
 	sock.on("defausse",function(defausse,taille){
+		discard=defausse;
 		afficherDefausse(defausse,taille);
 	});
 
-	sock.on("pioche",function(pioche,taille){
+	sock.on("pioche",function(piochee,taille){
+		pioche=piochee
 		afficherPioche(pioche,taille);
 	});
 
 	sock.on("startTurn1",function(){
-		player.phase="start";
-		jouerTour("start");
+		player.phase= {name:"start",card1:null,card2:null};
+		jouerTour();
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -213,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		afficherNomScore(username);
 		afficherMain(username);
-		jouerTour(player.phase);
+		jouerTour();
 
 	}
 	
@@ -538,29 +547,33 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		let l = Number(e.target.dataset.l);
 		let c = Number(e.target.dataset.c);
 
-		console.log("ligne :"+l+"\ncolonne :"+c);
-		console.log(e.target);
-
-		console.log(e.target.innerHTML);
 		jeu.forEach(joueurs =>{
 			if(joueurs.username === player.username){
-				joueurs.main.cartes[l][c].back = false;
+				let td = document.getElementById("plateau").getElementsByTagName("td");
+				if(!player.phase.card1){
+					td[4*l+c].classList.add("choosed");
+					player.phase.card1 = joueurs.main.cartes[l][c];
+				}else if(!player.phase.card2){
+					td[4*l+c].classList.add("choosed");
+					player.phase.card2 = joueurs.main.cartes[l][c];
+				}else{
+					sock.emit("turnEnd",player,pioche,discard);
+				}
 			}
 		})
 		
-		afficherJeu(player.username);
 
 	}
 
 
-	function jouerTour(turn){
-		if(turn === "start"){
+	function jouerTour(){
+		if(player.phase != null &&  player.phase.name === "start" ){
 			if(player.username === document.getElementById("username").innerHTML){
-			let td = document.getElementById("plateau").getElementsByTagName("td");
-			for(let i = 0 ; i < td.length ; ++i){
-				td[i].classList.add("card--hover-effect");
-				td[i].addEventListener("click",turnCard.bind(null, {"target":td[i]}));
-			}
+				let td = document.getElementById("plateau").getElementsByTagName("td");
+				for(let i = 0 ; i < td.length ; ++i){
+					td[i].classList.add("card--hover-effect");
+					td[i].addEventListener("click",turnCard.bind(null, {"target":td[i]}));
+				}
 			}
 		}
 	}

@@ -175,3 +175,10 @@
 .card--underline-value > span {
     text-decoration: underline; 
 }
+
+
+.choosed{
+	transform : scale(1.05);
+	box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+	border-color: gray;
+}
