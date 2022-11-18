@@ -377,9 +377,9 @@ io.on('connection', function (socket) {
 			}
 		}else {
             // maj pioche and discard
-            let nom = "truc";
-		    io.in(room.id).emit("startTurn", room.getPlayers(), nom);
-			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
+            //let nom = "truc";
+		    //io.in(room.id).emit("startTurn", room.getPlayers(), nom);
+			//io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
 			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
 		}
@@ -398,7 +398,7 @@ io.on('connection', function (socket) {
 			}
 		});
 
-		room.pickedPioche();
+		room.selectedCardPioche();
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
@@ -412,8 +412,30 @@ io.on('connection', function (socket) {
 			}
 		});
 
-		room.pickedDefausse();
+		room.selectedCardDefausse();
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 	});
 	  
+	socket.on("putDefausse", (player, carte, choice)=> {
+		let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+
+		room.majDefausse(carte)
+		if(choice === "pioche") {    
+            room.pickedPioche();
+			io.in(room.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+		}else {
+
+		}
+		
+		io.in(room.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+		
+		//io.in(room.id).emit("startTurn", room.getPlayers(), nom);
+		//io.in(r.id).emit("startTurn1", r.getPlayers());
+	});
 });

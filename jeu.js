@@ -56,16 +56,21 @@ class Jeu {
         this.discard.push(null);
     }
     
-    pickedPioche() {
+    selectedCardPioche() {
         this.pioche[0].retourner();
         this.pioche[0].choosed =true;
-        //this.carteTmp = this.pioche.shift();
     }
     
-    pickedDefausse() {
-        this.discard[0].choosed =true;
-        //this.carteTmp = this.pioche.shift();
+    selectedCardDefausse() {
+        this.discard[0].choosed = true;
     }
+    
+    pickedPioche() {
+        let carte = this.pioche.shift();
+        carte.retourner();
+        this.discard.unshift(carte);
+    }
+
 
     getDiscard2Cards() {
         return [this.discard[0], this.discard[1]];

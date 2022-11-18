@@ -10,6 +10,7 @@ class Room {
         this.run = false;
         this.jeu = null;
         this.turn1 = false;
+        this.turn;
     }
     
     createJeu() {
@@ -72,18 +73,25 @@ class Room {
         
     }
 
-    pickedPioche() {
-        this.jeu.pickedPioche();
+    selectedCardPioche() {
+        this.jeu.selectedCardPioche();
+    }
+
+    selectedCardDefausse() {
+       this.jeu.selectedCardDefausse();
+   }
+ 
+   pickedPioche() {
+       this.jeu.pickedPioche();
    }
 
-   pickedDefausse() {
-       this.jeu.pickedDefausse();
-   }
+
 
    hierarchisePlayers() {
         
         this.players.sort((a, b) => a.points + b.points);
         console.log(this.players);
+        this.turn = this.players[0];
    }
 
     getPlayers() {
