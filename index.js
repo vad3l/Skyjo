@@ -428,7 +428,7 @@ io.on('connection', function (socket) {
 		//room.majDefausse(carte)
 		if(choice === "pioche") {    
             room.pickedPioche();
-			io.in(room.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
+			io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		}else {
 
 		}
