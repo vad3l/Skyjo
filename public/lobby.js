@@ -312,7 +312,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					let tr = document.createElement("tr");
 					lignes.forEach(carte =>{
 						let td = document.createElement("td");
-						td = afficherCarte(carte,td);
+						if(carte != null){
+							td = afficherCarte(carte,td);
+						}else{
+							td.setAttribute("class","card-remove");
+						}
 						tr.appendChild(td);
 					});
 					tbody.appendChild(tr);
