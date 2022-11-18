@@ -298,7 +298,7 @@ io.on('connection', function (socket) {
 	*/
 	function supprimerPlayerRoom(player) {	
 		let room;
-		this.rooms.forEach(r => {
+		rooms.forEach(r => {
 			if(r.id === player.roomId) {
 				room = r;
 			}
