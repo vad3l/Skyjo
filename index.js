@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
 			let room = rooms.find(r => r.id === player.roomId);
             console.log("Sortie de l'utilisateur " + currentID);
             
-			if(room !== null) { //aprteint a une room
+			if(room !== undefined) { //aparrtient a une room
 				supprimerPlayerRoom(player);
 				console.log(currentID + " quitte la room " + player.roomId);
 
@@ -313,6 +313,7 @@ io.on('connection', function (socket) {
 				r.createJeu();
 				
 				io.in(r.id).emit("start",r.getPlayers());
+				io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
 			}
 		});
 	
