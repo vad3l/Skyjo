@@ -29,15 +29,15 @@ class Main {
         }
     }
 
-    calculPoints() {
+    calculatePoints() {
         this.cartes.forEach(e => {
+            this.points = 0;
             e.forEach(a => {
                 if(a.back === false) {
                    this.points += a.value;
                 }
             });
         });
-        console.log("point : ",this.points)
     }
 }
 module.exports = Main;

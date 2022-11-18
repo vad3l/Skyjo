@@ -16,10 +16,12 @@ class Jeu {
             this.pioche.push(carte)   
         }
         for (let i = -1; i <= 12; i++) {
-            for (let j = 0; j < 10; j++) {
-                carte = new Carte(i);
-                carte.setColor();
-                this.pioche.push(carte)      
+            if(i !==0) {
+                for (let j = 0; j < 10; j++) {
+                    carte = new Carte(i);
+                    carte.setColor();
+                    this.pioche.push(carte)      
+               }
             }
         }
 
@@ -34,13 +36,14 @@ class Jeu {
         players.forEach(p => {
             p.main = new Main();
         });
-
+        console.log("l : ",this.pioche.length)
         for (let i = 0; i < 12; i++) {
             players.forEach(p => {
-                p.main.addCarte(this.pioche.shift());
+                let c= this.pioche.shift();
+                p.main.addCarte(c);
             })
         }
-        
+        console.log("l : ",this.pioche.length)
         let carte = this.pioche.shift();
         carte.retourner();
         this.discard.push(carte);
@@ -67,7 +70,7 @@ class Jeu {
                 ++size;
             }
         });
-        return this.discard.length;
+        return size;
     }
 }
 

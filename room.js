@@ -45,7 +45,7 @@ class Room {
     
     calculatePoints() {
         this.players.forEach(p => {
-            p.main.calculPoints();
+            p.main.calculatePoints();
         });
     }
 
