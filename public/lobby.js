@@ -604,7 +604,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		let td = document.getElementById("plateau").getElementsByTagName("td");
 		
 		console.log(player.phase.card1);
-		console.log(pioche[0]);
+		console.log(discard[0]);
 
 		if(!player.phase.card1){
 			if(e.target === cardPioche){
@@ -629,32 +629,39 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}else if(!player.phase.card2){
 			console.log(e.target);
 			if(e.target === cardDefausse){
-				sock.emit("putDefausse",player,pioche[0],"pioche");
+				player.phase.card1.choosed = false;
+				sock.emit("putDefausse",player);
 				cardDefausse.removeEventListener("click",playTurn);
 				for(let i = 0 ; i < td.length ; ++i){
-					td[i].classList.add("card--hover-effect");
-					td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						console.log(td[i].classList);
+						td[i].classList.add("card--hover-effect");
+						td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+					
 				}
-				
+
+				// si on defausse et qu'on echange 
 			}else if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
+				console.log("enculer");
 				let l = Number(e.target.dataset.l);
 				let c = Number(e.target.dataset.c);
 				
 				player.phase.card2 = {ligne:l,colonne:c};
-				console.log(player.phase);
-			
-				sock.emit("intervertir",player);
 
-				console.log("ligne :"+l+"\ncolonne :"+c);
+				if(discard[0].choosed){
+					sock.emit("intervertir",player);
+				}else{
+					sock.emit("turnCard",player);
+				}
 
-				player.phase.card2 = {ligne:l,colonne:c};
-				console.log(player.phase.card2);
 			}else if(JSON.stringify(player.phase.card1) === JSON.stringify(pioche[0])){
 				let l = Number(e.target.dataset.l);
 				let c = Number(e.target.dataset.c);
+				
+				player.phase.card2 = {ligne:l,colonne:c};
+				sock.emit("putDefausse",player);
+				sock.emit("intervertir",player);
 
-				player.phase
-			}
+			}		
 		}
 
 		if(player.phase.card1 && player.phase.card2){
