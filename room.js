@@ -161,9 +161,9 @@ class Room {
         let i = 0;
         this.players.forEach(p => {
             if(bool && p.username === this.playerAllReturnMain) {
-               p.score = scores[i].points * 2;
+               p.score += scores[i].points * 2;
             }else {
-                p.score = scores[i].points;
+                p.score += scores[i].points;
             }
             ++i;
             //console.log(p)

@@ -50,10 +50,10 @@ class Main {
             if(this.cartes[0][i] === null || this.cartes[1][i] === null || this.cartes[2][i].value === null) {
                 continue;
             }
+            console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
             if(this.cartes[0][i].back || this.cartes[1][i].back || this.cartes[2][i].back) {
                 continue;
             }
-            //console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
             if(this.cartes[0][i].value === this.cartes[1][i].value ) {
                 if(this.cartes[1][i].value === this.cartes[2][i].value) {
                     console.log( "enlever carte "  + this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
