@@ -95,7 +95,9 @@ class Main {
     majMain(cardsChange) {
         cardsChange.forEach(c => {
             //console.log("retourner", this.cartes[c.ligne][c.colonne])
-            this.cartes[c.ligne][c.colonne].retourner();
+            if(this.cartes[c.ligne][c.colonne] != null) {
+                this.cartes[c.ligne][c.colonne].retourner();
+            }
         });
     }
 

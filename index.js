@@ -403,7 +403,6 @@ io.on('connection', function (socket) {
 
 	});
     
-
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
 
