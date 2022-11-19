@@ -100,7 +100,16 @@ class Main {
             }
         });
     }
-
+    
+    returnAll() {
+        for (let i = 0; i < 3; ++i) {
+            for (let j = 0; j < 4; ++j) {
+                if(this.cartes[i][j] != null) {
+                    this.cartes[i][j].retourner();
+                }    
+            }
+        }
+    }
     
 }
 module.exports = Main;

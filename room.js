@@ -72,7 +72,7 @@ class Room {
             if(player.username === p.username) {
                 p.main.majMain(cardsChange);
                 p.main.verifierMain(this.jeu.discard);
-                console.log(this.jeu.discard)
+                //console.log(this.jeu.discard)
                 p.main.calculatePoints();
                 if (this.playerAllReturnMain == null && p.main.isAllReturn()) {
                     this.playerAllReturnMain = p.username;
@@ -99,11 +99,10 @@ class Room {
         this.majMain(player, cardsChange);
    }
 
-   hierarchisePlayers() {
-        
+    hierarchisePlayers() {    
         this.players.sort(function(a,b){ return b.main.points - a.main.points});
         this.turnPlayer = this.players[0].username;
-   }
+    }
     
     swapJoueur() {
         let p;
@@ -122,7 +121,6 @@ class Room {
         return this.turnPlayer;
     }
 
-
     intervertirCarte(player) {
         this.players.forEach(p => {
             if(p.username === player.username){
@@ -134,6 +132,43 @@ class Room {
        this.majMain(player, [])
     }
     
+    turnAlldecks() {
+        let scores= [];
+        let scoreJoueurDeclanche;
+
+        this.players.forEach(p => {
+            p.main.returnAll();
+            let point = p.main.calculatePoints();
+            scores.push({username: p.username, points: point}); 
+            if(p.username === this.playerAllReturnMain) {
+                scoreJoueurDeclanche = point;
+            }
+        });
+        
+        console.log(this.playerAllReturnMain +" a declanche la fin de partie")
+        console.log(scores);
+
+        console.log("score joueur declanche" , scoreJoueurDeclanche);
+
+        let bool = false;
+        scores.forEach(p => {
+            if(p.points <= scoreJoueurDeclanche) {
+                console.log(p.username + "a un plus petit score que le joeur qui declanche");
+                bool = true;
+            }
+        });
+        
+        let i = 0;
+        this.players.forEach(p => {
+            if(bool && p.username === playerAllReturnMain) {
+               p.score = scores[i]*2;
+            } 
+            p.score = scores[i];
+            ++i;
+            console.log(p)
+        })
+    }
+
     getPlayers() {
         return this.players;
     }
