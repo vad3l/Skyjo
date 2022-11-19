@@ -329,7 +329,7 @@ io.on('connection', function (socket) {
 	 *
 	 * ***********************************************/
 	 socket.on("startManche", (username)=>{
-	
+	    console.log("recu start manche")
 		rooms.forEach(r => {
 			if(r.host === username) {
 			    
