@@ -391,7 +391,7 @@ io.on('connection', function (socket) {
 				
 				io.in(room.id).emit("deck", room.getPlayers());
                 io.in(room.id).emit("liste",room.getPlayers(), room.host);
-				
+
 				// a remttre
 				//room.turn1 = true;
 				//room.lancerPartie();
@@ -426,6 +426,7 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		room.selectedCardDefausse();
+		console.log("d1",room.getDiscard2Cards())
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 	});
 	  
@@ -434,7 +435,7 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		room.pickedPioche();
-		
+		console.log("d2",room.getDiscard2Cards())
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
@@ -456,7 +457,7 @@ io.on('connection', function (socket) {
 		room.turnCard(player);
 		room.intervertirCarte(player);
 		
-		
+		console.log("d3",room.getDiscard2Cards())
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
