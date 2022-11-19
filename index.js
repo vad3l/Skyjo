@@ -408,6 +408,7 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		room.pickedPioche();
+		console.log("léoooooooooo ",  room.getPioche2Cards())
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());+
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
