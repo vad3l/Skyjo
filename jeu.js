@@ -24,12 +24,12 @@ class Jeu {
                }
             }
         }
-        console.log(this.pioche);
+        //console.log(this.pioche);
         this.discard = [];
     }
 
     shuffle() {
-       this.pioche.sort(() => Math.random() - 0.5);
+       this.pioche.sort(() => Math.random() - 1.5);
     }
 
     distribute(players) {
@@ -53,7 +53,7 @@ class Jeu {
         let carte = this.pioche.shift();
         carte.retourner();
         this.discard.push(carte);
-        this.discard.push(null);
+        this.discard.push(null);// avoir
     }
     
     selectedCardPioche() {
