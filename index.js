@@ -333,7 +333,7 @@ io.on('connection', function (socket) {
 		rooms.forEach(r => {
 			if(r.host === username) {
 			    
-                if(r.placePrise === 0) { //! remttre1
+                if(r.placePrise === 1) { //! remttre 1
 				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
@@ -342,7 +342,7 @@ io.on('connection', function (socket) {
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				    io.in(r.id).emit("startTurn1", r.getPlayers());
 				    io.in(r.id).emit("message", { from: null, to: null, text: "Une partie commence !!!", date: Date.now() });
-			        socket.broadcast.emit('list rooms', getRoomAvailable());
+			        //socket.broadcast.emit('list rooms', getRoomAvailable());
 				}
 			}
 		});
