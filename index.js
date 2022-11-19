@@ -391,6 +391,7 @@ io.on('connection', function (socket) {
 				
 				io.in(room.id).emit("deck", room.getPlayers());
                 io.in(room.id).emit("liste",room.getPlayers(), room.host);
+                io.in(room.id).emit("endParty");
 
 				// a remttre
 				//room.turn1 = true;
