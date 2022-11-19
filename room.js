@@ -86,7 +86,7 @@ class Room {
     
    }
 
-   turnCard(player) {
+   turnCard(player, bool) {
         let cardsChange = [player.phase.card2];
         this.majMain(player, cardsChange);
    }

@@ -47,6 +47,7 @@ class Jeu {
         }
 
         players.forEach(p => {
+            console.log(p.main);
             p.main.verifierMain();
         });
 
@@ -67,6 +68,7 @@ class Jeu {
     
     pickedPioche() {
         let carte = this.pioche.shift();
+        this.pioche[0].retourner();
         carte.choosed = false;
         this.discard.unshift(carte);
     }
@@ -74,8 +76,6 @@ class Jeu {
     intervertirCarte(player, player2) {
         let l = player.phase.card2.ligne;
         let c =  player.phase.card2.colonne;
-        console.log("l ", l, "c ", c);
-        console.log(player2)
         let carte = player2.main.cartes[l][c];
         player2.main.cartes[l][c] = this.discard.shift()
         player2.main.cartes[l][c].choosed = false;
