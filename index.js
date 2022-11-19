@@ -455,6 +455,7 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 
 		room.turnCard(player);
+		console.log("d2.5",room.getDiscard2Cards())
 		room.intervertirCarte(player);
 		
 		console.log("d3",room.getDiscard2Cards())
