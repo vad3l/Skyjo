@@ -29,7 +29,7 @@ class Jeu {
     }
 
     shuffle() {
-       this.pioche.sort(() => Math.random() - 1.5);
+       this.pioche.sort(() => Math.random() - 0.5);
     }
 
     distribute(players) {
