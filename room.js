@@ -185,6 +185,7 @@ class Room {
         this.players.forEach(p => {
             if(p.score >= 100) {
                 end = true;
+                this.endGame = true;
             }
             if(p.score <= min) {
                 min = p.score;
@@ -192,7 +193,6 @@ class Room {
             }
         });
         
-        this.endGame = end;
         return {estTerminer: end, playersWin: ps};
     }
 
