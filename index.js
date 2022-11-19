@@ -505,7 +505,7 @@ io.on('connection', function (socket) {
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		room.turnCard(player);
+		room.turnCardPlateau(player);
 
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
@@ -529,7 +529,7 @@ io.on('connection', function (socket) {
 
 
 
-		room.turnCard(player);
+		room.turnCardDefaussePlateau(player);
 		//console.log("d2.5",room.getDiscard2Cards())
 		//console.log("size discard",room.getSizeDiscard());
 		room.intervertirCarte(player, choice);

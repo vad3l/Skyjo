@@ -101,14 +101,19 @@ class Room {
    }
 
 
-   turnCard(player) {
+   turnCardPlateau(player) {
         let cardsChange = [player.phase.card2];
-        this.players.forEach(p => {
-            if(p.username === player.username) {
-                p.main.majMain(cardsChange);
-            }
-        });
+        this.majMain(player, cardsChange);
    }
+
+   turnCardDefaussePlateau(player) {
+    let cardsChange = [player.phase.card2];
+    this.players.forEach(p => {
+        if(p.username === player.username) {
+            p.main.majMain(cardsChange);
+        }
+    });
+    }
 
     hierarchisePlayers() {    
         this.players.sort(function(a,b){ return b.main.points - a.main.points});
