@@ -542,11 +542,7 @@ io.on('connection', function (socket) {
 				console.log("4444444444444444444444444444: ", sizePioche, ' ', sizeDiscard,' carte au dessus pioche (ava/apres)', cp, room.getPioche2Cards()[0]);
 			}
 		}
-		if(choice ==="defausse") {
-			if(sizeDiscard !== room.getSizeDiscard() ) {
-				console.log("5555555555555555555555555555555: ", sizePioche, ' ', sizeDiscard, ' ', room.getSizeDiscard(),' carte au dessus discard (ava/apres)', cd, room.getDiscard2Cards()[0]);
-			}
-		}
+		
 
 
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
