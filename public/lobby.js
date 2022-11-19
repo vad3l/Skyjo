@@ -184,18 +184,19 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("endGame",function(tabGagnant){
 		let load = document.getElementById("load");
 		let p = document.createElement("p");
-		let str = "Le grand gagnant est :\n";
+		let str = "Le grand gagnant est :<br>";
 		tabGagnant.forEach(r => {
 			str+= r+"\n";
 		})
 
-		p.innerHTML = str;
-		p.style.color = "red";
+		p.innerHTML = "En attente que l'hôte lance une nouvelle partie.";
 		
+		load.appendChild(p);
 		
-		load.getElementsByTagName("p")[1].innerHTML = "En attente que l'hôte lance une nouvelle partie.";
-		document.getElementById("load").style.display = "flex";
-
+		load.getElementsByTagName("p")[0].innerHTML = str;
+		load.getElementsByTagName("p")[0].style.color = "red";
+		load.style.display = "flex";
+		
 		
 	})
         
