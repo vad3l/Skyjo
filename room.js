@@ -153,19 +153,19 @@ class Room {
         let bool = false;
         scores.forEach(p => {
             if(p.points <= scoreJoueurDeclanche && p.username !== this.playerAllReturnMain) {
-                console.log(p.username + "a un plus petit score que le joeur qui declanche");
+                console.log(p.username + " a un plus petit score que le joeur qui declanche (" + this.playerAllReturnMain + ")");
                 bool = true;
             }
         });
         
         let i = 0;
         this.players.forEach(p => {
-            if(bool && p.username === this.playerAllReturnMain) {
+            if(bool === true && p.username === this.playerAllReturnMain) {
                p.score = scores[i].points * 2;
             } 
             p.score = scores[i].points;
             ++i;
-            console.log(p)
+            //console.log(p)
         })
     }
 
