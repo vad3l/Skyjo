@@ -98,7 +98,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     });
     // réception de la mise à jour d'une liste
     sock.on("liste", function(liste,hoste) {
+		console.log(liste);
+		console.log("je recois la liste");
         if (currentUser) {
+			console.log("la dedans");
 			host=hoste;
             afficherListe(liste,hoste);
         }
@@ -145,6 +148,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("endParty").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
+		console.log(deck);
+		console.log(jeu);
 		jeu.forEach(r =>{
 			if(r.username == player.username){
 				player.main = r.main;
@@ -176,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	});
 
 	sock.on("endParty",function(){
-		console.log("je suis la ");
 		document.getElementById("load").style.display = "none";
 		document.getElementById("endParty").style.display = "flex"
 	});
@@ -196,8 +200,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		load.getElementsByTagName("p")[0].innerHTML = str;
 		load.getElementsByTagName("p")[0].style.color = "red";
 		load.style.display = "flex";
-		
-		
 	})
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -309,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		divDefausse.innerHTML ="";
 		let p = document.createElement("p");
 		p = afficherCarte(defausse[0],p);
-		console.log(defausse);
 		divDefausse.appendChild(p);
 
 	}
@@ -505,13 +506,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
 		updateHostButton();
-		console.log(newList[0].username);
+		console.log("---------------");
+		console.log(newList);
 		newList.sort(function(a,b){
 			return a.score - b.score;
 		})
-		console.log(newList);
 			
-		console.log(users);
         document.querySelector("#content aside").innerHTML = newList.map(u => "<p "+"data-score='"+ u.score +"' "+(u.username === player.username ? " style =\"color:#00ffcd\"":"")+">" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
     }
 
@@ -725,7 +725,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 							td[i].classList.add("card--hover-effect");
 							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 						}else{
-							console.log("removed");
 							td[i].classList.remove("card--hover-effect");
 							td[i].replaceWith(td[i].cloneNode(true));
 						}
@@ -774,9 +773,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					for(let i = 0 ; i < td.length ; ++i){
 						td[i].classList.add("card--hover-effect");
 						td[i].addEventListener("click",playTurn1.bind(null, {"target":td[i]}));
-						console.log(player.phase.card1);
 						if(player.main && player.phase.card1 != null && i === player.phase.card1.ligne*4+player.phase.card1.colonne){
-							console.log("removed for :"+i);
 							td[i].classList.remove("card--hover-effect");
 							td[i].replaceWith(td[i].cloneNode(true));
 						}
@@ -794,7 +791,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					
 					
 					if(!player.phase.card1){
-						console.log("mescouilles");
 						cardDefausse.classList.add("card--hover-effect");
 						cardPioche.classList.add("card--hover-effect");
 	
