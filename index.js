@@ -359,7 +359,8 @@ io.on('connection', function (socket) {
 			}
 		});
 		
-		room.majMain(player)
+		let cardsChange = [player.phase.card1, player.phase.card2]
+		room.majMain(player, cardsChange)
         
 		if(room.turn1) {
             // verifier tout le monde retourner carte 
@@ -430,12 +431,25 @@ io.on('connection', function (socket) {
             room.pickedPioche();
 			io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		}else {
+            //room.pickedMain(player, carte);
 
 		}
 		
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
-		//io.in(room.id).emit("startTurn", room.getPlayers(), nom);
-		//io.in(r.id).emit("startTurn1", r.getPlayers());
+	});
+
+    socket.on("turnCard", (player)=> {
+		let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+        
+		room.turnCard(player);
+
+        io.in(room.id).emit("deck", room.getPlayers());
 	});
 });

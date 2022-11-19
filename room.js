@@ -61,16 +61,13 @@ class Room {
         return bool;
     }
 
-    majMain(player) {
-        //console.log(player)
-        let cardsChange = [player.phase.card1, player.phase.card2]
+    majMain(player, cardsChange) {
         this.players.forEach(p => {
             if(player.username === p.username) {
                 p.main.majMain(cardsChange);
                 p.main.calculatePoints();
             }
         });
-        
     }
 
     selectedCardPioche() {
@@ -85,7 +82,14 @@ class Room {
        this.jeu.pickedPioche();
    }
 
+   pickedMain(player, carte) {
+    
+   }
 
+   turnCard(player) {
+        let cardsChange = [player.phase.card2];
+        this.majMain(player, cardsChange);
+   }
 
    hierarchisePlayers() {
         

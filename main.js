@@ -73,7 +73,7 @@ class Main {
 
     majMain(cardsChange) {
         cardsChange.forEach(c => {
-            this.cartes[c.ligne][c.colonne].back = false;
+            this.cartes[c.ligne][c.colonne].retourner();
         });
     }
 }
