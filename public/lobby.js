@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		roomId: null,
 		username: "",
 		phase: null,
-		main:null
+		main:null,
+		endTurn:false,
+		score:0,
 	};
 
 
@@ -151,6 +153,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("startTurn",function(game,username){
 		jeu = game;
 		player.phase={name:"normal",card1:null,card2:null,turn:username};
+		if(player.username === username){
+			player.endTurn = false;
+		}
 		afficherJeu(player.username);
 	});
         
@@ -457,7 +462,14 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
 		updateStartButton();
-        document.querySelector("#content aside").innerHTML = newList.map(u => "<p"+(u.username === player.username ? " style =\"color:#00ffcd\"":"")+">" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
+		console.log(newList[0].username);
+		newList.sort(function(a,b){
+			return a.score - b.score;
+		})
+		console.log(newList);
+			
+		console.log(users);
+        document.querySelector("#content aside").innerHTML = newList.map(u => "<p "+"data-score='"+ u.score +"' "+(u.username === player.username ? " style =\"color:#00ffcd\"":"")+">" + ((u.username === host) ? u.username+ " *":u.username)+ "</p>").join("");
     }
 
     
@@ -698,8 +710,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			}		
 		}
 
-		if(player.phase.card1 && player.phase.card2){
+		if(player.phase.card1 && player.phase.card2 && !player.endTurn){
 			sock.emit("endTurnJoueur",player,pioche,discard);
+			player.endTurn = true;
 		}
 
 	}
