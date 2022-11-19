@@ -384,7 +384,7 @@ io.on('connection', function (socket) {
 			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
 			let nom = room.swapJoueur();
-			io.in(room.id).emit("startTurn", room.getPlayers(), "bidule");
+			io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de jouer", date: Date.now() });
 		}
 

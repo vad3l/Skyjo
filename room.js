@@ -102,7 +102,7 @@ class Room {
         let p;
         for (let i = 0; i < this.players.length; i++) {
             if(this.players[i].username === this.turnPlayer.username) {
-                if(i === this.players.length-1) {4
+                if(i === this.players.length-1) {
                     p = this.players[0];  
                 }else {
                     p = this.players[i++];
