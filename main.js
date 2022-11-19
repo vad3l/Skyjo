@@ -77,13 +77,6 @@ class Main {
         });
     }
 
-    intervertirCarte(player) {
-        let l = player.phase.card2.ligne;
-        let c =  player.phase.card2.colonne;
-        let carte = this.cartes[l][c];
-        this.cartes[l][c] = this.discard.shift()
-        this.carte[l][c].choosed = false;
-        discard.unshift(carte);
-    }
+    
 }
 module.exports = Main;
