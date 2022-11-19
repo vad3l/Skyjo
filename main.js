@@ -80,6 +80,18 @@ class Main {
         return nb;
     }
 
+    isAllReturn() {
+        let bool = true;
+        for (let i = 0; i < 3; ++i) {
+            for (let j = 0; j < 4; ++j) {
+                if(this.cartes[i][j] != null && this.cartes[i][j].back) {
+                    bool = false;
+                }    
+            }
+        }
+        return bool;    
+    }
+
     majMain(cardsChange) {
         cardsChange.forEach(c => {
             //console.log("retourner", this.cartes[c.ligne][c.colonne])

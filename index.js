@@ -371,12 +371,11 @@ io.on('connection', function (socket) {
 				io.in(room.id).emit("endTurnJoueur", room.getPlayers());
 			}
 		}else {
-            // maj pioche and discard
-            //let nom = "truc";
-		    //io.in(room.id).emit("startTurn", room.getPlayers(), nom);
-			//io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
-			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
-			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
+            
+            // dernier tour
+
+
+
 			let nom = room.swapJoueur();
 			io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de jouer", date: Date.now() });
@@ -436,11 +435,11 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
 
-	function getRoom() {
+	function getRoom(id) {
 		let room;
 		
 		rooms.forEach(r => {
-			if(r.id === player.roomId) {
+			if(r.id === id) {
 				room = r;
 			}
 		});
