@@ -338,7 +338,7 @@ io.on('connection', function (socket) {
 				}else {
 					r.run = true;
 				    r.lancerPartie();
-				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
+				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDiscard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				    io.in(r.id).emit("startTurn1", r.getPlayers());
 				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
@@ -396,7 +396,7 @@ io.on('connection', function (socket) {
 				// a remttre
 				//room.turn1 = true;
 				//room.lancerPartie();
-				//io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+				//io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 				//io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 				//io.in(room.id).emit("startTurn1", room.getPlayers());
 				//io.in(room.id).emit("message", { from: null, to: null, text: "Une partie commence !!!", date: Date.now() });
@@ -414,53 +414,76 @@ io.on('connection', function (socket) {
     
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
+        console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
 
 		let room = getRoom(player.roomId);
 
 		room.selectedCardPioche();
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
 	socket.on("pickedDefausse", (player) => {
         console.log(player.username + " pioche dans la defause")
-		
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
 		let room = getRoom(player.roomId);
 		
 		room.selectedCardDefausse();
-		console.log("d1",room.getDiscard2Cards())
-		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+		//console.log("d1",room.getDiscard2Cards())
+		//console.log("size discard",room.getSizeDiscard());
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 	});
 	  
 	socket.on("putDefausse", (player)=> {
-		
+		console.log("put defausse");
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+
 		let room = getRoom(player.roomId);
 		
 		room.pickedPioche();
-		console.log("d2",room.getDiscard2Cards())
-		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+		
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
     socket.on("turnCard", (player)=> {
 		console.log("turn card")
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+
 		let room = getRoom(player.roomId)
         
 		room.turnCard(player);
 
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
         io.in(room.id).emit("deck", room.getPlayers());
 	});
 
 	socket.on("intervertir", (player)=> {
 		console.log("intervertir card")
-		
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+
 		let room = getRoom(player.roomId);
 
 		room.turnCard(player);
-		console.log("d2.5",room.getDiscard2Cards())
+		//console.log("d2.5",room.getDiscard2Cards())
+		//console.log("size discard",room.getSizeDiscard());
 		room.intervertirCarte(player);
 		
-		console.log("d3",room.getDiscard2Cards())
-		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+		console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
 

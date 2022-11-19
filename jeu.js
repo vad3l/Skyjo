@@ -100,7 +100,7 @@ class Jeu {
         return size; 
     }
 
-    getSizeDicard() {
+    getSizeDiscard() {
         let size =0;
         this.discard.forEach(d => {
             if(d !== null) {

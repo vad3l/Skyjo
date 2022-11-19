@@ -186,8 +186,8 @@ class Room {
         return this.jeu.getSizePioche(); 
     }
 
-    getSizeDicard() {
-        return this.jeu.getSizeDicard();
+    getSizeDiscard() {
+        return this.jeu.getSizeDiscard();
     }
 }
 
