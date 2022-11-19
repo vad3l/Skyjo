@@ -121,12 +121,12 @@ class Room {
         return this.turnPlayer;
     }
 
-    intervertirCarte(player) {
+    intervertirCarte(player, choice) {
         this.players.forEach(p => {
             if(p.username === player.username){
                 let l = player.phase.card2.ligne;
                 let c =  player.phase.card2.colonne;
-                this.jeu.intervertirCarte(l, c, p);
+                this.jeu.intervertirCarte(l, c, p, choice);
             }
        });
        this.majMain(player, [])

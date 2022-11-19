@@ -72,9 +72,13 @@ class Jeu {
         this.discard.unshift(carte);
     }
 
-    intervertirCarte(l, c, player) {
+    intervertirCarte(l, c, player, choice) {
         let carte = player.main.cartes[l][c];
-        player.main.cartes[l][c] = this.discard.shift()
+        if(choice === "pioche") {
+            player.main.cartes[l][c] = this.jeu.shift()
+        }else {
+            player.main.cartes[l][c] = this.discard.shift()
+        }
         player.main.cartes[l][c].choosed = false;
         this.discard.unshift(carte);
     }

@@ -473,7 +473,7 @@ io.on('connection', function (socket) {
 		console.log("turn card")
 		
 		let room = getRoom(player.roomId)
-		
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
@@ -486,7 +486,7 @@ io.on('connection', function (socket) {
         io.in(room.id).emit("deck", room.getPlayers());
 	});
 
-	socket.on("intervertir", (player)=> {
+	socket.on("intervertir", (player, choice)=> { // choice pioche defausse
 		console.log("intervertir card")
 		let room = getRoom(player.roomId);
 
@@ -498,7 +498,7 @@ io.on('connection', function (socket) {
 		room.turnCard(player);
 		//console.log("d2.5",room.getDiscard2Cards())
 		//console.log("size discard",room.getSizeDiscard());
-		room.intervertirCarte(player);
+		room.intervertirCarte(player, choice);
 		
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
