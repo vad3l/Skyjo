@@ -425,15 +425,15 @@ io.on('connection', function (socket) {
         let room = getRoom(player.roomId);
 		
 		let sizePioche = room.getSizePioche();
-		
-		
+		let sizeDiscard = room.getSizeDiscard();
+				
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
 		
 		//debug foutu bug 
-		if(sizePioche !== room.getSizePioche()){
-            throw new Error("Error pioche1" | "Theox")
+		if(sizePioche !== room.getSizePioche() || sizeDiscard !== room.getSizeDiscard()){
+            console.log("111111111111111111111111111111111111111: ", sizePioche, ' ',sizeDiscard)
 		}
 
 		room.selectedCardPioche();
@@ -446,14 +446,23 @@ io.on('connection', function (socket) {
         console.log(player.username + " pioche dans la defause")
 		
 		let room = getRoom(player.roomId);
-
+        
+		let sizePioche = room.getSizePioche();
+		let sizeDiscard = room.getSizeDiscard();
+		
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 		
 		
 		room.selectedCardDefausse();
-		//console.log("d1",room.getDiscard2Cards())
-		//console.log("size discard",room.getSizeDiscard());
+		
+		
+		
+		//debug foutu bug 
+		if(sizePioche !== room.getSizePioche() || sizeDiscard !== room.getSizeDiscard()){
+            console.log("2222222222222222222222222222222222: ", sizePioche, ' ', sizeDiscard)
+		}
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
@@ -461,17 +470,28 @@ io.on('connection', function (socket) {
 	  
 	socket.on("putDefausse", (player)=> {
 		console.log("put defausse");
-		
 		let room = getRoom(player.roomId);
+		
+		let sizePioche = room.getSizePioche();
+		let sizeDiscard = room.getSizeDiscard();
+		let cd = room.getDiscard2Cards()[0];
+		let cp = room.getPioche2Cards()[0];
+		
 
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		room.pickedPioche();
+		room.pickedPioche(); // pioche to discard
 
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 		
+		//debug foutu bug 
+		if(sizePioche !== room.getSizePioche()+1 || sizeDiscard !== room.getSizeDiscard()-1 || cp !== room.getDiscard2Cards()[0] ){
+            console.log("33333333333333333333333333: ", sizePioche, ' ', room.getSizePioche() , ' ', sizeDiscard, ' ',room.getSizeDiscard() , 'carte au dessus pioche defauuse ', )
+		}
+
+
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
@@ -484,8 +504,6 @@ io.on('connection', function (socket) {
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		
-        
 		room.turnCard(player);
 
 		console.log("d",room.getDiscard2Cards());
@@ -496,6 +514,14 @@ io.on('connection', function (socket) {
 	socket.on("intervertir", (player, choice)=> { // choice pioche defausse
 		console.log("intervertir card")
 		let room = getRoom(player.roomId);
+
+		let sizePioche = room.getSizePioche();
+		let sizeDiscard = room.getSizeDiscard();
+		let cd = room.getDiscard2Cards()[0];
+		let cp = room.getPioche2Cards()[0];
+	
+
+		
 
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
@@ -509,6 +535,19 @@ io.on('connection', function (socket) {
 		
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
+
+        if(choice ==="pioche") {
+			if(sizePioche !== room.getSizePioche()+1) {
+				console.log("4444444444444444444444444444: ", sizePioche, ' ', sizeDiscard,' carte au dessus pioche (ava/apres)', cp, room.getPioche2Cards()[0]);
+			}
+		}
+		if(choice ==="defausse") {
+			if(sizeDiscard !== room.getSizeDiscard() ) {
+				console.log("5555555555555555555555555555555: ", sizePioche, ' ', sizeDiscard, ' ', room.getSizeDiscard(),' carte au dessus discard (ava/apres)', cd, room.getDiscard2Cards()[0]);
+			}
+		}
+
+
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		io.in(room.id).emit("deck", room.getPlayers());
