@@ -355,8 +355,14 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		if(room.turn1) {
+			console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
+
 			let cardsChange = [player.phase.card1, player.phase.card2]
 			room.majMain(player, cardsChange)
+
+			console.log("d",room.getDiscard2Cards());
+		console.log("p",room.getpioche2Cards());
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
