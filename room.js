@@ -28,11 +28,10 @@ class Room {
             p.main.calculatePoints();
             // remttre a 0 le sacore des joeurs si nouvell partie (quelequn a gagner)
             if(this.endGame) {
-                console.log("fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                 p.score = 0;
             }
         });
-
+        console.log("laaaaaaaaaaaaaaaaaaaa", this.players)
         this.turn1 = true;
         this.turnPlayer = null;
         this.playerAllReturnMain = null;
