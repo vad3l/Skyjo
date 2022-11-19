@@ -25,7 +25,7 @@ class Room {
         
         this.players.forEach(p => {
             p.main.calculatePoints();
-            p.score = 0;
+            //p.score = 0;
         });
 
         this.turn1 = true;
