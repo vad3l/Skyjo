@@ -45,7 +45,7 @@ class Main {
 
     verifierMain(discard) {
         //console.log(this.cartes)
-        console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaa :" , discard.length)
+        console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaa :" , discard)
         for (let i = 0; i < 4; i++) {
             if(this.cartes[0][i] === null || this.cartes[1][i] === null || this.cartes[2][i].value === null) {
                 continue;
@@ -65,8 +65,9 @@ class Main {
                     this.cartes[2][i] = null;
                 }
             }
+            console.log("la,",this.cartes[0][i], this.cartes[1][i] ,this.cartes[2][i]);
         }
-        console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaa :" , discard.length)
+        console.log("apressssssssssss :" , discard)
     }
 
     getNbCartesRetourne() {

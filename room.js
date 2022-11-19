@@ -103,7 +103,11 @@ class Room {
 
    turnCard(player) {
         let cardsChange = [player.phase.card2];
-        this.majMain(player, cardsChange);
+        this.players.forEach(p => {
+            if(p.username === player.username) {
+                p.main.majMain(cardsChange);
+            }
+        });
    }
 
     hierarchisePlayers() {    

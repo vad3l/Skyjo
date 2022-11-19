@@ -534,6 +534,7 @@ io.on('connection', function (socket) {
 		//console.log("size discard",room.getSizeDiscard());
 		room.intervertirCarte(player, choice);
 		
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
