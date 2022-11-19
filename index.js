@@ -425,7 +425,7 @@ io.on('connection', function (socket) {
 	socket.on("intervertir", (player)=> {
 		console.log("intervertir card")
 		
-		let room = getRoom();
+		let room = getRoom(player.roomId);
 
 		room.turnCard(player);
 		room.intervertirCarte(player);
