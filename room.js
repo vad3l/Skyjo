@@ -93,8 +93,7 @@ class Room {
 
    hierarchisePlayers() {
         
-        this.players.sort((a, b) => a.main.points < b.main.points);
-        console.log(this.players);
+        this.players.sort(function(a,b){ return b.main.points - a.main.points});
         this.turnPlayer = this.players[0];
    }
     
