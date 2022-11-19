@@ -604,13 +604,14 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		let td = document.getElementById("plateau").getElementsByTagName("td");
 		
 		console.log(player.phase.card1);
-		console.log(discard[0]);
+		console.log(pioche[0]);
 
 		if(!player.phase.card1){
 			if(e.target === cardPioche){
 				sock.emit("pickedPioche",player);
 				player.phase.card1 = pioche[0];
 				player.phase.card1.back = false;
+				player.phase.card1.choosed=true;
 				cardPioche.removeEventListener("click",playTurn);
 			}else if(e.target === cardDefausse){
 				sock.emit("pickedDefausse",player);
@@ -648,7 +649,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 				player.phase.card2 = {ligne:l,colonne:c};
 				console.log(player.phase.card2);
-				sock.emit("turnCard",player);
+			}else if(JSON.stringify(player.phase.card1) === JSON.stringify(pioche[0])){
+				let l = Number(e.target.dataset.l);
+				let c = Number(e.target.dataset.c);
+
+				player.phase
 			}
 		}
 
