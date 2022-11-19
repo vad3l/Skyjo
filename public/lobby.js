@@ -113,6 +113,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		player.roomId=id;
 	});
 
+	sock.on("deck",function(deck){
+		jeu=deck;
+	});
+
 
 	sock.on("defausse",function(defausse,taille){
 		discard=defausse;
@@ -161,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 												
 		document.getElementById("pseudo").focus();
     });
+
 
 
 
@@ -582,7 +587,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 			let td = document.getElementById("plateau").getElementsByTagName("td");
 			for(let i = 0 ; i < td.length ; ++i){
-				console.log("je retire les events de merde");
 				td[i].classList.remove("card--hover-effect");
 				td[i].removeEventListener("click",playTurn1);
 			}
@@ -596,7 +600,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function playTurn(e){
 		let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 		let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
-		
+
 		if(!player.phase.card1){
 			if(e.target === cardPioche){
 				sock.emit("pickedPioche",player);
@@ -608,11 +612,32 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				cardDefausse.removeEventListener("click",playTurn);
 			}
 		}else if(!player.phase.card2){
-			 if(e.target === cardDefausse){
-				sock.emit("putDefausse",pioche[0],"defausse");
+			console.log(e.target);
+			if(e.target === cardDefausse){
+				sock.emit("putDefausse",player,pioche[0],"pioche");
 				cardDefausse.removeEventListener("click",playTurn);
-			 }
+				let td = document.getElementById("plateau").getElementsByTagName("td");
+				for(let i = 0 ; i < td.length ; ++i){
+					td[i].classList.add("card--hover-effect");
+					td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+				}
+				
+			}else{
+				let l = Number(e.target.dataset.l);
+				let c = Number(e.target.dataset.c);
+				
+				console.log("ligne :"+l+"\ncolonne :"+c);
+
+				player.phase.card2 = {ligne:l,colonne:c};
+				console.log(player.phase.card2);
+				sock.emit("turnCard",player);
+			}
 		}
+
+		if(player.phase.card1 && player.phase.card2){
+			sock.emit("endTurnJoueur",player,pioche,discard);
+		}
+
 	}
 
 
@@ -632,19 +657,29 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				}
 			}
 		}
-		console.log(player.phase.turn);
 		if(player.username === player.phase.turn){
 			if(player.phase.name === "normal"){
 				console.log("turn : normal");
 				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
 
-				cardDefausse.classList.add("card--hover-effect");
-				cardPioche.classList.add("card--hover-effect");
 				
-				cardDefausse.addEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
-				cardPioche.addEventListener("click",playTurn.bind(null, {"target":cardPioche}));
 				
+				if(!player.phase.card1){
+
+					cardDefausse.classList.add("card--hover-effect");
+					cardPioche.classList.add("card--hover-effect");
+
+					cardDefausse.addEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+					cardPioche.addEventListener("click",playTurn.bind(null, {"target":cardPioche}));
+				}else{
+					let td = document.getElementById("plateau").getElementsByTagName("td");
+					for(let i = 0 ; i < td.length ; ++i){
+						td[i].classList.add("card--hover-effect");
+						td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+					}
+
+				}		
 			}
 		}
 	}
