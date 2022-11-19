@@ -117,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("deck",function(deck){
 		jeu=deck;
+		afficherJeu(player.username);
 	});
 
 
@@ -157,6 +158,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			player.endTurn = false;
 		}
 		afficherJeu(player.username);
+	});
+
+	sock.on("endParty",function(){
+		console.log("je suis la ");
+		document.getElementById("load").style.display = "flex";
+		document.getElementById("jeux").style.display = "none";
+
 	});
         
     // gestion des déconnexions de la socket --> retour à l'accueil
@@ -268,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		divDefausse.innerHTML ="";
 		let p = document.createElement("p");
 		p = afficherCarte(defausse[0],p);
-
+		console.log(defausse);
 		divDefausse.appendChild(p);
 
 	}
@@ -728,46 +736,52 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					for(let i = 0 ; i < td.length ; ++i){
 						td[i].classList.add("card--hover-effect");
 						td[i].addEventListener("click",playTurn1.bind(null, {"target":td[i]}));
+						console.log(player.phase.card1);
+						if(player.main){
+							console.log("oui");
+						console.log(player.main.cartes[player.phase.card1.l][player.phase.card1.c]);
+						}
+						console.log(td[i]);
 					}
 				}
 			}
 		}
 		if(player.username === player.phase.turn){
 			if(player.username === document.getElementById("username").innerHTML){
-			if(player.phase.name === "normal"){
+				if(player.phase.name === "normal"){
 
-				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
-				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
+					let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
+					let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
+	
+					
+					
+					if(!player.phase.card1){
 
-				
-				
-				if(!player.phase.card1){
-
-					cardDefausse.classList.add("card--hover-effect");
-					cardPioche.classList.add("card--hover-effect");
-
-					cardDefausse.addEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
-					cardPioche.addEventListener("click",playTurn.bind(null, {"target":cardPioche}));
-				}else{
-					let td = document.getElementById("plateau").getElementsByTagName("td");
-					for(let i = 0 ; i < td.length ; ++i){
-						let bool = false;
-						td[i].classList.forEach(e => {
-							if(e === "card--back"){
-								bool = true;
+						cardDefausse.classList.add("card--hover-effect");
+						cardPioche.classList.add("card--hover-effect");
+	
+						cardDefausse.addEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+						cardPioche.addEventListener("click",playTurn.bind(null, {"target":cardPioche}));
+					}else{
+						let td = document.getElementById("plateau").getElementsByTagName("td");
+						for(let i = 0 ; i < td.length ; ++i){
+							let bool = false;
+							td[i].classList.forEach(e => {
+								if(e === "card--back"){
+									bool = true;
+								}
+							});
+							if(bool){
+								td[i].classList.add("card--hover-effect");
+								td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+							}else{
+								td[i].classList.remove("card--hover-effect");
+								td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
 							}
-						});
-						if(bool){
-							td[i].classList.add("card--hover-effect");
-							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
-						}else{
-							td[i].classList.remove("card--hover-effect");
-							td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
 						}
-					}
 
-				}		
-			}
+					}		
+				}
 			}
 		}
 	}
