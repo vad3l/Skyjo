@@ -152,7 +152,7 @@ class Room {
 
         let bool = false;
         scores.forEach(p => {
-            if(p.points <= scoreJoueurDeclanche) {
+            if(p.points <= scoreJoueurDeclanche && p.username !== this.playerAllReturnMain) {
                 console.log(p.username + "a un plus petit score que le joeur qui declanche");
                 bool = true;
             }
@@ -161,9 +161,9 @@ class Room {
         let i = 0;
         this.players.forEach(p => {
             if(bool && p.username === this.playerAllReturnMain) {
-               p.score = scores[i]*2;
+               p.score = scores[i].points * 2;
             } 
-            p.score = scores[i];
+            p.score = scores[i].points;
             ++i;
             console.log(p)
         })
