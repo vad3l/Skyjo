@@ -74,9 +74,9 @@ class Jeu {
     intervertirCarte(player) {
         let l = player.phase.card2.ligne;
         let c =  player.phase.card2.colonne;
-        let carte = this.main.cartes[l][c];
-        this.main.cartes[l][c] = this.discard.shift()
-        this.main.carte[l][c].choosed = false;
+        let carte = player.main.cartes[l][c];
+        player.main.cartes[l][c] = this.discard.shift()
+        player.main.carte[l][c].choosed = false;
         discard.unshift(carte);
     }
 
