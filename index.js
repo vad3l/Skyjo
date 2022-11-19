@@ -428,16 +428,9 @@ io.on('connection', function (socket) {
 				room = r;
 			}
 		});
-
-		//room.majDefausse(carte)
-		if(choice === "pioche") {   
-            room.pickedPioche();
-			io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-		}else {
-            //room.pickedMain(player, carte);
-
-		}
-		
+        
+		room.pickedPioche();
+		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
 	});
