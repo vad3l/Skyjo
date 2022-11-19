@@ -47,8 +47,8 @@ class Jeu {
         }
 
         players.forEach(p => {
-            console.log(p.main);
-            p.main.verifierMain();
+            //console.log(p.main);
+            p.main.verifierMain(this.discard);
         });
 
         let carte = this.pioche.shift();

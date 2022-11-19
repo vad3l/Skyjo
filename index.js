@@ -436,6 +436,7 @@ io.on('connection', function (socket) {
 	});
 
     socket.on("turnCard", (player)=> {
+		console.log("turn card")
 		let room;
 		
 		rooms.forEach(r => {
@@ -450,6 +451,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on("intervertir", (player)=> {
+		console.log("intervertir card")
 		let room;
 		
 		rooms.forEach(r => {
@@ -460,6 +462,7 @@ io.on('connection', function (socket) {
 
 		room.turnCard(player);
 		room.intervertirCarte(player);
+		
 		
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		io.in(room.id).emit("deck", room.getPlayers());

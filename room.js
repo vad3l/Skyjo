@@ -65,6 +65,8 @@ class Room {
         this.players.forEach(p => {
             if(player.username === p.username) {
                 p.main.majMain(cardsChange);
+                p.main.verifierMain(this.jeu.discard);
+                console.log(this.jeu.discard)
                 p.main.calculatePoints();
             }
         });
@@ -82,9 +84,6 @@ class Room {
        this.jeu.pickedPioche();
    }
 
-   pickedMain(player, carte) {
-    
-   }
 
    turnCard(player) {
         let cardsChange = [player.phase.card2];
@@ -116,13 +115,12 @@ class Room {
 
 
     intervertirCarte(player) {
-       this.players.forEach(p => {
+        this.players.forEach(p => {
             if(p.username === player.username){
                 this.jeu.intervertirCarte(player, p);
-                p.main.calculatePoints();
             }
        });
-        
+       this.majMain(player, [])
     }
 
     getPlayers() {

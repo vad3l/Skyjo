@@ -43,21 +43,29 @@ class Main {
         return this.points;
     }
 
-    verifierMain() {
+    verifierMain(discard) {
         //console.log(this.cartes)
-        console.log("laaaaaaaaaaaaaaaaa")
+        //console.log("laaaaaaaaaaaaaaaaa")
         for (let i = 0; i < 4; i++) {
             if(this.cartes[0][i] === null || this.cartes[1][i] === null || this.cartes[2][i].value === null) {
                 continue;
             }
-            if(this.cartes[0][i].value === this.cartes[1][i].value === this.cartes[2][i].value ) {
-                this.carte[0][i] = null;
-                this.carte[1][i] = null;
-                this.carte[2][i] = null;
-                console.log( "enlever carte "  + this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
+            if(this.cartes[0][i].back || this.cartes[1][i].back || this.cartes[2][i].back) {
+                continue;
+            }
+            //console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
+            if(this.cartes[0][i].value === this.cartes[1][i].value ) {
+                if(this.cartes[1][i].value === this.cartes[2][i].value) {
+                    console.log( "enlever carte "  + this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value)
+                    discard.unshift(this.cartes[0][i]);
+                    discard.unshift(this.cartes[1][i]);
+                    discard.unshift(this.cartes[2][i]);
+                    this.cartes[0][i] = null;
+                    this.cartes[1][i] = null;
+                    this.cartes[2][i] = null;
+                }
             }
         }
-        
     }
 
     getNbCartesRetourne() {
