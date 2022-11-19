@@ -137,8 +137,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("load").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
-		console.log("tab de playerus");
-		console.log(jeu);
 
 		document.getElementById("content").classList.add("buzz");
         setTimeout(function() {
@@ -151,7 +149,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	});
 
 	sock.on("startTurn",function(game,username){
-		console.log("anthonyest null :"+username);
 		jeu = game;
 		player.phase={name:"normal",card1:null,card2:null,turn:username};
 		afficherJeu(player.username);
@@ -285,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 
 	function afficherCarte(carte,td){
-
+		if(!carte){return;}
 		if(carte.choosed){
 			td.classList.add("choosed");
 		}
@@ -372,10 +369,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	}
 
 	function swipeMain(choice){
-		console.log(jeu);
 
 		let localUser = document.getElementById("username").innerHTML;
-		console.log("current :"+localUser);
 
 		for(let i = 0 ; i < jeu.length ; ++i){
 			if(jeu[i].username === localUser){
@@ -603,8 +598,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		
 		let td = document.getElementById("plateau").getElementsByTagName("td");
 		
-		console.log(player.phase.card1);
-		console.log(discard[0]);
 
 		if(!player.phase.card1){
 			if(e.target === cardPioche){
@@ -612,36 +605,76 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				player.phase.card1 = pioche[0];
 				player.phase.card1.back = false;
 				player.phase.card1.choosed=true;
-				cardPioche.removeEventListener("click",playTurn);
+				cardPioche.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
 			}else if(e.target === cardDefausse){
 				sock.emit("pickedDefausse",player);
 				player.phase.card1 = discard[0];
 				player.phase.card1.choosed = true;
-				cardDefausse.removeEventListener("click",playTurn);
-				cardPioche.removeEventListener("click",playTurn);
+				cardDefausse.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+				cardPioche.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
 				cardPioche.classList.remove("card--hover-effect");
 
 			}
 			for(let i = 0 ; i < td.length ; ++i){
-				td[i].classList.add("card--hover-effect");
-				td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
-			}
-		}else if(!player.phase.card2){
-			console.log(e.target);
-			if(e.target === cardDefausse){
-				player.phase.card1.choosed = false;
-				sock.emit("putDefausse",player);
-				cardDefausse.removeEventListener("click",playTurn);
-				for(let i = 0 ; i < td.length ; ++i){
-						console.log(td[i].classList);
+				if(JSON.stringify(player.phase.card1) != JSON.stringify(pioche[0])){
+					td[i].classList.add("card--hover-effect");
+					td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+
+				}else{
+					let boole = false;
+					let bool = false;
+					td[i].classList.forEach(r => {
+						
+						if(r === "card-remove"){
+							boole = true;
+						}
+
+						if(r === "card--back"){
+							bool = true;
+						}
+
+					});
+
+					
+					if(!boole){
 						td[i].classList.add("card--hover-effect");
 						td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
-					
+					}
+
+
+				}
+				
+			}
+		}else if(!player.phase.card2){
+			if(e.target === cardDefausse){
+				player.phase.card1.choosed = false;
+				
+				sock.emit("putDefausse",player);
+				discard[0] = player.phase.card1;
+				cardDefausse.removeEventListener("click",playTurn);
+				// si on defausse et qu'on echange 
+				
+				if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
+					for(let i = 0 ; i < td.length ; ++i){
+						let bool = false;
+						td[i].classList.forEach(e => {
+							if(e === "card--back"){
+								bool = true;
+							}
+						});
+						if(bool){
+							td[i].classList.add("card--hover-effect");
+							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						}else{
+							console.log("removed");
+							td[i].classList.remove("card--hover-effect");
+							td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						}
+					}
+
 				}
 
-				// si on defausse et qu'on echange 
 			}else if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
-				console.log("enculer");
 				let l = Number(e.target.dataset.l);
 				let c = Number(e.target.dataset.c);
 				
@@ -658,6 +691,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				let c = Number(e.target.dataset.c);
 				
 				player.phase.card2 = {ligne:l,colonne:c};
+
 				sock.emit("putDefausse",player);
 				sock.emit("intervertir",player);
 
@@ -675,9 +709,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		if(player.phase === null ){return;}
 		
 		if(player.username === document.getElementById("username").innerHTML){
-			console.log("phase :"+player.phase.name);
 			if(player.phase.name === "start"){
-				console.log("turn : start")
 				if(!player.phase.card1 || !player.phase.card2){
 					let td = document.getElementById("plateau").getElementsByTagName("td");
 					for(let i = 0 ; i < td.length ; ++i){
@@ -688,8 +720,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			}
 		}
 		if(player.username === player.phase.turn){
+			if(player.username === document.getElementById("username").innerHTML){
 			if(player.phase.name === "normal"){
-				console.log("turn : normal");
+
 				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 				let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
 
@@ -705,11 +738,23 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				}else{
 					let td = document.getElementById("plateau").getElementsByTagName("td");
 					for(let i = 0 ; i < td.length ; ++i){
-						td[i].classList.add("card--hover-effect");
-						td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						let bool = false;
+						td[i].classList.forEach(e => {
+							if(e === "card--back"){
+								bool = true;
+							}
+						});
+						if(bool){
+							td[i].classList.add("card--hover-effect");
+							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						}else{
+							td[i].classList.remove("card--hover-effect");
+							td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
+						}
 					}
 
 				}		
+			}
 			}
 		}
 	}
