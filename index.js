@@ -349,7 +349,7 @@ io.on('connection', function (socket) {
 	 });
 
 	 socket.on("endTurnJoueur", (player, pioche, discard) => {
-		console.log("recu endturnjoueur")
+		//console.log("recu endturnjoueur")
 		
 		let room;
 		
@@ -455,4 +455,20 @@ io.on('connection', function (socket) {
 
         io.in(room.id).emit("deck", room.getPlayers());
 	});
+
+	socket.on("intervertir", (player)=> {
+		let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+
+		room.turnCard(player);
+		room.intervertirCarte(player);
+		
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+		io.in(room.id).emit("deck", room.getPlayers());
+	})
 });

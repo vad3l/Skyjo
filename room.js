@@ -94,13 +94,13 @@ class Room {
    hierarchisePlayers() {
         
         this.players.sort(function(a,b){ return b.main.points - a.main.points});
-        this.turnPlayer = this.players[0];
+        this.turnPlayer = this.players[0].username;
    }
     
     swapJoueur() {
         let p;
         for (let i = 0; i < this.players.length; i++) {
-            if(this.players[i].username === this.turnPlayer.username) {
+            if(this.players[i].username === this.turnPlayer) {
                 //console.log("i :", this.players[i].username);
                 //console.log("i :", this.players[i+1].username);
                 if(i === this.players.length-1) {
@@ -110,8 +110,18 @@ class Room {
                 }
             }
         }
-        this.turnPlayer = p;
-        return this.turnPlayer.username;
+        this.turnPlayer = p.username;
+        return this.turnPlayer;
+    }
+
+
+    intervertirCarte(player) {
+       this.players.forEach(p => {
+            if(p.username === player.username){
+                p.main.intervertirCarte(player);
+            }
+       });
+        
     }
 
     getPlayers() {
