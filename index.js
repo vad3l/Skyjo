@@ -503,6 +503,7 @@ io.on('connection', function (socket) {
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
+		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
 
