@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		console.log(liste);
 		console.log("je recois la liste");
         if (currentUser) {
-			console.log("la dedans");
 			host=hoste;
             afficherListe(liste,hoste);
         }
