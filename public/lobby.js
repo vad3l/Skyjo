@@ -117,6 +117,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("deck",function(deck){
 		jeu=deck;
+		jeu.forEach(r =>{
+			if(r.username == player.username){
+				player.main = r.main;
+			};
+		});
 		afficherJeu(player.username);
 	});
 
@@ -140,6 +145,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("load").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
+		jeu.forEach(r =>{
+			if(r.username == player.username){
+				player.main = r.main;
+			};
+		});
 
 		document.getElementById("content").classList.add("buzz");
         setTimeout(function() {
@@ -153,6 +163,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("startTurn",function(game,username){
 		jeu = game;
+		jeu.forEach(r =>{
+			if(r.username == player.username){
+				player.main = r.main;
+			};
+		});
 		player.phase={name:"normal",card1:null,card2:null,turn:username};
 		if(player.username === username){
 			player.endTurn = false;
@@ -603,7 +618,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			let td = document.getElementById("plateau").getElementsByTagName("td");
 			for(let i = 0 ; i < td.length ; ++i){
 				td[i].classList.remove("card--hover-effect");
-				td[i].removeEventListener("click",playTurn1);
+				td[i].replaceWith(td[i].cloneNode(true));
 			}
 
 			sock.emit("endTurnJoueur",player,pioche,discard);
@@ -625,13 +640,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				player.phase.card1 = pioche[0];
 				player.phase.card1.back = false;
 				player.phase.card1.choosed=true;
-				cardPioche.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+				cardPioche.replaceWith(cardPioche.cloneNode(true));
 			}else if(e.target === cardDefausse){
 				sock.emit("pickedDefausse",player);
 				player.phase.card1 = discard[0];
 				player.phase.card1.choosed = true;
-				cardDefausse.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
-				cardPioche.removeEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+				cardDefausse.replaceWith(cardDefausse.cloneNode(true));
+				cardPioche.replaceWith(cardPioche.cloneNode(true));
 				cardPioche.classList.remove("card--hover-effect");
 
 			}
@@ -671,7 +686,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				
 				sock.emit("putDefausse",player);
 				discard[0] = player.phase.card1;
-				cardDefausse.removeEventListener("click",playTurn);
+				cardDefausse.replaceWith(cardDefausse.cloneNode(true));
 				// si on defausse et qu'on echange 
 				
 				if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
@@ -688,7 +703,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 						}else{
 							console.log("removed");
 							td[i].classList.remove("card--hover-effect");
-							td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
+							td[i].replaceWith(td[i].cloneNode(true));
 						}
 					}
 
@@ -701,7 +716,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				player.phase.card2 = {ligne:l,colonne:c};
 
 				if(discard[0].choosed){
-					sock.emit("intervertir",player);
+					sock.emit("intervertir",player,"defausse");
 				}else{
 					sock.emit("turnCard",player);
 				}
@@ -712,8 +727,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				
 				player.phase.card2 = {ligne:l,colonne:c};
 
-				sock.emit("putDefausse",player);
-				sock.emit("intervertir",player);
+				sock.emit("intervertir",player,"pioche");
 
 			}		
 		}
@@ -737,11 +751,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 						td[i].classList.add("card--hover-effect");
 						td[i].addEventListener("click",playTurn1.bind(null, {"target":td[i]}));
 						console.log(player.phase.card1);
-						if(player.main){
-							console.log("oui");
-						console.log(player.main.cartes[player.phase.card1.l][player.phase.card1.c]);
+						if(player.main && player.phase.card1 != null && i === player.phase.card1.ligne*4+player.phase.card1.colonne){
+							console.log("removed for :"+i);
+							td[i].classList.remove("card--hover-effect");
+							td[i].replaceWith(td[i].cloneNode(true));
 						}
-						console.log(td[i]);
 					}
 				}
 			}
@@ -756,7 +770,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					
 					
 					if(!player.phase.card1){
-
+						
 						cardDefausse.classList.add("card--hover-effect");
 						cardPioche.classList.add("card--hover-effect");
 	
@@ -776,7 +790,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 								td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 							}else{
 								td[i].classList.remove("card--hover-effect");
-								td[i].removeEventListener("click",playTurn.bind(null, {"target":td[i]}));
+								td[i].replaceWith(td[i].cloneNode(true));
 							}
 						}
 
