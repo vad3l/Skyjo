@@ -351,13 +351,7 @@ io.on('connection', function (socket) {
 	 socket.on("endTurnJoueur", (player, pioche, discard) => {
 		//console.log("recu endturnjoueur")
 		
-		let room;
-		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
+		let room = getRoom(player.roomId);
 		
 	
 		if(room.turn1) {
@@ -394,13 +388,8 @@ io.on('connection', function (socket) {
 
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
-		let room;
-		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
+
+		let room = getRoom(player.roomId);
 
 		room.selectedCardPioche();
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
@@ -408,27 +397,17 @@ io.on('connection', function (socket) {
 
 	socket.on("pickedDefausse", (player) => {
         console.log(player.username + " pioche dans la defause")
-		let room;
 		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
-
+		let room = getRoom(player.roomId);
+		
 		room.selectedCardDefausse();
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 	});
 	  
 	socket.on("putDefausse", (player)=> {
-		let room;
 		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
-        
+		let room = getRoom(player.roomId);
+		
 		room.pickedPioche();
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());+
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
@@ -437,13 +416,7 @@ io.on('connection', function (socket) {
 
     socket.on("turnCard", (player)=> {
 		console.log("turn card")
-		let room;
-		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
+		let room = getRoom(player.roomId)
         
 		room.turnCard(player);
 
@@ -452,13 +425,8 @@ io.on('connection', function (socket) {
 
 	socket.on("intervertir", (player)=> {
 		console.log("intervertir card")
-		let room;
 		
-		rooms.forEach(r => {
-			if(r.id === player.roomId) {
-				room = r;
-			}
-		});
+		let room = getRoom();
 
 		room.turnCard(player);
 		room.intervertirCarte(player);
@@ -467,4 +435,16 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
+
+	function getRoom() {
+		let room;
+		
+		rooms.forEach(r => {
+			if(r.id === player.roomId) {
+				room = r;
+			}
+		});
+
+		return room;
+	}
 });

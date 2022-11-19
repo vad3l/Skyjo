@@ -148,7 +148,7 @@
   
   
 .card--back {
-    background: radial-gradient(closest-side, #db1226, #ebf8e1, #643cf6);
+    background: linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%), linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%), linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%); /*radial-gradient(closest-side, #db1226, #ebf8e1, #643cf6);*/
     align-items: center;
     position: relative;
     display: flex;
