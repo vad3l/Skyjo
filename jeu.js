@@ -75,7 +75,7 @@ class Jeu {
     intervertirCarte(l, c, player, choice) {
         let carte = player.main.cartes[l][c];
         if(choice === "pioche") {
-            player.main.cartes[l][c] = this.jeu.shift()
+            player.main.cartes[l][c] = this.cartes.shift()
         }else {
             player.main.cartes[l][c] = this.discard.shift()
         }
