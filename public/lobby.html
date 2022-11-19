@@ -33,9 +33,13 @@
 	<div id="room">
 		
 		<!--		Attente		-->
-		
-		<div id="load">
-			<p>En attente du lancement de la partie</p>
+		<div class="box" id="endParty">
+			<p>En attente du lancement de la prochaine manche par l'hôte<p/>
+			<input type="button" value="Prochaine manche" id="btnRelancerPartie">
+		</div>
+
+		<div class="box" id="load">
+			<p>En attente que l'hôte lance la partie</p>
 			<svg id="loadSvg" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
 				<path d="M24,44c-11.028,0 -20,-8.972 -20,-20c0,-11.028 8.972,-20 20,-20c11.028,0 20,8.972 20,20c0,11.028 -8.972,20 -20,20zM24,8c-8.822,0 -16,7.178 -16,16c0,8.822 7.178,16 16,16c8.822,0 16,-7.178 16,-16c0,-8.822 -7.178,-16 -16,-16z" fill="#cfd8dc"/>
 				<path d="M24,44c-11.028,0 -20,-8.972 -20,-20h4c0,8.822 7.178,16 16,16c8.822,0 16,-7.178 16,-16c0,-8.822 -7.178,-16 -16,-16v-4c11.028,0 20,8.972 20,20c0,11.028 -8.972,20 -20,20z" fill="#727272">

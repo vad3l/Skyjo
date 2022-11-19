@@ -107,7 +107,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("list rooms", function(roomList){
 		if (currentUser){
 			afficherRoom(roomList);
-			
 		}
 	});
 	
@@ -143,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("startTurn1",function(deck){
 		document.getElementById("load").style.display = "none";
+		document.getElementById("endParty").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
 		jeu.forEach(r =>{
@@ -177,10 +177,27 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	sock.on("endParty",function(){
 		console.log("je suis la ");
-		document.getElementById("load").style.display = "flex";
-		document.getElementById("jeux").style.display = "none";
-
+		document.getElementById("load").style.display = "none";
+		document.getElementById("endParty").style.display = "flex"
 	});
+
+	sock.on("endGame",function(tabGagnant){
+		let load = document.getElementById("load");
+		let p = document.createElement("p");
+		let str = "Le grand gagnant est :\n";
+		tabGagnant.forEach(r => {
+			str+= r+"\n";
+		})
+
+		p.innerHTML = str;
+		p.style.color = "red";
+		
+		
+		load.getElementsByTagName("p")[1].innerHTML = "En attente que l'hôte lance une nouvelle partie.";
+		document.getElementById("load").style.display = "flex";
+
+		
+	})
         
     // gestion des déconnexions de la socket --> retour à l'accueil
     sock.on("disconnect", function(reason) {
@@ -419,11 +436,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}
 	}
 
-	function updateStartButton(){
+	function updateHostButton(){
 		if(player.username === host){
+			document.getElementById("btnRelancerPartie").style.display = "block";
 			document.getElementById("btnLancerPartie").style.display = "block"; 
 		}else{
-			document.getElementById("btnLancerPartie").style.display = "none"; 
+			document.getElementById("btnLancerPartie").style.display = "none";
+			document.getElementById("btnRelancerPartie").style.display = "none";
 		}
 	}
 
@@ -484,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
-		updateStartButton();
+		updateHostButton();
 		console.log(newList[0].username);
 		newList.sort(function(a,b){
 			return a.score - b.score;
@@ -549,6 +568,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		// afficher la div load obligatoirement
 		document.getElementById("load").style.display = "flex";
 		document.getElementById("jeux").style.display = "none";
+		document.getElementById("endParty").style.display = "none";
 		
 	}
 	
@@ -563,6 +583,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		// afficher la div load obligatoirement
 		document.getElementById("load").style.display = "flex";
 		document.getElementById("jeux").style.display = "none";
+		document.getElementById("endParty").style.display = "none";
 		toggleDisplayOn("room","flex");
 		sock.emit("joinRoom",player, id);
 	}
@@ -588,7 +609,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function lancerPartie(){
 		
 		// lancer la partie
-		sock.emit("start",player.username);
+		sock.emit("startManche",player.username);
 		
 	}
 
@@ -996,6 +1017,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	document.getElementById("btnLogout").addEventListener("click",quitter);
 	document.getElementById("btnLeft").addEventListener("click",function(){swipeMain("left")});
 	document.getElementById("btnRight").addEventListener("click",function(){swipeMain("right");});
+	document.getElementById("btnRelancerPartie").addEventListener("click",function(){sock.emit("startManche",player.username)});
 
     
     /**
