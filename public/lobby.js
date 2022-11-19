@@ -600,32 +600,50 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function playTurn(e){
 		let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 		let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
+		
+		let td = document.getElementById("plateau").getElementsByTagName("td");
+		
+		console.log(player.phase.card1);
+		console.log(discard[0]);
 
 		if(!player.phase.card1){
 			if(e.target === cardPioche){
 				sock.emit("pickedPioche",player);
 				player.phase.card1 = pioche[0];
+				player.phase.card1.back = false;
 				cardPioche.removeEventListener("click",playTurn);
 			}else if(e.target === cardDefausse){
 				sock.emit("pickedDefausse",player);
-				player.phase.card2 = discard[0];
+				player.phase.card1 = discard[0];
+				player.phase.card1.choosed = true;
 				cardDefausse.removeEventListener("click",playTurn);
+				cardPioche.removeEventListener("click",playTurn);
+				cardPioche.classList.remove("card--hover-effect");
+
+			}
+			for(let i = 0 ; i < td.length ; ++i){
+				td[i].classList.add("card--hover-effect");
+				td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 			}
 		}else if(!player.phase.card2){
 			console.log(e.target);
 			if(e.target === cardDefausse){
 				sock.emit("putDefausse",player,pioche[0],"pioche");
 				cardDefausse.removeEventListener("click",playTurn);
-				let td = document.getElementById("plateau").getElementsByTagName("td");
 				for(let i = 0 ; i < td.length ; ++i){
 					td[i].classList.add("card--hover-effect");
 					td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 				}
 				
-			}else{
+			}else if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
 				let l = Number(e.target.dataset.l);
 				let c = Number(e.target.dataset.c);
 				
+				player.phase.card2 = {ligne:l,colonne:c};
+				console.log(player.phase);
+			
+				sock.emit("intervertir",player);
+
 				console.log("ligne :"+l+"\ncolonne :"+c);
 
 				player.phase.card2 = {ligne:l,colonne:c};
