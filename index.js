@@ -420,10 +420,12 @@ io.on('connection', function (socket) {
     
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
-        console.log("d",room.getDiscard2Cards());
+        let room = getRoom(player.roomId);
+		
+		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		let room = getRoom(player.roomId);
+		
 
 		room.selectedCardPioche();
 		console.log("d",room.getDiscard2Cards());
@@ -433,9 +435,12 @@ io.on('connection', function (socket) {
 
 	socket.on("pickedDefausse", (player) => {
         console.log(player.username + " pioche dans la defause")
+		
+		let room = getRoom(player.roomId);
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
-		let room = getRoom(player.roomId);
+		
 		
 		room.selectedCardDefausse();
 		//console.log("d1",room.getDiscard2Cards())
@@ -447,10 +452,13 @@ io.on('connection', function (socket) {
 	  
 	socket.on("putDefausse", (player)=> {
 		console.log("put defausse");
+		
+		let room = getRoom(player.roomId);
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		let room = getRoom(player.roomId);
+		
 		
 		room.pickedPioche();
 
@@ -463,10 +471,13 @@ io.on('connection', function (socket) {
 
     socket.on("turnCard", (player)=> {
 		console.log("turn card")
+		
+		let room = getRoom(player.roomId)
+		
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		let room = getRoom(player.roomId)
+		
         
 		room.turnCard(player);
 
@@ -477,10 +488,12 @@ io.on('connection', function (socket) {
 
 	socket.on("intervertir", (player)=> {
 		console.log("intervertir card")
+		let room = getRoom(player.roomId);
+
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		let room = getRoom(player.roomId);
+
 
 		room.turnCard(player);
 		//console.log("d2.5",room.getDiscard2Cards())
