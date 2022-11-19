@@ -119,6 +119,7 @@ class Room {
        this.players.forEach(p => {
             if(p.username === player.username){
                 this.jeu.intervertirCarte(player, p);
+                p.main.calculatePoints();
             }
        });
         

@@ -420,7 +420,7 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 	});
 	  
-	socket.on("putDefausse", (player, carte, choice)=> {
+	socket.on("putDefausse", (player)=> {
 		let room;
 		
 		rooms.forEach(r => {
@@ -430,7 +430,7 @@ io.on('connection', function (socket) {
 		});
         
 		room.pickedPioche();
-		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());+
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
 	});
