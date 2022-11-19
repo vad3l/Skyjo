@@ -343,6 +343,7 @@ io.on('connection', function (socket) {
 				    io.in(r.id).emit("startTurn1", r.getPlayers());
 				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
 			        socket.broadcast.emit('list rooms', getRoomAvailable());
+					io.in(r.id).emit('list', getRoomAvailable(), r.host);
 				}
 			}
 		});
