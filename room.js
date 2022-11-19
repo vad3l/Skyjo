@@ -10,7 +10,7 @@ class Room {
         this.run = false;
         this.jeu = null;
         this.turn1 = false;
-        this.turn;
+        this.turnPlayer;
     }
     
     createJeu() {
@@ -95,8 +95,23 @@ class Room {
         
         this.players.sort((a, b) => a.points + b.points);
         console.log(this.players);
-        this.turn = this.players[0];
+        this.turnPlayer = this.players[0];
    }
+    
+    swapJoueur() {
+        let p;
+        for (let i = 0; i < this.players.length; i++) {
+            if(this.players[i].username === this.turnPlayer.username) {
+                if(i === this.players.length-1) {4
+                    p = this.players[i++];
+                }else {
+                    p = this.players[0];  
+                }
+            }
+        }
+        this.turnPlayer = p;
+        return this.turnPlayer.username;
+    }
 
     getPlayers() {
         return this.players;

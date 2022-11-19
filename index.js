@@ -359,10 +359,10 @@ io.on('connection', function (socket) {
 			}
 		});
 		
-		let cardsChange = [player.phase.card1, player.phase.card2]
-		room.majMain(player, cardsChange)
-        
+	
 		if(room.turn1) {
+			let cardsChange = [player.phase.card1, player.phase.card2]
+			room.majMain(player, cardsChange)
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
@@ -383,6 +383,9 @@ io.on('connection', function (socket) {
 			//io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
 			//io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 			//io.in(r.id).emit("pioche", r.getDiscard2Cards(), r.getSizeDicard());
+			let nom = room.swapJoueur();
+			io.in(room.id).emit("startTurn", room.getPlayers(), "bidule");
+			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de jouer", date: Date.now() });
 		}
 
 
@@ -390,7 +393,7 @@ io.on('connection', function (socket) {
     
 
 	socket.on("pickedPioche", (player) => {
-        console.log(player.username + "pioche dans la pioche")
+        console.log(player.username + " pioche dans la pioche")
 		let room;
 		
 		rooms.forEach(r => {
@@ -404,7 +407,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on("pickedDefausse", (player) => {
-        console.log(player.username + "pioche dans la defause")
+        console.log(player.username + " pioche dans la defause")
 		let room;
 		
 		rooms.forEach(r => {
