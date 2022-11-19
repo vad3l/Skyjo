@@ -187,10 +187,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("endGame",function(tabGagnant){
 		let load = document.getElementById("load");
 		let p = document.createElement("p");
-		let str = "Le grand gagnant est :<br>";
-		tabGagnant.forEach(r => {
-			str+= r+"\n";
-		})
+		let str = "Le grand gagnant est :<br>"+tabGagnant.join("<br>");
 
 		p.innerHTML = "En attente que l'hôte lance une nouvelle partie.";
 		
