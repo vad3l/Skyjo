@@ -356,13 +356,13 @@ io.on('connection', function (socket) {
 		
 		if(room.turn1) {
 			console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 
 			let cardsChange = [player.phase.card1, player.phase.card2]
 			room.majMain(player, cardsChange)
 
 			console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
@@ -421,41 +421,41 @@ io.on('connection', function (socket) {
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
         console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 
 		let room = getRoom(player.roomId);
 
 		room.selectedCardPioche();
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
 	socket.on("pickedDefausse", (player) => {
         console.log(player.username + " pioche dans la defause")
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 		let room = getRoom(player.roomId);
 		
 		room.selectedCardDefausse();
 		//console.log("d1",room.getDiscard2Cards())
 		//console.log("size discard",room.getSizeDiscard());
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 	});
 	  
 	socket.on("putDefausse", (player)=> {
 		console.log("put defausse");
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 
 		let room = getRoom(player.roomId);
 		
 		room.pickedPioche();
 
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 		
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
@@ -464,21 +464,21 @@ io.on('connection', function (socket) {
     socket.on("turnCard", (player)=> {
 		console.log("turn card")
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 
 		let room = getRoom(player.roomId)
         
 		room.turnCard(player);
 
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
         io.in(room.id).emit("deck", room.getPlayers());
 	});
 
 	socket.on("intervertir", (player)=> {
 		console.log("intervertir card")
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 
 		let room = getRoom(player.roomId);
 
@@ -488,7 +488,7 @@ io.on('connection', function (socket) {
 		room.intervertirCarte(player);
 		
 		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getpioche2Cards());
+		console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
