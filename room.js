@@ -31,7 +31,7 @@ class Room {
                 p.score = 0;
             }
         });
-        console.log("laaaaaaaaaaaaaaaaaaaa", this.players)
+        
         this.turn1 = true;
         this.turnPlayer = null;
         this.playerAllReturnMain = null;

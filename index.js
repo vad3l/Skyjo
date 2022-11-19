@@ -341,7 +341,7 @@ io.on('connection', function (socket) {
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDiscard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 			        socket.broadcast.emit('list rooms', getRoomAvailable());
-					io.in(r.id).emit('list', r.getPlayers(), r.host);
+					io.in(r.id).emit('liste', r.getPlayers(), r.host);
 					io.in(r.id).emit("startTurn1", r.getPlayers());
 					io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
 				}
