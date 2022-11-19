@@ -337,7 +337,7 @@ io.on('connection', function (socket) {
 				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
-				    r.lancerPartie();
+				    r.lancerJeu();
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDiscard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				    io.in(r.id).emit("startTurn1", r.getPlayers());
@@ -391,22 +391,24 @@ io.on('connection', function (socket) {
 			}
 			
 			if(room.playerAllReturnMain === nom) {
-				io.in(room.id).emit("message", { from: null, to: null, text: "La partie est finit !!!", date: Date.now() });
 				
 				room.turnAlldecks();
 				
 				io.in(room.id).emit("deck", room.getPlayers());
                 io.in(room.id).emit("liste",room.getPlayers(), room.host);
-                io.in(room.id).emit("endParty");
-
-				// a remttre
-				//room.turn1 = true;
-				//room.lancerPartie();
-				//io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-				//io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-				//io.in(room.id).emit("startTurn1", room.getPlayers());
-				//io.in(room.id).emit("message", { from: null, to: null, text: "Une partie commence !!!", date: Date.now() });
-			    
+                
+				let jeu = room.verifierEndGame()
+				if(jeu.estTerminer) {
+                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + " a gagner ...", date: Date.now() });
+				    io.in(room.id).emit("endGame", jeu.playersWin);
+					room.run = false;
+					socket.broadcast.emit('list rooms', getRoomAvailable());
+				}else {
+                    io.in(room.id).emit("message", { from: null, to: null, text: "La partie est finit...", date: Date.now() });
+					io.in(room.id).emit("endParty");
+				}
+				
+   
 				//socket.broadcast.emit('list rooms', getRoomAvailable());
 			}else {
                 io.in(room.id).emit("startTurn", room.getPlayers(), nom);
@@ -422,10 +424,14 @@ io.on('connection', function (socket) {
         console.log(player.username + " pioche dans la pioche")
         let room = getRoom(player.roomId);
 		
+		let sizePioche = room.getSizePioche();
+		
+		
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
 		
+		console.assert(sizePioche === room.getSizePioche());
 
 		room.selectedCardPioche();
 		console.log("d",room.getDiscard2Cards());
@@ -458,8 +464,6 @@ io.on('connection', function (socket) {
 		console.log("d",room.getDiscard2Cards());
 		console.log("p",room.getPioche2Cards());
 
-		
-		
 		room.pickedPioche();
 
 		console.log("d",room.getDiscard2Cards());

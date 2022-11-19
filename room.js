@@ -1,3 +1,4 @@
+const { bool } = require("assert-plus");
 const { isObject } = require("util");
 const Jeu = require("./jeu.js")
 
@@ -16,7 +17,7 @@ class Room {
         this.lastTurnDeclanche = false;
     }
     
-    lancerPartie() {
+    lancerJeu() {
         this.jeu = new Jeu();
         this.jeu.shuffle();
         //this.jeu.shuffle();
@@ -24,6 +25,7 @@ class Room {
         
         this.players.forEach(p => {
             p.main.calculatePoints();
+            p.score = 0;
         });
 
         this.turn1 = true;
@@ -168,6 +170,24 @@ class Room {
             ++i;
             //console.log(p)
         })
+    }
+    
+    verifierEndGame() {
+        let end = false;
+        let ps = [];
+        let min = 500;
+
+        this.players.forEach(p => {
+            if(p.score >= 100) {
+                end = true;
+            }
+            if(p.score <= min) {
+                min = p.score;
+                ps.push(p.username);
+            }
+        });
+
+        return {estTerminer: end, playersWin: ps};
     }
 
     getPlayers() {
