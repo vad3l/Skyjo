@@ -441,7 +441,7 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
 	});
-/*
+
     socket.on("turnCard", (player)=> {
 		let room;
 		
@@ -455,7 +455,7 @@ io.on('connection', function (socket) {
 
         io.in(room.id).emit("deck", room.getPlayers());
 	});
-*/
+
 	socket.on("intervertir", (player)=> {
 		let room;
 		
