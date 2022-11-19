@@ -15,6 +15,7 @@ class Room {
         this.turnPlayer = null;
         this.playerAllReturnMain = null;
         this.lastTurnDeclanche = false;
+        this.endGame = false;
     }
     
     lancerJeu() {
@@ -25,13 +26,17 @@ class Room {
         
         this.players.forEach(p => {
             p.main.calculatePoints();
-            //p.score = 0;
+            // remttre a 0 le sacore des joeurs si nouvell partie (quelequn a gagner)
+            if(this.endGame) {
+                p.score = 0;
+            }
         });
 
         this.turn1 = true;
         this.turnPlayer = null;
         this.playerAllReturnMain = null;
-        this.lastTurnDeclanche = false
+        this.lastTurnDeclanche = false;
+        this.endGame = false;
     }
 
     addPlayer(player) {      
@@ -186,7 +191,8 @@ class Room {
                 ps.push(p.username);
             }
         });
-
+        
+        this.endGame = end;
         return {estTerminer: end, playersWin: ps};
     }
 

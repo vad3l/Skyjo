@@ -328,7 +328,7 @@ io.on('connection', function (socket) {
 	 *						game
 	 *
 	 * ***********************************************/
-	 socket.on("start", (username)=>{
+	 socket.on("startManche", (username)=>{
 	
 		rooms.forEach(r => {
 			if(r.host === username) {
@@ -431,7 +431,10 @@ io.on('connection', function (socket) {
 		console.log("p",room.getPioche2Cards());
 
 		
-		console.assert(sizePioche === room.getSizePioche());
+		//debug foutu bug 
+		if(sizePioche !== room.getSizePioche()){
+            throw new Error("Error pioche1" | "Theox")
+		}
 
 		room.selectedCardPioche();
 		console.log("d",room.getDiscard2Cards());
