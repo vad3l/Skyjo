@@ -160,6 +160,7 @@
     font-size: 2em;
     position: absolute;
     width: fit-content; 
+	color : rgba(61,61,61,1)
 }
         
 .card--back > span:first-child {

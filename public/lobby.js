@@ -647,7 +647,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				player.phase.card1.choosed = true;
 				cardDefausse.replaceWith(cardDefausse.cloneNode(true));
 				cardPioche.replaceWith(cardPioche.cloneNode(true));
-				cardPioche.classList.remove("card--hover-effect");
+				
+				let a =document.getElementById("pioche").getElementsByTagName("p");
+				a[0].classList.remove("card--hover-effect");
 
 			}
 			for(let i = 0 ; i < td.length ; ++i){
@@ -770,7 +772,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					
 					
 					if(!player.phase.card1){
-						
+						console.log("mescouilles");
 						cardDefausse.classList.add("card--hover-effect");
 						cardPioche.classList.add("card--hover-effect");
 	
@@ -779,20 +781,36 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					}else{
 						let td = document.getElementById("plateau").getElementsByTagName("td");
 						for(let i = 0 ; i < td.length ; ++i){
-							let bool = false;
-							td[i].classList.forEach(e => {
-								if(e === "card--back"){
-									bool = true;
-								}
-							});
-							if(bool){
+							if(JSON.stringify(player.phase.card1) != JSON.stringify(pioche[0])){
 								td[i].classList.add("card--hover-effect");
 								td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+			
 							}else{
-								td[i].classList.remove("card--hover-effect");
-								td[i].replaceWith(td[i].cloneNode(true));
+								let boole = false;
+								let bool = false;
+								td[i].classList.forEach(r => {
+							
+									if(r === "card-remove"){
+										boole = true;
+									}
+			
+									if(r === "card--back"){
+										bool = true;
+									}
+
+								});
+
+					
+								if(!boole){
+									td[i].classList.add("card--hover-effect");
+									td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+								}
+
+
 							}
+				
 						}
+
 
 					}		
 				}
