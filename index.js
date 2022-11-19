@@ -337,11 +337,12 @@ io.on('connection', function (socket) {
 				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
-				    r.createJeu();
+				    r.lancerPartie();
 				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDicard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
 				    io.in(r.id).emit("startTurn1", r.getPlayers());
-				    io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
+				    io.in(r.id).emit("message", { from: null, to: null, text: "Une partie commence !!!", date: Date.now() });
+			        socket.broadcast.emit('list rooms', getRoomAvailable());
 				}
 			}
 		});
@@ -349,11 +350,10 @@ io.on('connection', function (socket) {
 	 });
 
 	 socket.on("endTurnJoueur", (player, pioche, discard) => {
-		//console.log("recu endturnjoueur")
+		console.log("recu endturnjoueur")
 		
 		let room = getRoom(player.roomId);
 		
-	
 		if(room.turn1) {
 			let cardsChange = [player.phase.card1, player.phase.card2]
 			room.majMain(player, cardsChange)
@@ -366,19 +366,38 @@ io.on('connection', function (socket) {
 				io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 				
 				io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
-				io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de commencer", date: Date.now() });
+				io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
 			}else {
 				io.in(room.id).emit("endTurnJoueur", room.getPlayers());
 			}
 		}else {
             
-            // dernier tour
-
-
-
-			let nom = room.swapJoueur();
-			io.in(room.id).emit("startTurn", room.getPlayers(), nom);
-			io.in(room.id).emit("message", { from: null, to: null, text: "C'est a " + nom + " de jouer", date: Date.now() });
+            let nom = room.swapJoueur();
+            
+            if(room.playerAllReturnMain !== null) {
+                // dernier tour
+                
+				if(!room.lastTurnDeclanche) {
+					room.lastTurnDeclanche = true;
+					io.in(room.id).emit("message", { from: null, to: null, text: "C'est le dernier tour !!!", date: Date.now() });
+				}
+				
+			}
+			
+			if(room.playerAllReturnMain === nom) {
+				io.in(room.id).emit("message", { from: null, to: null, text: "C'est finit !!!", date: Date.now() });
+				room.turn1 = true;
+				room.lancerPartie();
+				io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+				io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+				io.in(room.id).emit("startTurn1", room.getPlayers());
+				io.in(room.id).emit("message", { from: null, to: null, text: "Une partie commence !!!", date: Date.now() });
+			    //socket.broadcast.emit('list rooms', getRoomAvailable());
+			}else {
+                io.in(room.id).emit("startTurn", room.getPlayers(), nom);
+		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour " + nom + " de jouer", date: Date.now() });
+			}
+			
 		}
 
 
@@ -408,10 +427,9 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		room.pickedPioche();
-		console.log("léoooooooooo ",  room.getDiscard2Cards())
-		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());+
-		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
 		
+		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDicard());
+		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
     socket.on("turnCard", (player)=> {

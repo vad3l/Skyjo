@@ -1,3 +1,4 @@
+const { isObject } = require("util");
 const Jeu = require("./jeu.js")
 
 class Room {
@@ -10,13 +11,15 @@ class Room {
         this.run = false;
         this.jeu = null;
         this.turn1 = false;
-        this.turnPlayer;
+        this.turnPlayer = null;
+        this.playerAllReturnMain = null;
+        this.lastTurnDeclanche = false;
     }
     
-    createJeu() {
+    lancerPartie() {
         this.jeu = new Jeu();
         this.jeu.shuffle();
-        this.jeu.shuffle();
+        //this.jeu.shuffle();
         this.jeu.distribute(this.players);
         
         this.players.forEach(p => {
@@ -24,6 +27,9 @@ class Room {
         });
 
         this.turn1 = true;
+        this.turnPlayer = null;
+        this.playerAllReturnMain = null;
+        this.lastTurnDeclanche = false
     }
 
     addPlayer(player) {      
@@ -68,6 +74,9 @@ class Room {
                 p.main.verifierMain(this.jeu.discard);
                 console.log(this.jeu.discard)
                 p.main.calculatePoints();
+                if (this.playerAllReturnMain == null && p.main.isAllReturn()) {
+                    this.playerAllReturnMain = p.username;
+                }
             }
         });
     }
@@ -124,7 +133,7 @@ class Room {
        });
        this.majMain(player, [])
     }
-
+    
     getPlayers() {
         return this.players;
     }
