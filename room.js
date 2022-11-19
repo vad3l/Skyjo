@@ -21,7 +21,7 @@ class Room {
     lancerJeu() {
         this.jeu = new Jeu();
         this.jeu.shuffle();
-        //this.jeu.shuffle();
+        this.jeu.shuffle();
         this.jeu.distribute(this.players);
         
         this.players.forEach(p => {
