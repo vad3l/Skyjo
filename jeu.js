@@ -24,9 +24,8 @@ class Jeu {
                }
             }
         }
-
+        console.log(this.pioche);
         this.discard = [];
-        this.carteTmp;
     }
 
     shuffle() {
