@@ -115,7 +115,7 @@ class Room {
     }
 
 
-    intervertirCarte(player) {
+    intervertirCarte(player, p) {
        this.players.forEach(p => {
             if(p.username === player.username){
                 this.jeu.intervertirCarte(player);
