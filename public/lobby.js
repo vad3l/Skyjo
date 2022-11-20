@@ -10,9 +10,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		endTurn:false,
 		score:0,
 	};
-
-
-
+	
 	// mettre les autres fenetres invisible
 	document.getElementById("pseudo").focus();
 	toggleDisplayOn("logScreen","block");
@@ -1016,6 +1014,22 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     /**
      *  Ecouteurs clavier
      */
+	document.getElementsByTagName("body")[0].addEventListener("keydown",function(e){
+		if(e.keyCode == 17){
+			document.getElementsByTagName("body")[0].addEventListener("keydown",function(ee){
+				if(ee.keyCode == 89){
+					if(document.body.classList[0] === "dark"){
+						document.body.classList.remove("dark");
+						document.body.classList.add("light");
+					}else{
+						document.body.classList.remove("light");
+						document.body.classList.add("dark");
+					}
+				}
+			})
+		}
+	})
+
     document.getElementById("pseudo").addEventListener("keydown", function(e) {
         if (e.keyCode == 13) // touche entrée
             connectLobby();

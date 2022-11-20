@@ -64,6 +64,12 @@
 
 }
 
+
+.dark .card{
+	color : black;
+	border-color: #363636;
+}
+
 .card-remove{
 	width:100px;
 	max-width:100px;
