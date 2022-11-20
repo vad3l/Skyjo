@@ -63,7 +63,7 @@ table {
 	background-color:#252525;
 }
 
-.dark #room #load p{
+.dark #room #load p, .dark #room #endParty p{
 	color: white !important;
 }
 
@@ -75,11 +75,9 @@ table {
 	background-color:#101010 !important;
 }
 
-
-.light{
-
+.dark #lobby #scroll{
+	background-color:#ababab !important;
 }
-
 
 body {
     font-family: sans-serif;

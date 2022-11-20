@@ -96,8 +96,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     });
     // réception de la mise à jour d'une liste
     sock.on("liste", function(liste,hoste) {
-		console.log(liste);
-		console.log("je recois la liste");
         if (currentUser) {
 			host=hoste;
             afficherListe(liste,hoste);
@@ -145,8 +143,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("endParty").style.display = "none";
 		document.getElementById("jeux").style.display ="flex";
 		jeu=deck;
-		console.log(deck);
-		console.log(jeu);
 		jeu.forEach(r =>{
 			if(r.username == player.username){
 				player.main = r.main;
@@ -185,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	sock.on("endGame",function(tabGagnant){
 		let load = document.getElementById("load");
 		let p = document.createElement("p");
-		let str = "Le grand gagnant est :<br>"+tabGagnant.join("<br>");
+		let str = (tabGagnant.length === 1 ? "Le grand gagnant est :<br>" : "Les grands gagnants sont :<br>")+tabGagnant.join("<br>");
 
 		p.innerHTML = "En attente que l'hôte lance une nouvelle partie.";
 		
@@ -500,8 +496,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
 		updateHostButton();
-		console.log("---------------");
-		console.log(newList);
 		newList.sort(function(a,b){
 			return a.score - b.score;
 		})
@@ -893,8 +887,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function connectLobby() {
         // recupération du pseudo
-        var user = document.getElementById("pseudo").value.trim();
+        var user = JSON.stringify(document.getElementById("pseudo").value.trim());
         if (! user) return;
+		console.log(user);
         currentUser = user; 
         // ouverture de la connexion
 		player.username = user;
