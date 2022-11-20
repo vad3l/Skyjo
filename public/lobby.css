@@ -51,6 +51,35 @@ table {
 /*************************************************************************
  ***                    Début de la feuille de style                   ***
  *************************************************************************/ 
+.dark{
+
+	color-scheme: dark !important;
+	background-color: #252525;
+	color:white !important;
+
+}
+
+.dark #connexion{
+	background-color:#252525;
+}
+
+.dark #room #load p{
+	color: white !important;
+}
+
+.dark #room #content {
+	background-color: #3c3c3c !important;
+}
+
+.dark #room #content main, .dark #room #content aside{
+	background-color:#101010 !important;
+}
+
+
+.light{
+
+}
+
 
 body {
     font-family: sans-serif;
@@ -405,7 +434,7 @@ nav section {
 	justify-content: center;
 	flex-direction: column;
     border-radius: 4vw;
-    background-color: lightgrey;
+    background-color: lightseagreen;
     width: 30vw;
     position: relative;
     box-shadow: 10px 10px 10px #333;
@@ -413,7 +442,6 @@ nav section {
 	padding-bottom: 5px;
 }
 nav section:nth-child(2) {
-    background-color: lightseagreen;
     color: white;
 }
 nav section h2 {
@@ -443,7 +471,6 @@ nav section input[type="submit"]{
     
         
 #logScreen {
-    background: rgba(200, 200, 200, 0.8);
     width: 100vw;
     height: 100vh;
 }
