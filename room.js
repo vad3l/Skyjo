@@ -21,12 +21,12 @@ class Room {
     lancerJeu() {
         this.jeu = new Jeu();
         this.jeu.shuffle();
-        this.jeu.shuffle();
+        //this.jeu.shuffle();
         this.jeu.distribute(this.players);
         
         this.players.forEach(p => {
             p.main.calculatePoints();
-            // remttre a 0 le sacore des joeurs si nouvell partie (quelequn a gagner)
+            // remttre a 0 le sacore des joueurs si nouvelle partie (quelequn a gagner)
             if(this.endGame) {
                 p.score = 0;
             }
@@ -182,7 +182,7 @@ class Room {
                 p.score += scores[i].points;
             }
             ++i;
-            //console.log(p)
+            //console.log(p);
         })
     }
     
@@ -196,8 +196,11 @@ class Room {
                 end = true;
                 this.endGame = true;
             }
-            if(p.score <= min) {
+            if(p.score < min) {
                 min = p.score;
+                ps.splice(0, ps.length);
+                ps.push(p.username);
+            }else if(p.score === min) {
                 ps.push(p.username);
             }
         });
