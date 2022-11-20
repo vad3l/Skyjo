@@ -67,8 +67,14 @@
 
 .dark .card{
 	color : black;
-	border-color: #363636;
+	border-color: #252525; 
 }
+
+.dark .card.choosed {
+	border-color: #3c3c3c;
+	z-index: 1;
+}
+
 
 .card-remove{
 	width:100px;
