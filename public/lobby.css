@@ -76,7 +76,8 @@ table {
 }
 
 .dark #lobby #scroll{
-	background-color:#ababab !important;
+	background-color:#3b3b3b !important;
+	color: white  !important;
 }
 
 body {
@@ -439,9 +440,12 @@ nav section {
 	text-align: center;
 	padding-bottom: 5px;
 }
+
+/*
 nav section:nth-child(2) {
     color: white;
-}
+}*/
+
 nav section h2 {
     font-size: 28px;
     margin: 2vw;

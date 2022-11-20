@@ -343,7 +343,7 @@ io.on('connection', function (socket) {
 			        socket.broadcast.emit('list rooms', getRoomAvailable());
 					io.in(r.id).emit('liste', r.getPlayers(), r.host);
 					io.in(r.id).emit("startTurn1", r.getPlayers());
-					io.in(r.id).emit("message", { from: null, to: null, text: "La partie commence !!!", date: Date.now() });
+					io.in(r.id).emit("message", { from: null, to: null, text: "La manche commence !!!", date: Date.now() });
 				}
 			}
 		});
@@ -400,12 +400,12 @@ io.on('connection', function (socket) {
                 
 				let jeu = room.verifierEndGame()
 				if(jeu.estTerminer) {
-                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + " a gagner ...", date: Date.now() });
+                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? "ont" : "a") + " gagner ...", date: Date.now() });
 				    io.in(room.id).emit("endGame", jeu.playersWin);
 					room.run = false;
 					socket.broadcast.emit('list rooms', getRoomAvailable());
 				}else {
-                    io.in(room.id).emit("message", { from: null, to: null, text: "La partie est finit...", date: Date.now() });
+                    io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finis...", date: Date.now() });
 					io.in(room.id).emit("endParty");
 				}
 				
