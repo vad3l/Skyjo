@@ -63,7 +63,7 @@ table {
 	background-color:#252525;
 }
 
-.dark #room #load p, .dark #room #endParty p{
+.dark #room .box p{ /*#load p, .dark #room #endParty*/
 	color: white !important;
 }
 
