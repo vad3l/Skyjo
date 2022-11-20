@@ -72,7 +72,7 @@
 
 .dark .card.choosed {
 	border-color: #3c3c3c;
-	z-index: 1;
+	/*z-index: 1;*/
 }
 
 
