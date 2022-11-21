@@ -135,6 +135,8 @@ class Room {
 
    turnCardGoToDefausse(player) {
     let cardsChange = [player.phase.card2];
+    //console.log(player.phase.card2)
+    //console.log("card cgange", cardsChange)
     this.players.forEach(p => {
         if(p.username === player.username) {
             p.main.majMain(cardsChange);
@@ -161,7 +163,7 @@ class Room {
             }
         }
         this.turnPlayer = p.username;
-        return this.turnPlayer;
+        return p;
     }
 
     intervertirCarte(player, choice) {
@@ -253,6 +255,30 @@ class Room {
 
     getSizeDiscard() {
         return this.jeu.getSizeDiscard();
+    }
+
+
+    simulateMoveRobot(robot) {
+        let min = 15;
+        let l;
+        let c;
+        console.log("main : ",robot.phase)
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 4; j++) {
+                if(robot.main.cartes[i][j].value < min && robot.main.cartes[i][j].back) {
+                    l = i;
+                    c = j;
+                }
+            }
+        }
+        robot.phase = {card1: null, card2: null};
+        robot.phase.card2 = {ligne : l, colonne: c}
+        
+        console.log("robot return l/c" , l , c)
+        this.turnCardGoToDefausse(robot);
+
+        
+        this.intervertirCarte(robot, "pioche");
     }
 }
 

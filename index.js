@@ -11,6 +11,7 @@ const Room = require("./room.js")
 // Ecoute sur les websockets
 const { Server } = require("socket.io");
 const { group } = require('console');
+const { recommendCommands } = require('yargs');
 const io = new Server(server);
 
 // Configuration d'express pour utiliser le répertoire "public"
@@ -97,7 +98,7 @@ io.on('connection', function (socket) {
 				if(bool) {
 					io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 				}
-				
+
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				let roomAvailable = getRoomAvailable();
 				socket.broadcast.emit('list rooms', roomAvailable);
@@ -392,7 +393,15 @@ io.on('connection', function (socket) {
 			}
 		}else {
             
-            let nom = room.swapJoueur();
+            let playerTurn = room.swapJoueur();
+			let nom = playerTurn.username;
+			console.log("nom ", nom, "et robot : ", playerTurn.robot)
+			while (playerTurn.robot) {
+				io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer (bot)", date: Date.now() });
+				room.simulateMoveRobot(playerTurn);
+				playerTurn = room.swapJoueur();
+				nom = playerTurn.username;
+			}
             
             if(room.playerAllReturnMain !== null) {
                 // dernier tour
