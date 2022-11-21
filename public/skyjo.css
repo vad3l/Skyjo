@@ -80,6 +80,10 @@ table {
 	color: white !important;
 }
 
+.dark .card--back > span {
+	color: black !important;
+}
+
 body {
     font-family: sans-serif;
 }

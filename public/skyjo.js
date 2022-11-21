@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				td.classList.add("card");
 				td.classList.add("card--face")
 			}
-			td.style.background = "radial-gradient(closest-side, rgb(255 255 255 / 0%), " + carte.color + ")";
+			td.style.background = "radial-gradient(closest-side, #ebf8e1, " + carte.color + ")";
 			// premier span
 			td.appendChild(document.createElement("span"));
 
