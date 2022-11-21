@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		main:null,
 		endTurn:false,
 		score:0,
+		robot:false
 	};
 	
 	
@@ -718,12 +719,18 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
 					for(let i = 0 ; i < td.length ; ++i){
 						let bool = false;
-						td[i].classList.forEach(e => {
-							if(e === "card--back"){
+						let boole = false;
+						td[i].classList.forEach(r => {
+							if(r === "card--back"){
 								bool = true;
 							}
+
+							if(r == "card-remove"){
+								boole = true;
+							}
+
 						});
-						if(bool){
+						if(bool && !boole){
 							td[i].classList.add("card--hover-effect");
 							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 						}else{
