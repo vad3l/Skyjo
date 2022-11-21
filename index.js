@@ -5,6 +5,7 @@ const http = require('http');
 const server = app.listen(8080, function() {
     console.log("C'est parti ! En attente de connexion sur le port 8080...");
 });
+
 const Room = require("./room.js")
 
 // Ecoute sur les websockets
@@ -16,7 +17,7 @@ const io = new Server(server);
 app.use(express.static('public'));
 // set up to 
 app.get('/', function(req, res) {  
-    res.sendFile(__dirname + '/public/lobby.html');
+    res.sendFile(__dirname + '/public/skyjo.html');
 });
 
 
@@ -400,12 +401,12 @@ io.on('connection', function (socket) {
                 
 				let jeu = room.verifierEndGame()
 				if(jeu.estTerminer) {
-                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? "ont" : "a") + " gagner ...", date: Date.now() });
+                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? " ont gagnés" : " gagné") + "...", date: Date.now() });
 				    io.in(room.id).emit("endGame", jeu.playersWin);
 					room.run = false;
 					socket.broadcast.emit('list rooms', getRoomAvailable());
 				}else {
-                    io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finis...", date: Date.now() });
+                    io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finit...", date: Date.now() });
 					io.in(room.id).emit("endParty");
 				}
 				
@@ -413,7 +414,7 @@ io.on('connection', function (socket) {
 				//socket.broadcast.emit('list rooms', getRoomAvailable());
 			}else {
                 io.in(room.id).emit("startTurn", room.getPlayers(), nom);
-		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour " + nom + " de jouer", date: Date.now() });
+		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer", date: Date.now() });
 			}
 			
 		}

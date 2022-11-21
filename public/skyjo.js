@@ -11,6 +11,16 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		score:0,
 	};
 	
+	
+	/*
+	var voices = window.speechSynthesis.getVoices();
+
+	speechSynthesis.onvoiceschanged = function (params) {
+		voices = speechSynthesis.getVoices();
+	}
+	console.log(voices);	
+	*/
+
 	// mettre les autres fenetres invisible
 	document.getElementById("pseudo").focus();
 	toggleDisplayOn("logScreen","block");
@@ -451,7 +461,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         // si réception du message alors que l'on est déconnecté du service
         if (!currentUser) return;   
         
-		
 
         // affichage des nouveaux messages 
         var bcMessages = document.querySelector("#content main");
@@ -477,6 +486,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         else if (msg.from == null) {
             classe = "system";
             msg.from = "[admin]";
+			
+			let speech = new SpeechSynthesisUtterance(msg.text); 
+			//speech.voice = voices[9];
+			speechSynthesis.speak(speech);
         }
                 
         // affichage de la date format ISO pour avoir les HH:MM:SS finales qu'on extrait ensuite
