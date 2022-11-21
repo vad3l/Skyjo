@@ -12,14 +12,15 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	};
 	
 	
-	/*
+	
 	var voices = window.speechSynthesis.getVoices();
 
 	speechSynthesis.onvoiceschanged = function (params) {
 		voices = speechSynthesis.getVoices();
+		console.log(voices);	
 	}
-	console.log(voices);	
-	*/
+
+
 
 	// mettre les autres fenetres invisible
 	document.getElementById("pseudo").focus();
