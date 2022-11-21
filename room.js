@@ -45,14 +45,41 @@ class Room {
     }
 
     deletePlayer(playerDelete) {
-        this.players = this.players.filter(p => p.username !== playerDelete);
-        this.placePrise--;
-        if(playerDelete === this.host) {
+        if(playerDelete === this.host) { //avnt pas de palyedelete.userneme
             this.players.forEach(p => {
-                this.setHost(p.username);
-                return;
+                if(!p.robot) {
+                    this.setHost(p.username);
+                    return;
+                }
             });
         }
+
+        let bool = false;
+        if(!this.run) {
+            this.players = this.players.filter(p => p.username !== playerDelete);
+            this.placePrise--;
+            console.log("supprimer players")        
+        }else {
+            console.log("remplacer par un bot")        
+            this.players.forEach(p => {
+                if(playerDelete === p.username) {
+                    p.username = "Bot - " + p.username;
+                    p.robot = true;
+                    bool = true;
+                }
+            })
+        }  
+        
+        return bool;
+    }
+
+    deleteRobot() {
+        this.players.forEach(p => {
+            if(p.robot) {
+                console.log("supprimer bot " + p.username);
+                this.placePrise--;
+            }
+        });
     }
 
     setHost(username) {
@@ -106,7 +133,7 @@ class Room {
         this.majMain(player, cardsChange);
    }
 
-   turnCardDefaussePlateau(player) {
+   turnCardGoToDefausse(player) {
     let cardsChange = [player.phase.card2];
     this.players.forEach(p => {
         if(p.username === player.username) {

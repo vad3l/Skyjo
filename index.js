@@ -89,10 +89,14 @@ io.on('connection', function (socket) {
             console.log("Sortie de l'utilisateur " + currentID);
             
 			if(room !== undefined) { //aparrtient a une room
-				supprimerPlayerRoom(player);
+				let bool = supprimerPlayerRoom(player);
 				console.log(currentID + " quitte la room " + player.roomId);
 
 				checkRoom(player.roomId);
+				
+				if(bool) {
+					io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
+				}
 				
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				let roomAvailable = getRoomAvailable();
@@ -127,12 +131,14 @@ io.on('connection', function (socket) {
 			let room = rooms.find(r => r.id === player.roomId);
 			
 			if(room !== undefined) { //aprteint a room
-				supprimerPlayerRoom(player);
+				let bool = supprimerPlayerRoom(player);
 				console.log(currentID + " quitte la room " + player.roomId);
 				
 				checkRoom(player.roomId);
 				
-
+				if(bool) {
+					io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
+				}
 				// emission pour donner la liste des rooms aux clients (maj nombre players room)
 				let roomAvailable = getRoomAvailable()
 				socket.broadcast.emit('list rooms', roomAvailable);
@@ -253,7 +259,7 @@ io.on('connection', function (socket) {
 		if(currentID){
 			
 			//supprimer le player dans la room
-			supprimerPlayerRoom(player);
+			let bool = supprimerPlayerRoom(player);
 			
 			//remettre le roomId à 0
 			socket.emit("roomId",null);
@@ -264,6 +270,10 @@ io.on('connection', function (socket) {
 			
 			socket.leave(player.roomId);
 			
+			if(bool) {
+				io.in(player.roomId).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
+			}
+
 			// emission pour donner la liste des rooms aux clients (maj nombre players room)
 			let roomAvailable = getRoomAvailable()
 			socket.broadcast.emit('list rooms', roomAvailable);
@@ -305,7 +315,9 @@ io.on('connection', function (socket) {
 				room = r;
 			}
 		});
-		room.deletePlayer(player.username);
+		let bool = room.deletePlayer(player.username);
+		
+		return bool;
 	}
 
 	function createRoom(player, maxPlace){
@@ -357,14 +369,14 @@ io.on('connection', function (socket) {
 		let room = getRoom(player.roomId);
 		
 		if(room.turn1) {
-			console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+			//console.log("d",room.getDiscard2Cards());
+			//console.log("p",room.getPioche2Cards());
 
 			let cardsChange = [player.phase.card1, player.phase.card2]
 			room.majMain(player, cardsChange)
 
-			console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+			//console.log("d",room.getDiscard2Cards());
+			//console.log("p",room.getPioche2Cards());
             // verifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
@@ -401,9 +413,11 @@ io.on('connection', function (socket) {
                 
 				let jeu = room.verifierEndGame()
 				if(jeu.estTerminer) {
+					room.deleteRobot();
                     io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? " ont gagnés" : " gagné") + "...", date: Date.now() });
 				    io.in(room.id).emit("endGame", jeu.playersWin);
 					room.run = false;
+					//io.in(r.id).emit('liste', r.getPlayers(), r.host); //eu une idee pas folle?
 					socket.broadcast.emit('list rooms', getRoomAvailable());
 				}else {
                     io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finit...", date: Date.now() });
@@ -429,8 +443,8 @@ io.on('connection', function (socket) {
 		let sizePioche = room.getSizePioche();
 		let sizeDiscard = room.getSizeDiscard();
 				
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 
 		
 		//debug foutu bug 
@@ -439,8 +453,8 @@ io.on('connection', function (socket) {
 		}
 
 		room.selectedCardPioche();
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
@@ -452,8 +466,8 @@ io.on('connection', function (socket) {
 		let sizePioche = room.getSizePioche();
 		let sizeDiscard = room.getSizeDiscard();
 		
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 		
 		
 		room.selectedCardDefausse();
@@ -465,8 +479,8 @@ io.on('connection', function (socket) {
             console.log("2222222222222222222222222222222222: ", sizePioche, ' ', sizeDiscard)
 		}
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 	});
 	  
@@ -480,13 +494,13 @@ io.on('connection', function (socket) {
 		let cp = room.getPioche2Cards()[0];
 		
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 
 		room.pickedPioche(); // pioche to discard
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 		
 		//debug foutu bug 
 		if(sizePioche !== room.getSizePioche()+1 || sizeDiscard !== room.getSizeDiscard()-1 || cp !== room.getDiscard2Cards()[0] ){
@@ -503,13 +517,13 @@ io.on('connection', function (socket) {
 		
 		let room = getRoom(player.roomId)
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 
 		room.turnCardPlateau(player);
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
         io.in(room.id).emit("deck", room.getPlayers());
 	});
 
@@ -525,19 +539,19 @@ io.on('connection', function (socket) {
 
 		
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 
 
 
-		room.turnCardDefaussePlateau(player);
+		room.turnCardGoToDefausse(player);
 		//console.log("d2.5",room.getDiscard2Cards())
 		//console.log("size discard",room.getSizeDiscard());
 		room.intervertirCarte(player, choice);
 		
 
-		console.log("d",room.getDiscard2Cards());
-		console.log("p",room.getPioche2Cards());
+		//console.log("d",room.getDiscard2Cards());
+		//console.log("p",room.getPioche2Cards());
 
         if(choice ==="pioche") {
 			if(sizePioche !== room.getSizePioche()+1) {
