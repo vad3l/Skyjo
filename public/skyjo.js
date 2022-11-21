@@ -679,15 +679,24 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			}
 			for(let i = 0 ; i < td.length ; ++i){
 				if(JSON.stringify(player.phase.card1) != JSON.stringify(pioche[0])){
+					let boole = false;
+					td[i].classList.forEach(r => {
+						if(r === "card-remove"){
+							boole = true;
+						}
+					});
+
+					if(!boole){
 					td[i].classList.add("card--hover-effect");
 					td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
-
+					}
 				}else{
 					let boole = false;
 					let bool = false;
 					td[i].classList.forEach(r => {
 						
 						if(r === "card-remove"){
+							console.log("je contiens");
 							boole = true;
 						}
 
@@ -701,6 +710,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 					if(!boole){
 						td[i].classList.add("card--hover-effect");
 						td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+					}else{
+						console.log("j'enleve");
+						td[i].classList.remove("card--hover-effect");
+						td[i].replaceWith(td[i].cloneNode(true));
 					}
 
 
@@ -719,18 +732,13 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				if(JSON.stringify(player.phase.card1) === JSON.stringify(discard[0])){
 					for(let i = 0 ; i < td.length ; ++i){
 						let bool = false;
-						let boole = false;
 						td[i].classList.forEach(r => {
 							if(r === "card--back"){
 								bool = true;
 							}
 
-							if(r == "card-remove"){
-								boole = true;
-							}
-
 						});
-						if(bool && !boole){
+						if(bool){
 							td[i].classList.add("card--hover-effect");
 							td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
 						}else{
@@ -809,9 +817,22 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 						let td = document.getElementById("plateau").getElementsByTagName("td");
 						for(let i = 0 ; i < td.length ; ++i){
 							if(JSON.stringify(player.phase.card1) != JSON.stringify(pioche[0])){
-								td[i].classList.add("card--hover-effect");
-								td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
-			
+								console.log("1");
+								let bool = false;
+								td[i].classList.forEach(r =>{
+									if(r === "card-remove"){
+										bool =true;
+									}
+								});
+								
+								if(!bool){
+									td[i].classList.add("card--hover-effect");
+									td[i].addEventListener("click",playTurn.bind(null, {"target":td[i]}));
+								}else{
+									td[i].classList.remove("card--hover-effect");
+									td[i].replaceWith(td[i].cloneNode(true));
+								}
+
 							}else{
 								let boole = false;
 								let bool = false;
