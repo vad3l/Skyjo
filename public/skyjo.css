@@ -99,12 +99,12 @@ header{
 	height : 80px;
 	background : grey;
 }
-
+/*
 #btnLogout:hover{
 	cursor:pointer;
 	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
     transform: scale(1.05); 
-}
+}*/
 
 #btnLogout{
 	background-color: #4CAF50; /* Green */
@@ -114,7 +114,7 @@ header{
 	font-size: 16px;
 }
 
-#btnLancerPartie:hover {
+#btnLancerPartie:hover, #btnRelancerPartie:hover, #btnLogout:hover {
 	cursor:pointer;
 	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
     transform: scale(1.05); 

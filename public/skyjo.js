@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				td.classList.add("card");
 				td.classList.add("card--face")
 			}
-			td.style.background = carte.color;
+			td.style.background = "radial-gradient(closest-side, rgb(255 255 255 / 0%), " + carte.color + ")";
 			// premier span
 			td.appendChild(document.createElement("span"));
 
@@ -901,7 +901,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      */
     function connectLobby() {
         // recupération du pseudo
-        var user = JSON.stringify(document.getElementById("pseudo").value.trim());
+        var user = document.getElementById("pseudo").value.trim();
         if (! user) return;
 		console.log(user);
         currentUser = user; 
