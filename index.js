@@ -7,11 +7,12 @@ const server = app.listen(8080, function() {
 });
 
 const Room = require("./room.js")
-
+var promisse = null;
 // Ecoute sur les websockets
 const { Server } = require("socket.io");
 const { group } = require('console');
 const { recommendCommands } = require('yargs');
+const { resolve } = require('path');
 const io = new Server(server);
 
 // Configuration d'express pour utiliser le répertoire "public"
@@ -601,13 +602,34 @@ io.on('connection', function (socket) {
 			}else {
                 io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer", date: Date.now() });
+				
+				if(promisse !=null) promisse.cancel(console.log("enlever promissssee"));
+				promisse = myPromise(5000);
+				
 			}
 			
 		}
-
-
 	});
-    
+	
+	function myPromise(ms) {
+		
+		let p = new Promise(function(resolve, reject) {
+			//Set up the real work
+			//callback(resolve, reject);
+	
+			//Set up the timeout
+			timeout = setTimeout(function() {
+				io.in(0).emit("message", { from: null, to: null, text: "Bouge toi enculé", date: Date.now() });
+			}, ms);
+
+			
+		});
+		p.cancel = function () {
+			clearTimeout(timeout);
+		}
+		return p;
+	}
+
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
         let room = getRoom(player.roomId);

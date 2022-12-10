@@ -340,11 +340,7 @@ class Room {
             this.selectedCardDefausse();
             this.turnCardGoToDefausse(robot);
             this.intervertirCarte(robot, "defausse");
-        }
-
-
-        
-        
+        }        
     }
 }
 
