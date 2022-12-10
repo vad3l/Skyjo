@@ -320,7 +320,7 @@ class Room {
         robot.phase.card2 = {ligne: l, colonne:c}
         
         let val_pioche = this.jeu.pioche[0];
-        let val_defausse = this.jeu.defausse[0];
+        let val_defausse = this.jeu.discard[0];
 
         if(val_pioche < val_defausse) {
             console.log("bot pioche dans la pioche");
