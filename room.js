@@ -320,14 +320,14 @@ class Room {
         robot.phase.card2 = {ligne: l, colonne:c}
         
         let val_pioche = this.jeu.pioche[0];
-        let val_defausse = this.jeu.pioche[0];
+        let val_defausse = this.jeu.defausse[0];
 
         if(val_pioche < val_defausse) {
             console.log("bot pioche dans la pioche");
             if(val_pioche > max) {
                 console.log("bot pose defausse et tourne une carte");
                 this.selectedCardPioche();
-                this.pickedPioche();
+                this.pickedPioche(); //metrre defausse
                 this.turnCardPlateau(robot);
             }else {
                 console.log("bot pose sur son plateau");
