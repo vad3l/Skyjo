@@ -29,7 +29,14 @@ class Jeu {
     }
 
     shuffle() {
-       this.pioche.sort(() => Math.random() - 0.5);
+        for (let index = 0; index < 1000; index++) {
+            let carte1 = Math.floor(Math.random() * this.pioche.length);
+            let carte2 = Math.floor(Math.random() * this.pioche.length);
+            let carte = this.pioche[carte1];
+            this.pioche[carte1] = this.pioche[carte2]
+            this.pioche[carte2] = carte;
+        }
+       //this.pioche.sort(() => Math.random() - 0.5);
     }
 
     distribute(players) {
