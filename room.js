@@ -324,7 +324,7 @@ class Room {
 
         if(val_pioche < val_defausse) {
             console.log("bot pioche dans la pioche");
-            if(val_pioche < max) {
+            if(val_pioche > max) {
                 console.log("bot pose defausse et tourne une carte");
                 this.selectedCardPioche();
                 this.pickedPioche();
