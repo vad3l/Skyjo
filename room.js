@@ -309,7 +309,7 @@ class Room {
         // seacrh carte max in handle
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
-                if(robot.main.cartes[i][j].value > max) {
+                if(robot.main.cartes[i][j] != null && robot.main.cartes[i][j].value > max) {
                     l = i;
                     c = j;
                     max = robot.main.cartes[i][j].value;
