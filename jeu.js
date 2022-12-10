@@ -29,7 +29,7 @@ class Jeu {
     }
 
     shuffle() {
-        for (let index = 0; index < 1000; index++) {
+        for (let index = 0; index < 10000; index++) {
             let carte1 = Math.floor(Math.random() * this.pioche.length);
             let carte2 = Math.floor(Math.random() * this.pioche.length);
             let carte = this.pioche[carte1];
