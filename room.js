@@ -25,6 +25,19 @@ class Room {
         this.jeu.distribute(this.players);
         
         this.players.forEach(p => {
+            if(p.robot) {
+                let cardsChange = [];
+                let i=0;
+                let j=0;
+                while(p.main.getNbCartesRetourne()+cardsChange.length < 2) {
+                    cardsChange.push({ligne : i, colonne: j});
+                    console.log("cards change", cardsChange)
+                    i++;
+                    j++;
+                }
+                
+                p.main.majMain(cardsChange);
+            }
             p.main.calculatePoints();
             // remttre a 0 le sacore des joueurs si nouvelle partie (quelequn a gagner)
             if(this.endGame) {
@@ -45,27 +58,30 @@ class Room {
     }
 
     deletePlayer(playerDelete) {
-        if(playerDelete === this.host) { //avnt pas de palyedelete.userneme
+        if(playerDelete === this.host) { 
             this.players.forEach(p => {
-                if(!p.robot) {
+                if(!p.robot && p.username != playerDelete) {
+                    console.log("set host ", p.username)
                     this.setHost(p.username);
                     return;
                 }
             });
         }
-
-        let bool = false;
+ 
+        let bool = false; // falg pour svoir si con la remplace par un robot
         if(!this.run) {
             this.players = this.players.filter(p => p.username !== playerDelete);
             this.placePrise--;
             console.log("supprimer players")        
         }else {
-            console.log("remplacer par un bot")        
+                    
             this.players.forEach(p => {
                 if(playerDelete === p.username) {
+                    //console.log("remplacer par un bot", this.turnPlayer, p.username)
                     p.username = "Bot - " + p.username;
                     p.robot = true;
                     bool = true;
+                    // si c'est sont toue de jouer le faire jouer 
                 }
             })
         }  
@@ -73,13 +89,39 @@ class Room {
         return bool;
     }
 
-    deleteRobot() {
+    retournerCardTurn1() {
         this.players.forEach(p => {
             if(p.robot) {
-                console.log("supprimer bot " + p.username);
-                this.placePrise--;
+                let cardsChange = [];
+                let i=0;
+                let j=0;
+                while(p.main.getNbCartesRetourne()+cardsChange.length < 2) {
+                    cardsChange.push({ligne : i, colonne: j});
+                    console.log("cards change", cardsChange)
+                    i++;
+                    j++;
+                }
+                
+                p.main.majMain(cardsChange);
+                p.main.calculatePoints();
+            } 
+        });
+    }
+
+    deleteRobot() {
+        this.players = this.players.filter(p => !p.robot);
+        this.placePrise = this.players.length;
+    }
+
+    hasOnlyRobot() {
+        let bool = true;
+
+        this.players.forEach(p => {
+            if(!p.robot) {
+                bool = false;
             }
         });
+        return bool;
     }
 
     setHost(username) {
@@ -135,10 +177,11 @@ class Room {
 
    turnCardGoToDefausse(player) {
     let cardsChange = [player.phase.card2];
-    //console.log(player.phase.card2)
+    console.log(player.phase.card2)
     //console.log("card cgange", cardsChange)
     this.players.forEach(p => {
         if(p.username === player.username) {
+            //console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", p.username, player.username)
             p.main.majMain(cardsChange);
         }
     });
@@ -146,13 +189,13 @@ class Room {
 
     hierarchisePlayers() {    
         this.players.sort(function(a,b){ return b.main.points - a.main.points});
-        this.turnPlayer = this.players[0].username;
+        this.turnPlayer = this.players[0];
     }
     
     swapJoueur() {
         let p;
         for (let i = 0; i < this.players.length; i++) {
-            if(this.players[i].username === this.turnPlayer) {
+            if(this.players[i].username === this.turnPlayer.username) {
                 //console.log("i :", this.players[i].username);
                 //console.log("i :", this.players[i+1].username);
                 if(i === this.players.length-1) {
@@ -162,7 +205,7 @@ class Room {
                 }
             }
         }
-        this.turnPlayer = p.username;
+        this.turnPlayer = p;
         return p;
     }
 
@@ -262,23 +305,25 @@ class Room {
         let min = 15;
         let l;
         let c;
-        console.log("main : ",robot.phase)
+        
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
                 if(robot.main.cartes[i][j].value < min && robot.main.cartes[i][j].back) {
                     l = i;
                     c = j;
+                    min = robot.main.cartes[i][j].value;
                 }
             }
         }
-        robot.phase = {card1: null, card2: null};
-        robot.phase.card2 = {ligne : l, colonne: c}
+        robot.phase = {card1 :null, card2: null};
+        robot.phase.card2 = {ligne: l, colonne:c}
         
         console.log("robot return l/c" , l , c)
-        this.turnCardGoToDefausse(robot);
-
         
+        this.selectedCardPioche();
+        this.turnCardGoToDefausse(robot);
         this.intervertirCarte(robot, "pioche");
+        
     }
 }
 

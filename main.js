@@ -50,7 +50,7 @@ class Main {
             if(this.cartes[0][i] === null || this.cartes[1][i] === null || this.cartes[2][i].value === null) {
                 continue;
             }
-            console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
+            //console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
             if(this.cartes[0][i].back || this.cartes[1][i].back || this.cartes[2][i].back) {
                 continue;
             }
@@ -65,9 +65,9 @@ class Main {
                     this.cartes[2][i] = null;
                 }
             }
-            console.log("la,",this.cartes[0][i], this.cartes[1][i] ,this.cartes[2][i]);
+            //console.log("la,",this.cartes[0][i], this.cartes[1][i] ,this.cartes[2][i]);
         }
-        console.log("apressssssssssss :" , discard)
+        //console.log("discard pares verif mai :" , discard)
     }
 
     getNbCartesRetourne() {
@@ -95,11 +95,13 @@ class Main {
     }
 
     majMain(cardsChange) {
+        //console.log("retourner", this.cartes[c.ligne][c.colonne])
         cardsChange.forEach(c => {
-            //console.log("retourner", this.cartes[c.ligne][c.colonne])
+            console.log("retourner", this.cartes[c.ligne][c.colonne])
             if(this.cartes[c.ligne][c.colonne] != null) {
                 this.cartes[c.ligne][c.colonne].retourner();
             }
+            //console.log("retourner", this.cartes[c.ligne][c.colonne].back)
         });
     }
     

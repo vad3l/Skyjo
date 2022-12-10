@@ -573,7 +573,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("load").style.display = "flex";
 		document.getElementById("jeux").style.display = "none";
 		document.getElementById("endParty").style.display = "none";
-		
+		document.querySelector("#content main").innerHTML =" ";
+	
 	}
 	
 	/*
@@ -588,6 +589,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		document.getElementById("load").style.display = "flex";
 		document.getElementById("jeux").style.display = "none";
 		document.getElementById("endParty").style.display = "none";
+		document.querySelector("#content main").innerHTML =" ";
 		toggleDisplayOn("room","flex");
 		sock.emit("joinRoom",player, id);
 	}
