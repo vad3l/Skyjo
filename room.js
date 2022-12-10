@@ -31,7 +31,7 @@ class Room {
                 let j=0;
                 while(p.main.getNbCartesRetourne()+cardsChange.length < 2) {
                     cardsChange.push({ligne : i, colonne: j});
-                    console.log("cards change", cardsChange)
+                    //console.log("cards change", cardsChange)
                     i++;
                     j++;
                 }
@@ -68,7 +68,7 @@ class Room {
             });
         }
  
-        let bool = false; // falg pour svoir si con la remplace par un robot
+        let bool = false; // falg pour savoir si con la remplace par un robot
         if(!this.run) {
             this.players = this.players.filter(p => p.username !== playerDelete);
             this.placePrise--;
@@ -97,7 +97,7 @@ class Room {
                 let j=0;
                 while(p.main.getNbCartesRetourne()+cardsChange.length < 2) {
                     cardsChange.push({ligne : i, colonne: j});
-                    console.log("cards change", cardsChange)
+                    //console.log("cards change", cardsChange)
                     i++;
                     j++;
                 }
@@ -163,7 +163,7 @@ class Room {
 
     selectedCardDefausse() {
        this.jeu.selectedCardDefausse();
-   }
+    }
  
    pickedPioche() {
        this.jeu.pickedPioche();
@@ -234,9 +234,9 @@ class Room {
         });
         
         console.log(this.playerAllReturnMain +" a declanche la fin de partie")
-        console.log(scores);
+        //console.log(scores);
 
-        console.log("score joueur declanche" , scoreJoueurDeclanche);
+        //console.log("score joueur declanche" , scoreJoueurDeclanche);
 
         let bool = false;
         scores.forEach(p => {
@@ -302,27 +302,48 @@ class Room {
 
 
     simulateMoveRobot(robot) {
-        let min = 15;
+        let max = -3;
         let l;
         let c;
         
+        // seacrh carte max in handle
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
-                if(robot.main.cartes[i][j].value < min && robot.main.cartes[i][j].back) {
+                if(robot.main.cartes[i][j].value > max) {
                     l = i;
                     c = j;
-                    min = robot.main.cartes[i][j].value;
+                    max = robot.main.cartes[i][j].value;
                 }
             }
         }
         robot.phase = {card1 :null, card2: null};
         robot.phase.card2 = {ligne: l, colonne:c}
         
-        console.log("robot return l/c" , l , c)
+        let val_pioche = this.jeu.pioche[0];
+        let val_defausse = this.jeu.pioche[0];
+
+        if(val_pioche < val_defausse) {
+            console.log("bot pioche dans la pioche");
+            if(val_pioche < max) {
+                console.log("bot pose defausse et tourne une carte");
+                this.selectedCardPioche();
+                this.pickedPioche();
+                this.turnCardPlateau(robot);
+            }else {
+                console.log("bot pose sur son plateau");
+                this.selectedCardPioche();
+                this.turnCardGoToDefausse(robot);
+                this.intervertirCarte(robot, "pioche");
+            }
+        }else {
+            console.log("bot pioche dans la defausse et remplace par une carte de son plateau");
+            this.selectedCardDefausse();
+            this.turnCardGoToDefausse(robot);
+            this.intervertirCarte(robot, "defausse");
+        }
+
+
         
-        this.selectedCardPioche();
-        this.turnCardGoToDefausse(robot);
-        this.intervertirCarte(robot, "pioche");
         
     }
 }

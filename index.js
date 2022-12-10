@@ -97,10 +97,10 @@ io.on('connection', function (socket) {
 				socket.leave(player.roomId); //rajouter
 				
 				if(!deleteRoom) {
-					io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 					if(!room.turn1) {
 						if(deletePlayer) {
 							//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
+							io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 
 							if(room.turnPlayer.username == "Bot - " + player.username) { 
 								do {
@@ -115,6 +115,7 @@ io.on('connection', function (socket) {
 							}
 						}
 					}else {
+						if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 						room.retournerCardTurn1();
 						if (room.verifierTurn1() === true) {
 							room.turn1 = false; // tour 1 terminer
@@ -184,10 +185,10 @@ io.on('connection', function (socket) {
 				socket.leave(player.roomId);//rajouter
 
 				if(!deleteRoom) {
-					io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 					if(!room.turn1) {
 						if(deletePlayer) {
 							//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
+							io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 
 							if(room.turnPlayer.username == "Bot - " + player.username) { 
 								do {
@@ -202,6 +203,7 @@ io.on('connection', function (socket) {
 							}
 						}
 					}else {
+						if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 						room.retournerCardTurn1();
 						if (room.verifierTurn1() === true) {
 							room.turn1 = false; // tour 1 terminer
@@ -364,10 +366,10 @@ io.on('connection', function (socket) {
 			
 			
 			if(!deleteRoom) {
-				io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 				if(!room.turn1) {
 					if(deletePlayer) {
 						//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
+						io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 
 						if(room.turnPlayer.username == "Bot - " + player.username) { 
 							do {
@@ -382,6 +384,7 @@ io.on('connection', function (socket) {
 						}
 					}
 				}else {
+					if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
 					room.retournerCardTurn1();
 					if (room.verifierTurn1() === true) {
 						room.turn1 = false; // tour 1 terminer
