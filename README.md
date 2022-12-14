@@ -1,4 +1,15 @@
-SKYJO
+# SKYJO University Web Project
+
+This the SKYJO game in a Website !
+
+## Install
+
+```bash
+git clone https://github.com/Vad3L/Skyjo.git
+cd Skyjo
+npm install
+node .
+```
 
 Leo Vandrepol 
 
