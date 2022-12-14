@@ -27,6 +27,11 @@ After the game launch, you can see the beautiful game board and chat.<br>
 [<img src="./public/img/gameBoard.png" width="400px"/>](./public/img/gameBoard.png)
 [<img src="./public/img/chat.png" width="400px"/>](./public/img/chat.png)
 
+### Additional Feature
+
+#### Responsive
+If you want to play on your smartphone you can to !<br>
+[<img src="./public/img/responsive.png" width="300px"/>](./public/img/responsive.png)
 
 
 Leo Vandrepol 
