@@ -43,18 +43,18 @@ Just a little combo of two keys [CTRL+Y] and tou can change theme.<br>
 #### Animation
 For a dynamic game, small animations are available.
 
-When you wait in the menu of a party there is a small svg that rotates to occupe you'r eyes.
-Or 
+When you wait in the menu of a party there is a small svg that rotates to occupe you'r eyes.<br>
+Or <br>
 When the party start you have a little animation on the chat (BUZZZ).
 
 #### Who Speak ?
 To have an even more lively game.
 
-There is a voice synthesizer that gives information to the players:
-	-The game starts.
-	-The turn is over.
-	-This is the last round.
-	-It is the player's turn. 
+There is a voice synthesizer that gives information to the players:<br>
++	The game starts.
++	The turn is over.
++	This is the last round.
++	It is the player's turn. 
 
 And if your to slow the vocie synthesizer can insult you!
 
