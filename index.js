@@ -6,8 +6,9 @@ const server = app.listen(8080, function() {
     console.log("C'est parti ! En attente de connexion sur le port 8080...");
 });
 
-const Room = require("./room.js")
+const Room = require("./serveur/room.js")
 var promisse = null;
+
 // Ecoute sur les websockets
 const { Server } = require("socket.io");
 const { group } = require('console');
