@@ -604,14 +604,13 @@ io.on('connection', function (socket) {
 		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer", date: Date.now() });
 				
 				if(promisse !=null) promisse.cancel(console.log("enlever promissssee"));
-				promisse = myPromise(5000);
-				
+				promisse = myPromise(10000, room.id);		
 			}
 			
 		}
 	});
 	
-	function myPromise(ms) {
+	function myPromise(ms, id) {
 		
 		let p = new Promise(function(resolve, reject) {
 			//Set up the real work
@@ -619,7 +618,7 @@ io.on('connection', function (socket) {
 	
 			//Set up the timeout
 			timeout = setTimeout(function() {
-				io.in(0).emit("message", { from: null, to: null, text: "Bouge toi enculé", date: Date.now() });
+				io.in(id).emit("message", { from: null, to: null, text: "Bouge toi espèce de foutriquet", date: Date.now() });
 			}, ms);
 
 			
