@@ -703,7 +703,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				td[i].replaceWith(td[i].cloneNode(true));
 			}
 
-			sock.emit("endTurnJoueur",player,pioche,discard);
+			sock.emit("endTurnJoueur",player);
 		}
 
 		afficherJeu(player.username);
@@ -835,7 +835,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}
 
 		if(player.phase.card1 && player.phase.card2 && !player.endTurn){
-			sock.emit("endTurnJoueur",player,pioche,discard);
+			sock.emit("endTurnJoueur",player);
 			player.endTurn = true;
 		}
 
