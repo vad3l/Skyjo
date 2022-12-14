@@ -62,7 +62,7 @@ And if your to slow the vocie synthesizer can insult you!
 The beautifull cards are made in CSS
 
 ## Author 
-Léo Vandrepol
+Léo Vandrepol<br>
 Anthony Gasca-Gimeno
 
 
