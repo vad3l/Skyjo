@@ -24,7 +24,6 @@ class Jeu {
                }
             }
         }
-        //console.log(this.pioche);
         this.discard = [];
     }
 
@@ -60,7 +59,7 @@ class Jeu {
         let carte = this.pioche.shift();
         carte.retourner();
         this.discard.push(carte);
-        this.discard.push(null);// avoir
+        //this.discard.push(null);// avoir
     }
     
     selectedCardPioche() {
@@ -72,24 +71,36 @@ class Jeu {
         this.discard[0].choosed = true;
     }
     
-    pickedPioche() {
+    cardPiocheGoToDefausse() {
         let carte = this.pioche.shift();
         carte.choosed = false;
         this.discard.unshift(carte);
+        if (this.getSizePioche() == 0) {
+            this.putDefausseInPioche();
+        }
     }
 
     intervertirCarte(l, c, player, choice) {
         let carte = player.main.cartes[l][c];
         if(choice === "pioche") {
-            player.main.cartes[l][c] = this.pioche.shift()
+            player.main.cartes[l][c] = this.pioche.shift();
         }else {
-            player.main.cartes[l][c] = this.discard.shift()
+            player.main.cartes[l][c] = this.discard.shift();
         }
         player.main.cartes[l][c].choosed = false;
         this.discard.unshift(carte);
+        if (this.getSizePioche() == 0) {
+            this.putDefausseInPioche();
+        }
     }
 
-
+    putDefausseInPioche() {
+        while (this.discard.length != 1) {
+            this.discard[0].back = true;
+            this.pioche.push(this.discard.shift());
+        }
+        this.shuffle();
+    }
 
     getDiscard2Cards() {
         return [this.discard[0], this.discard[1]];

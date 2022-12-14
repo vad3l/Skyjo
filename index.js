@@ -490,7 +490,7 @@ io.on('connection', function (socket) {
 		rooms.forEach(r => {
 			if(r.host === username) {
 			    
-                if(r.placePrise === 0) { //! remttre 1
+                if(r.placePrise === 1) { //! remttre 1
 				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
@@ -690,15 +690,13 @@ io.on('connection', function (socket) {
 		//console.log("d",room.getDiscard2Cards());
 		//console.log("p",room.getPioche2Cards());
 
-		room.pickedPioche(); // pioche to discard
+		room.cardPiocheGoToDefausse(); // pioche to discard
 
 		//console.log("d",room.getDiscard2Cards());
 		//console.log("p",room.getPioche2Cards());
 		
 		//debug foutu bug 
-		if(sizePioche !== room.getSizePioche()+1 || sizeDiscard !== room.getSizeDiscard()-1 || cp !== room.getDiscard2Cards()[0] ){
-            console.log("33333333333333333333333333: ", sizePioche, ' ', room.getSizePioche() , ' ', sizeDiscard, ' ',room.getSizeDiscard() , 'carte au dessus pioche defauuse ', )
-		}
+
 
 
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
@@ -746,13 +744,7 @@ io.on('connection', function (socket) {
 		//console.log("d",room.getDiscard2Cards());
 		//console.log("p",room.getPioche2Cards());
 
-        if(choice ==="pioche") {
-			if(sizePioche !== room.getSizePioche()+1) {
-				console.log("4444444444444444444444444444: ", sizePioche, ' ', sizeDiscard,' carte au dessus pioche (ava/apres)', cp, room.getPioche2Cards()[0]);
-			}
-		}
 		
-
 
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());

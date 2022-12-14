@@ -57,8 +57,7 @@ class Carte {
     }
 
     retourner() {
-        this.back =false;
-        
+        this.back =false;    
     }
 }
 

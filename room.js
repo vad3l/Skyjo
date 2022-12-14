@@ -165,8 +165,8 @@ class Room {
        this.jeu.selectedCardDefausse();
     }
  
-   pickedPioche() {
-       this.jeu.pickedPioche();
+    cardPiocheGoToDefausse() {
+        this.jeu.cardPiocheGoToDefausse();
    }
 
 
@@ -233,7 +233,7 @@ class Room {
             }
         });
         
-        console.log(this.playerAllReturnMain +" a declanche la fin de partie")
+        //console.log(this.playerAllReturnMain +" a declanche la fin de partie")
         //console.log(scores);
 
         //console.log("score joueur declanche" , scoreJoueurDeclanche);
@@ -248,8 +248,8 @@ class Room {
         
         let i = 0;
         this.players.forEach(p => {
-            if(bool && p.username === this.playerAllReturnMain) {
-               p.score += scores[i].points * 2;
+            if(bool && p.username === this.playerAllReturnMain) { //pas plus petit score
+               p.score += Math.abs(scores[i].points) * 2;
             }else {
                 p.score += scores[i].points;
             }
