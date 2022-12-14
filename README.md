@@ -59,7 +59,7 @@ There is a voice synthesizer that gives information to the players:
 And if your to slow the vocie synthesizer can insult you!
 
 #### CSS GOD 
-The beautifull cards are made in CSS
+The beautiful cards are made in CSS
 
 ## Author 
 Léo Vandrepol<br>

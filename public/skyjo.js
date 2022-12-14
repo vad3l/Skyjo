@@ -1,7 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function(_e) {
-	
+	// objet player qui permet d'avoir les données utile
 	const player = {
 		roomId: null,
 		username: "",
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	};
 	
 	
-	
+	// synthése vcal
 	var voices = window.speechSynthesis.getVoices();
 
 	speechSynthesis.onvoiceschanged = function (params) {
@@ -113,17 +113,17 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             afficherListe(liste,hoste);
         }
     });
-
+	// réception de la liste des rooms mis à jour
 	sock.on("list rooms", function(roomList){
 		if (currentUser){
 			afficherRoom(roomList);
 		}
 	});
-	
+	// réception de l'id de la room
     sock.on("roomId", function(id){
 		player.roomId=id;
 	});
-
+	// réception du deck pour le jeux
 	sock.on("deck",function(deck){
 		jeu=deck;
 		jeu.forEach(r =>{
@@ -134,22 +134,22 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		afficherJeu(player.username);
 	});
 
-
+	// réception de la defausse du jeux
 	sock.on("defausse",function(defausse,taille){
 		discard=defausse;
 		afficherDefausse(discard);
 	});
-
+	// réception de la pioche du jeux
 	sock.on("pioche",function(piochee,taille){
 		pioche=piochee;
 		afficherPioche(pioche)
 	});
-
+	// réception du signal de fin de tour d'un joueur
 	sock.on("endTurnJoueur",function(deck){
 		jeu=deck;
 		afficherJeu(player.username);
 	})
-
+	// réception signal commencement du tour 1 qui est différents des autres tour
 	sock.on("startTurn1",function(deck){
 		document.getElementById("load").style.display = "none";
 		document.getElementById("endParty").style.display = "none";
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		player.phase= {name:"start",card1:null,card2:null};
 		afficherJeu(player.username);
 	});
-
+	// réception signal commencement d'un tour normal
 	sock.on("startTurn",function(game,username){
 		jeu = game;
 		jeu.forEach(r =>{
@@ -184,12 +184,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		}
 		afficherJeu(player.username);
 	});
-
+	// réception fin de la manche
 	sock.on("endParty",function(){
 		document.getElementById("load").style.display = "none";
 		document.getElementById("endParty").style.display = "flex"
 	});
-
+	// réception fin de la partie
 	sock.on("endGame",function(tabGagnant){
 		let load = document.getElementById("load");
 		let p = document.createElement("p");
@@ -253,6 +253,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *					LOBBY
 	 *
 	 * ***********************************************/
+	/**
+	 * Affiche les rooms dans le lobby
+	 * @param String[]		est la liste des rooms
+	 */
 	function afficherRoom(roomList){
 		if(!currentUser) return;
 		
@@ -281,6 +285,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	/***************************
 	 *			JEUX
 	 * ************************/
+	/**
+	 * Affiche le jeux du joueur voulue
+	 *
+	 * @param Player	objet player
+	 */
 	function afficherJeu(username){
 		
 		afficherNomScore(username);
@@ -290,7 +299,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		jouerTour();
 
 	}
-	
+	/**
+	 * Affiche le nom de la personne et son score au dessus du plateau de jeux
+	 *
+	 * @param String		est le nom du joueur
+	 */
 	function afficherNomScore(username){
 		let p = document.querySelector("#plateau #username");
 		p.innerHTML = username;
@@ -305,7 +318,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			p.style.color = "black";
 		}
 	}
-
+	
+	/**
+	 * Affiche la defausse du jeux
+	 * 
+	 * @param Defausse			est l'objet defausse
+	 */
 	function afficherDefausse(defausse){
 		
 
@@ -316,7 +334,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		divDefausse.appendChild(p);
 
 	}
-
+	
+	/**
+	 * Affiche la pioche du jeux
+	 *
+	 * @param Pioche			est l'objet pioche
+	 */
 	function afficherPioche(pioche){
 		
 
@@ -329,7 +352,14 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	}
 
-
+	/**
+	 * Affiche une carte
+	 *
+	 * @param Card			est l'objet carte
+	 * @param HTMLobject	est l'objet html dans lequelle on veut mettre la carte
+	 *
+	 * @return HTMLobject
+	 */
 	function afficherCarte(carte,td){
 		if(!carte){return;}
 		if(carte.choosed){
@@ -387,7 +417,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 		return td;
 
 	}
-
+	/**
+	 * Affiche la main du joueur demander
+	 *
+	 * @param String	est le nom du joueur demander
+	 */
 	function afficherMain(username){
 		let tbody = document.querySelector("#plateau table tbody");
 		tbody.innerHTML ="";
@@ -416,7 +450,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			}
 		});
 	}
-
+	/**
+	 * Permet de swipe de main de gauche à droite
+	 *
+	 * @param bool			est un booléen pour choisir si on swipe à gauche ou à droite
+	 */
 	function swipeMain(choice){
 
 		let localUser = document.getElementById("username").innerHTML;
@@ -439,7 +477,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			}
 		}
 	}
-
+	
+	/**
+	 * Affichage pour l'hote de la partie
+	 */
 	function updateHostButton(){
 		if(player.username === host){
 			document.getElementById("btnRelancerPartie").style.display = "block";
@@ -507,6 +548,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	/**
      *  Affichage de la liste de joueurs.
+	 *
+	 *  @param String[]			liste des nouveau joueur
+	 *  @param String			est le nom de l'hote
      */
     function afficherListe(newList,host) {
         // affichage en utilisant l'attribut personnalisé data-score
@@ -519,7 +563,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     }
 
     
-
+	/**
+	 * Renvoie local time
+	 * 
+	 * @param Date			Date actuelle
+	 * @return	la date local
+	 */
     function getLocalTime(date) {
         return (new Date(date)).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }).substring(11);
     }
@@ -611,14 +660,20 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	/*********************
 	 *			JEUX
 	 * *******************/
-
+	/**
+	 * lance la partie
+	 */
 	function lancerPartie(){
 		
 		// lancer la partie
 		sock.emit("startManche",player.username);
 		
 	}
-
+	/**
+	 * Lance le turn numéro 1
+	 *
+	 * @param HTMLobject		est l'objet html sur lequelle on clique
+	 */
 	function playTurn1(e){
         
 		
@@ -653,7 +708,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 		afficherJeu(player.username);
 	}
-
+	
+	/**
+	 * Joue le tour normal
+	 *
+	 * @param EVENT			est l'event avec HTMLobject
+	 */
 	function playTurn(e){
 		let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
 		let cardPioche = document.getElementById("pioche").getElementsByTagName("p")[0];
@@ -781,7 +841,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
 	}
 
-
+	/**
+	 * Joue les tour de jeux
+	 */
 	function jouerTour(){
 		if(player.phase === null ){return;}
 		
