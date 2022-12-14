@@ -33,6 +33,14 @@ After the game launch, you can see the beautiful game board and chat.<br>
 If you want to play on your smartphone you can to !<br>
 [<img src="./public/img/responsive.png" width="300px"/>](./public/img/responsive.png)
 
+#### Dark Theme
+Your eye's is on fire front of a white screen ?
+Don't worry a dark theme is here for you !
+
+Just a little combo of two keys [CTRL+Y] and tou can change theme.<br>
+[<img src="./public/img/darkTheme.png" width="500px"/>](./public/img/darkTheme.png)
+
+
 
 Leo Vandrepol 
 
