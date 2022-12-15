@@ -63,7 +63,8 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         ":bisou:": "&#128536;",
         ":peur:": "&#128561;",
         ":whoa:": "&#128562;",
-        ":mask:" : "&#128567;"
+        ":mask:" : "&#128567;",
+		":fuck:" : "&#128405;"
     }
 
 
@@ -449,6 +450,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 				});
 			}
 		});
+		
 	}
 	/**
 	 * Permet de swipe de main de gauche à droite
@@ -527,9 +529,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
             classe = "moi";   
         }
         else if (msg.from == null) {
-            classe = "system";
-            msg.from = "[admin]";
-			
+			msg.from = "[admin]";
+			classe = "system";
+
 			let speech = new SpeechSynthesisUtterance(msg.text); 
 			//speech.voice = voices[9];
 			speechSynthesis.speak(speech);
@@ -583,6 +585,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         txt = txt.replace(/:[-]?[oO]/g,':whoa:');
         txt = txt.replace(/:[-]?\*/g,':bisou:');
         txt = txt.replace(/<3/g,':coeur:');
+		
         // remplacement des :commandes: par leur caractère spécial associé 
         for (let sp in specialChars) {
             txt = txt.replace(new RegExp(sp, "gi"), specialChars[sp]);   
@@ -847,6 +850,19 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	function jouerTour(){
 		if(player.phase === null ){return;}
 		
+			// ajout 
+			let nameJoueurAffiche = document.getElementById("username").innerHTML;
+			//console.log(pioche[0], player.phase.card1)
+			//console.log(nameJoueurAffiche, player.phase.turn)
+			//console.log(JSON.stringify(player.phase.card1) === JSON.stringify(pioche[0]), nameJoueurAffiche === player.phase.turn)
+			if(JSON.stringify(player.phase.card1) === JSON.stringify(pioche[0]) && nameJoueurAffiche === player.phase.turn){
+			//	console.log("laaaaaaaaaaaa")
+				let cardDefausse = document.getElementById("defausse").getElementsByTagName("p")[0];
+				cardDefausse.classList.add("card--hover-effect");	
+				cardDefausse.addEventListener("click",playTurn.bind(null, {"target":cardDefausse}));
+			}
+		
+
 		if(player.username === document.getElementById("username").innerHTML){
 			if(player.phase.name === "start"){
 				if(!player.phase.card1 || !player.phase.card2){

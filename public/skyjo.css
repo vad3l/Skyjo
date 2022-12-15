@@ -338,9 +338,6 @@ header{
 #content main .system {
     color: orange;   
 }
-#content main .chifoumi {
-    color: blueviolet;   
-}
 #content main img {
     max-width: 50%;
     vertical-align: text-top;

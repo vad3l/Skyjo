@@ -36,7 +36,6 @@ var clients = {};       // { id -> socket, ... }
 
 let rooms = [];
 
-
 /**
  *  Supprime les infos associées à l'utilisateur passé en paramètre.
  *  @param  string  id  l'identifiant de l'utilisateur à effacer
@@ -74,83 +73,22 @@ io.on('connection', function (socket) {
 		socket.emit('list rooms',getRoomAvailable());
     });
 
-	/*
-	socket.on('get rooms',() =>{
-		io.to(socket.id).emit('list rooms',rooms);
-	});*/
-    
+	
     /** 
      *  Gestion des déconnexions
-     */   
-
-	 // fermeture
+     */  
+	
+	/**
+     *  Socket d'écoute lorsque un player qui l'application
+     *  @param  player  Object le player qui quitte l'application
+     */
 	 socket.on("logout", (player)=> { 
         // si client était identifié (devrait toujours être le cas)
         if (currentID) {
-			//console.log(player);
-			let room = rooms.find(r => r.id === player.roomId);
-            console.log("Sortie de l'utilisateur " + currentID);
-            
-			if(room !== undefined) { //aparrtient a une room
-				let deletePlayer = supprimerPlayerRoom(player);
-				console.log(currentID + " quitte la room " + player.roomId);
+			
+			// gerer le player qui quitte l'application
+			gestionTourPlayerQuitt(player);
 
-				let deleteRoom = checkRoom(player.roomId);
-				socket.leave(player.roomId); //rajouter
-				
-				if(!deleteRoom) {
-					if(!room.turn1) {
-						if(deletePlayer) {
-							//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
-							io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-
-							if(room.turnPlayer.username == "Bot - " + player.username) { 
-								do {
-									io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-									room.simulateMoveRobot(room.turnPlayer);
-									room.swapJoueur(room.turnPlayer);
-								}while(room.turnPlayer.robot);
-								io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-								io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-								io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-							}
-						}
-					}else {
-						if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-						room.retournerCardTurn1();
-						if (room.verifierTurn1() === true) {
-							room.turn1 = false; // tour 1 terminer
-							
-							room.hierarchisePlayers();
-							let tabPlayers = room.getPlayers();
-							let nom = tabPlayers[0].username;
-							
-							io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
-							
-							
-							while(room.turnPlayer.robot) {
-								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-								room.simulateMoveRobot(room.turnPlayer);
-								room.swapJoueur(room.turnPlayer);
-							}
-							
-							io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-							io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-							io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });		
-						}
-					}
-					io.in(room.id).emit("deck", room.getPlayers());
-				}
-
-				// emission pour donner la liste des rooms aux clients (maj nombre players room)
-				let roomAvailable = getRoomAvailable();
-				socket.broadcast.emit('list rooms', roomAvailable);
-				io.to(socket.id).emit('list rooms', roomAvailable);
-			}
-		    
 			// suppression de l'entrée
 			supprimer(currentID);
 
@@ -160,12 +98,17 @@ io.on('connection', function (socket) {
     });
 
 
-	// fermeture
+	/**
+     *  Socket d'écoute lorsque un player quitte la page web
+     * 
+     */
 	socket.on("disconnect", ()=> { 
 		// si client était identifié (devrait toujours être le cas)
 		if (currentID) {
+			
 			let player = {roomId: null, username: currentID}
-		
+			
+			//chercher le player qui quitte la page web
 			rooms.forEach(room => {
 				room.getPlayers().forEach(player2 => {
 					if(player2.username === currentID) {
@@ -175,69 +118,9 @@ io.on('connection', function (socket) {
 				});
 			});
 			
-			let room = rooms.find(r => r.id === player.roomId);
-			
-			if(room !== undefined) { //aprteint a room
-				let deletePlayer = supprimerPlayerRoom(player);
-				
-				console.log(currentID + " quitte la room " + player.roomId);
-				
-				let deleteRoom = checkRoom(player.roomId);
-				
-				socket.leave(player.roomId);//rajouter
+			// gerer le player qui quitte la page web
+			gestionTourPlayerQuitt(player);
 
-				if(!deleteRoom) {
-					if(!room.turn1) {
-						if(deletePlayer) {
-							//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
-							io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-
-							if(room.turnPlayer.username == "Bot - " + player.username) { 
-								do {
-									io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-									room.simulateMoveRobot(room.turnPlayer);
-									room.swapJoueur(room.turnPlayer);
-								}while(room.turnPlayer.robot);
-								io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-								io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-								io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-							}
-						}
-					}else {
-						if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-						room.retournerCardTurn1();
-						if (room.verifierTurn1() === true) {
-							room.turn1 = false; // tour 1 terminer
-							
-							room.hierarchisePlayers();
-							let tabPlayers = room.getPlayers();
-							let nom = tabPlayers[0].username;
-							
-							io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
-							
-							
-							while(room.turnPlayer.robot) {
-								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-								room.simulateMoveRobot(room.turnPlayer);
-								room.swapJoueur(room.turnPlayer);
-							}
-							
-							io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-							io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-							io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });		
-						}
-					}
-					io.in(room.id).emit("deck", room.getPlayers());
-				}
-				// emission pour donner la liste des rooms aux clients (maj nombre players room)
-				let roomAvailable = getRoomAvailable()
-				socket.broadcast.emit('list rooms', roomAvailable);
-				io.to(socket.id).emit('list rooms', roomAvailable);
-			}
-			
 			// suppression de l'entrée
 			supprimer(currentID);
 
@@ -248,7 +131,101 @@ io.on('connection', function (socket) {
 		console.log("Client déconnecté");
 	});
 
-	    
+	/**
+     *  Gère lorsque un player qui l'application, page web, room
+	 * 	- gère la deconnexion d'un player éventuellement d'un room
+	 *  - le remplacer par un bot si la partie est commencer
+	 * 	- le faire jouer si c'est son tour
+     *  @param  player  le player qui quitte la page web
+     */
+	function gestionTourPlayerQuitt(player) {
+		// trouver la room où est le joueur
+		let room = rooms.find(r => r.id === player.roomId);
+		
+		// si le player appartient à une room
+		if(room !== undefined) { 
+			
+			// supprimer player de la room
+			let deletePlayer = supprimerPlayerRoom(player);
+			
+			console.log(currentID + " quitte la room " + player.roomId);
+			
+			// supprimer la room si que des robots ou plus de joueurs
+			let deleteRoom = checkRoom(player.roomId);
+			
+			socket.emit("roomId",null);
+
+			socket.leave(player.roomId);
+
+			// si la room à pas supprimer
+			if(!deleteRoom) {
+				// si c'est pas le tour 1
+				if(!room.turn1) {
+					// si on à supprimer le player 
+					if(deletePlayer) {
+						
+						io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
+
+						// si c'est le tour d'un robot de jouer on les fait joeur jusqu'a que ca soit le tour d'un vrai joueur
+						if(room.turnPlayer.robot) { 
+							do {
+								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer (bot)", date: Date.now() });
+								room.simulateMoveRobot(room.turnPlayer);
+								room.swapJoueur(room.turnPlayer); // changer le joueur qui doit jouer
+							}while(room.turnPlayer.robot);
+							// emission de la défausse, pioche
+							io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
+							io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+							// emission du nom du player qui doit jouer aec le message associé
+							io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
+							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
+						}
+					}
+				}else {
+					// emission du nom du player qui à été remplacé par un bot
+					if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
+					
+					// retourner les 2 cartes des joueur qui sont des robots
+					room.retournerCardTurn1();
+					
+					// verifier si tous les joueurs ont retourner leur 2 cartes
+					if (room.verifierTurn1() === true) {
+						room.turn1 = false; // tour 1 terminé
+						
+						// determiner qui commence et l'ordre
+						room.hierarchisePlayers();
+
+						let tabPlayers = room.getPlayers();
+						let nom = tabPlayers[0].username; // nom du joeur qui commence
+						
+						// emission du message de fin de tour 1 et le nom du joueur qui commence 
+						io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
+						io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
+						
+						// faire jouer tous les robots si c'est un robot qui doit jouer
+						while(room.turnPlayer.robot) {
+							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer (bot)", date: Date.now() });
+							room.simulateMoveRobot(room.turnPlayer);
+							room.swapJoueur(room.turnPlayer); // changer le joueur qui doit jouer
+						}
+
+						// emission de la défausse, pioche
+						io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
+						io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+						// emission du nom du player qui doit jouer aec le message associé
+						io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
+						io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });		
+					}
+				}
+				// emission des deck (main) de tous les joueurs
+				io.in(room.id).emit("deck", room.getPlayers());
+			}
+			// emission pour donner la liste des rooms aux clients (maj nombre players room)
+			let roomAvailable = getRoomAvailable()
+			socket.broadcast.emit('list rooms', roomAvailable);
+			io.to(socket.id).emit('list rooms', roomAvailable);
+		}
+	}
 	/**************************************************
 	 *
 	 *						chat
@@ -288,14 +265,19 @@ io.on('connection', function (socket) {
 	 *
 	 * ***********************************************/
 
-	
-	 socket.on("createRoom", (player, maxPlace) => {
+	/**
+	 *  socket pour créer une room
+	 *  @param  player     Object  player qui veut créer la room
+	 *  @param  maxPlace   int  nombre de joeurs max de la room
+	 */
+	socket.on("createRoom", (player, maxPlace) => {
 		if(maxPlace > 5) {
 			maxPlace = 5;
 		}
 		if(maxPlace < 2) {
 			maxPlace = 2;
 		}
+
 		// création de la room
 		let room = createRoom(player, maxPlace);
 		
@@ -308,7 +290,6 @@ io.on('connection', function (socket) {
 		socket.join(room.id);
 			
 		socket.emit("roomId",player.roomId);
-		//console.log("room id du player", room.id, player.roomId)
 		
 		// emission du message de bienvenue sur le chat
 		io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a rejoint la partie", date: Date.now() });
@@ -318,15 +299,23 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("liste",rooms[room.id].getPlayers(), rooms[room.id].host);
 	});
 
+	/**
+	 *  socket pour rejoindre une room
+	 *  @param  player   Object  player qui veut créer la room
+	 *  @param  number    int     numéro de la room qu'on souhaite rejoindre
+	 */
 	socket.on("joinRoom", (player, number) => {	
 				
 		let room = null;
+
+		// chercher la room que le joueur vont rejoindre
 		rooms.forEach(r => {
 			if(r.id === number) {
                 room = r;
 			}
 		});
         
+		// si le numéro de la room n'existe pas
 		if(!room) {
             return;
 		}
@@ -337,8 +326,8 @@ io.on('connection', function (socket) {
 
 		socket.emit("roomId",room.id);
 
+		// ajouter le player à la room
 		room.addPlayer(player);
-
 		socket.join(number);
 		
 		// emission du message de bienvenue sur le chat
@@ -349,83 +338,25 @@ io.on('connection', function (socket) {
 		io.in(room.id).emit("liste",room.getPlayers(), room.host);
 	});
 
+	/**
+	 *  socket pour quitter une room
+	 *  @param  player   Object  player qui veut quitter la room
+	 */
 	socket.on("leave", (player)=>{
 		if(currentID){
-			
-			let room = getRoom(player.roomId);
-
-			//supprimer le player dans la room
-			let deletePlayer = supprimerPlayerRoom(player);
-			
-			//remettre le roomId à 0
-			socket.emit("roomId",null);
-			
-			console.log(currentID + " quitte la room " + player.roomId);
-			
-			let deleteRoom = checkRoom(player.roomId);
-			
-			socket.leave(player.roomId);
-			
-			
-			if(!deleteRoom) {
-				if(!room.turn1) {
-					if(deletePlayer) {
-						//io.in(room.id).emit("endTurnJoueur", room.getPlayers());
-						io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-
-						if(room.turnPlayer.username == "Bot - " + player.username) { 
-							do {
-								io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-								room.simulateMoveRobot(room.turnPlayer);
-								room.swapJoueur(room.turnPlayer);
-							}while(room.turnPlayer.robot);
-							io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-							io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-							io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-						}
-					}
-				}else {
-					if(deletePlayer) io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a été remplacé par un bot", date: Date.now() } );
-					room.retournerCardTurn1();
-					if (room.verifierTurn1() === true) {
-						room.turn1 = false; // tour 1 terminer
-						
-						room.hierarchisePlayers();
-						let tabPlayers = room.getPlayers();
-						let nom = tabPlayers[0].username;
-						
-						io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
-						io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
-						
-						
-						while(room.turnPlayer.robot) {
-							io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-							room.simulateMoveRobot(room.turnPlayer);
-							room.swapJoueur(room.turnPlayer);
-						}
-						
-						io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
-						io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
-						io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-						io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });		
-					}
-				}
-				io.in(room.id).emit("deck", room.getPlayers());
-			}
-
-			// emission pour donner la liste des rooms aux clients (maj nombre players room)
-			let roomAvailable = getRoomAvailable()
-			socket.broadcast.emit('list rooms', roomAvailable);
-			io.to(socket.id).emit('list rooms', roomAvailable);
+			// gérer le joueur qui souhaite quitter la room
+			gestionTourPlayerQuitt(player);
 		}
 	});
  	
 	/**
-	 * check si la room et vide est emet les messages 
+	 * check si la room et vide ou ne contient pas que des robots => supprimer la room
+	 * @param  playerRoomId   int  id de la room
 	 */
 	 function checkRoom(playerRoomId) {
 		let room;
+
+		// chercher la room
 		for (let i = 0; i < rooms.length; ++i) {
 		    if(rooms[i].id === playerRoomId) {
                 room = rooms[i];
@@ -434,15 +365,16 @@ io.on('connection', function (socket) {
 
 		let deleteRoom = false;
 
+		// varifier le nombre de joeurs sur la room et si tous les joueurs sonr des robots 
 		if(room.placePrise !== 0 && !room.hasOnlyRobot()) {
 			// emission du message de au revoir sur le chat
 			io.in(room.id).emit("message", { from: null, to: null, text: currentID + " a quitté la partie", date: Date.now() } );
 			// emission pour donner la liste des players de la room
 			io.in(room.id).emit("liste",room.getPlayers(), room.host);
-		}else {
+		}else { // tous les joeurs sont des robots ou il n'y a pas plus personne sur la room
 			console.log("delete room -> " + room.id)
+			// enlever la room du tableau de rooms
 			rooms = rooms.filter(r => r.id !== room.id);
-			//console.log(rooms)
 			deleteRoom = true;
 		}
 
@@ -450,31 +382,49 @@ io.on('connection', function (socket) {
 	}
 
 	/**
-	*  Supprime les infos associées à l'utilisateur passé en paramètre.
-	*  @param  string  id  l'identifiant de l'utilisateur à effacer
+	*  Supprime le player d'une room
+	*  @param  player   Object  player qui souhaite quitter la room
 	*/
 	function supprimerPlayerRoom(player) {	
 		let room;
+
+		// chercher la room
 		rooms.forEach(r => {
 			if(r.id === player.roomId) {
 				room = r;
 			}
 		});
+
+		// supprimer le player de la room
 		let deletePlayer = room.deletePlayer(player.username);
 		
 		return deletePlayer;
 	}
 
+	/**
+	*  Fonction qui créer une room
+	*  @param  player    Object  player qui souhaite créer la room
+	*  @param  maxPlace  int     nombre de joueur max de la room
+	*/
 	function createRoom(player, maxPlace){
 		const room = new Room (rooms.length, maxPlace);
 		
+		// ajouter player room
 		room.addPlayer(player);
+
+		// mettre l'hôte de la room
 		room.setHost(player.username);
+
 		rooms.push(room);
 	
 		return room;
 	}
 
+	/**
+	*  Fonction qui recupère les rooms disponible :
+	*  - room pas pleine 
+	*  - room pas démarrer
+	*/
 	function getRoomAvailable() {
 		let z = rooms.filter(r => !r.isFull())
 		return z.filter(r => !r.run)
@@ -486,20 +436,32 @@ io.on('connection', function (socket) {
 	 *						game
 	 *
 	 * ***********************************************/
+	 
+	/**
+	*  Socket pour lancer le debut de la manche
+	*  @param  username  String  nom de la personne qui souhaite demarrer la partie 
+	*/
 	 socket.on("startManche", (username)=>{
-	    console.log("recu start manche")
+	    
+		// chercher dans quelle room le player est hôte
 		rooms.forEach(r => {
 			if(r.host === username) {
 			    
-                if(r.placePrise === 1) { //! remttre 1
-				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tour seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
+                if(r.placePrise === 1) { 
+				    io.in(r.id).emit("message", { from: null, to: null, text: "Impossible de lancer tous seul. <br> <i>PS : Trouve toi des amis :</i>", date: Date.now() });    
 				}else {
 					r.run = true;
-				    r.lancerJeu();
-				    io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDiscard());
+				    // lancer la manche
+					r.lancerJeu();
+				    // emission de la défausse, pioche
+					io.in(r.id).emit("defausse", r.getDiscard2Cards(), r.getSizeDiscard());
 				    io.in(r.id).emit("pioche", r.getPioche2Cards(), r.getSizePioche());
-			        socket.broadcast.emit('list rooms', getRoomAvailable());
+			        
+					// emission des rooms possible de rejoindre
+					socket.broadcast.emit('list rooms', getRoomAvailable());
 					io.in(r.id).emit('liste', r.getPlayers(), r.host);
+					
+					// emmision du démarage du tour 1 et du message associé
 					io.in(r.id).emit("startTurn1", r.getPlayers());
 					io.in(r.id).emit("message", { from: null, to: null, text: "La manche commence !!!", date: Date.now() });
 				}
@@ -508,250 +470,245 @@ io.on('connection', function (socket) {
 	
 	 });
 	 
-	 socket.on("endTurnJoueur", (player, pioche, discard) => {
-		console.log("recu endturnjoueur")
+
+	/**
+	*  Socket qui est recu lorsque un joueur à terminer sont tour 
+	*  @param  player     Object  player qui à terminer son tour
+	*/
+	 socket.on("endTurnJoueur", (player) => {
+		console.log("fin du tour de " + player.username);
 		
+		// chercher la room 
 		let room = getRoom(player.roomId);
 		
-		if(room.turn1) {
-			//console.log("d",room.getDiscard2Cards());
-			//console.log("p",room.getPioche2Cards());
-
+		if(room.turn1) { // si on est dans le tour 1
+			
+			//mettre à jour les cartes du joueur
 			let cardsChange = [player.phase.card1, player.phase.card2]
 			room.majMain(player, cardsChange)
 
-			//console.log("d",room.getDiscard2Cards());
-			//console.log("p",room.getPioche2Cards());
-            // verifier tout le monde retourner carte 
+			
+            // vérifier tout le monde retourner carte 
 			if (room.verifierTurn1() === true) {
                 room.turn1 = false; // tour 1 terminer
                 
+				// chercher qui commence et l'ordre des joeurs
 				room.hierarchisePlayers();
 				let tabPlayers = room.getPlayers();
 				let nom = tabPlayers[0].username;
 				
+				// emmsion du message de fin de tour 1 et le nom du joueur qui commence
 				io.in(room.id).emit("message", { from: null, to: null, text: "Fin du tour 1 !!! ", date: Date.now() });
 				io.in(room.id).emit("message", { from: null, to: null, text: "C'est à " + nom + " de commencer", date: Date.now() });
 				
-				
+				// faire jouer si c'est un robot de jouer
 				while(room.turnPlayer.robot) {
-					io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
+					io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer (bot)", date: Date.now() });
 					room.simulateMoveRobot(room.turnPlayer);
+					// changer le joueur qui doit joueur
 					room.swapJoueur(room.turnPlayer);
 				}
 				
+				// emission de la defausse et de la pioche
 				io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 				io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+				// emission du debut du tour et du message associé 
 				io.in(room.id).emit("startTurn", room.getPlayers(), room.turnPlayer.username);
-				io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });
-				
+				io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + room.turnPlayer.username + " de jouer", date: Date.now() });			
 				
 			}else {
 				io.in(room.id).emit("endTurnJoueur", room.getPlayers());
 			}
 		}else {
             
-			//let nom = room.turnPlayer.username;
+			// changer le joueur qui doit jouer
             let playerTurn = room.swapJoueur();
 			let nom = playerTurn.username;
 
-			//console.log("nom ", nom, "et declanche : ", room.playerAllReturnMain)
+			// tant que c'est à un robot de jouer et qur le joueur qui doit jouer n'es pas celui qui à declanché la fin de la partie
 			while (playerTurn.robot && nom!==room.playerAllReturnMain) {
 				io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer (bot)", date: Date.now() });
 				room.simulateMoveRobot(playerTurn);
+				// emission de la defausse et de la pioche
 				io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 				io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
+				// emission des mains des joueurs
 				io.in(room.id).emit("deck", room.getPlayers());
 				io.in(room.id).emit("liste",room.getPlayers(), room.host);
+				// changer le joeur qui doit jouer
 				playerTurn = room.swapJoueur();
 				nom = playerTurn.username;
-				console.log("nooooooooooom ", nom)
 			}
             
+			// si un joueur à retourner toute ses cartes (dernier tour)
             if(room.playerAllReturnMain !== null) {
                 // dernier tour
-                //console.log("derner tour")
+                
+				// emission du mesage de dernier tour
 				if(!room.lastTurnDeclanche) {
 					room.lastTurnDeclanche = true;
 					io.in(room.id).emit("message", { from: null, to: null, text: "C'est le dernier tour !!!", date: Date.now() });
 				}
-				
 			}
 			
+			// si le joueur qui doit jouer et le joeur qui à déclancher la fin de la manche (manche finit)
 			if(room.playerAllReturnMain === nom) {
-				//console.log("finit")
+				// manche finit
+
+				// retourner les cartes de tous les joueurs
 				room.turnAlldecks();
 				
+				// emission des mains des joueurs
 				io.in(room.id).emit("deck", room.getPlayers());
                 io.in(room.id).emit("liste",room.getPlayers(), room.host);
                 
-				let jeu = room.verifierEndGame()
-				if(jeu.estTerminer) {
-					room.deleteRobot(); //suprrime tous les robots a la fin de la game
-                    io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? " ont gagnés" : " gagné") + "...", date: Date.now() });
+				// verifier si la partie est finit (score > 100)
+				let jeu = room.verifierEndGame();
+
+				if(jeu.estTerminer) { // jeu est finit
+					// supprimre tous les robots a la fin de la game
+					room.deleteRobot(); 
+                    // emission du message de fin de jeu des rooms disponivle de rejoindre
+					io.in(room.id).emit("message", { from: null, to: null, text: "Fin du jeu : " + jeu.playersWin.join(', ') + ((jeu.playersWin.length > 1) ? " ont gagnés" : " gagné") + "...", date: Date.now() });
 				    io.in(room.id).emit("endGame", jeu.playersWin);
 					room.run = false;
 					io.in(room.id).emit('liste', room.getPlayers(), room.host); 
 					socket.broadcast.emit('list rooms', getRoomAvailable());
-				}else {
-                    io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finit...", date: Date.now() });
-					//io.in(room.id).emit('liste', room.getPlayers(), room.host); 
+				}else { // manche finit
+                    io.in(room.id).emit("message", { from: null, to: null, text: "La manche est finit...", date: Date.now() });				
 					io.in(room.id).emit("endParty");
 				}
    
-				//socket.broadcast.emit('list rooms', getRoomAvailable());
 			}else {
                 io.in(room.id).emit("startTurn", room.getPlayers(), nom);
 		        io.in(room.id).emit("message", { from: null, to: null, text: "C'est au tour de " + nom + " de jouer", date: Date.now() });
 				
-				if(promisse !=null) promisse.cancel(console.log("enlever promissssee"));
-				promisse = myPromise(10000, room.id);		
 			}
-			
 		}
+		// lancement d'une promesse et supprsion de la promesse du joueur d'avant
+		if(promisse !=null) promisse.cancel(console.log("enlever promisse"));
+		if(room.turnPlayer == null) myPromise(10000, room.id, null);		// tour 1 
+		else promisse = myPromise(10000, room.id, room.turnPlayer.username);		
 	});
 	
-	function myPromise(ms, id) {
+	/**
+	*  foction pour créer une prommesse
+	*  @param  ms     int  temps en ms avant le time out (trop de temps pour jouer)
+	*  @param  id     int  id de la room
+	*  @param  name   String  nom du joueur qui doit jouer
+	*/
+	function myPromise(ms, id, name) {
 		
 		let p = new Promise(function(resolve, reject) {
-			//Set up the real work
-			//callback(resolve, reject);
-	
 			//Set up the timeout
 			timeout = setTimeout(function() {
-				io.in(id).emit("message", { from: null, to: null, text: "Bouge toi espèce de foutriquet", date: Date.now() });
+				let phrase = "tout ceux qui ont pas retournés leur 2 cartes : bouge vous :fuck:"
+				if(name != null) {
+					phrase = name + " bouge toi : espèce de foutriquet :fuck:"
+				}
+				io.in(id).emit("message", { from: null, to: null, text: phrase, date: Date.now() });
 			}, ms);
-
-			
 		});
+		// fonction pour supprimer la promesse si le joeur à jouer dans le temps impartis
 		p.cancel = function () {
 			clearTimeout(timeout);
 		}
 		return p;
 	}
 
+	/**
+	*  Socket qui est recu lorsque un joueur pioche dans la pioche
+	*  @param  player     Object  player qui souhaite pioché
+	*/
 	socket.on("pickedPioche", (player) => {
         console.log(player.username + " pioche dans la pioche")
-        let room = getRoom(player.roomId);
+    
+		// chercher la room
+		let room = getRoom(player.roomId);
 		
-		let sizePioche = room.getSizePioche();
-		let sizeDiscard = room.getSizeDiscard();
-				
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-
-		
-		//debug foutu bug 
-		if(sizePioche !== room.getSizePioche() || sizeDiscard !== room.getSizeDiscard()){
-            console.log("111111111111111111111111111111111111111: ", sizePioche, ' ',sizeDiscard)
-		}
-
+		// retourner la carte au dessus de la pioche
 		room.selectedCardPioche();
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
+		
+		// emission de la pioche
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
+	/**
+	*  Socket qui est recu lorsque un joueur pioche dans la défausse
+	*  @param  player     Object  player qui souhaite pioché
+	*/
 	socket.on("pickedDefausse", (player) => {
-        console.log(player.username + " pioche dans la defause")
+        console.log(player.username + " pioche dans la déffause")
 		
+		// chercher la room
 		let room = getRoom(player.roomId);
         
-		let sizePioche = room.getSizePioche();
-		let sizeDiscard = room.getSizeDiscard();
-		
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-		
-		
+		// retourner la carte au dessus de la défausse
 		room.selectedCardDefausse();
 		
-		
-		
-		//debug foutu bug 
-		if(sizePioche !== room.getSizePioche() || sizeDiscard !== room.getSizeDiscard()){
-            console.log("2222222222222222222222222222222222: ", sizePioche, ' ', sizeDiscard)
-		}
-
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
+		// emission de la défausse
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 	});
 	  
+	/**
+	*  Socket qui est recu lorsque un joueur souhaite mettre une carte dans la défausse
+	*  carte va de la pioche à la défausse
+	*  @param  player     Object  player qui souhaite mettre une carte dans la défausse
+	*/
 	socket.on("putDefausse", (player)=> {
-		console.log("put defausse");
+		console.log( player.username+ " met dans la defausse");
+		
+		// chercher la room 
 		let room = getRoom(player.roomId);
 		
-		let sizePioche = room.getSizePioche();
-		let sizeDiscard = room.getSizeDiscard();
-		let cd = room.getDiscard2Cards()[0];
-		let cp = room.getPioche2Cards()[0];
-		
+		// mettre la carte du dessus de la pioche dans la défausse
+		room.cardPiocheGoToDefausse(); 
 
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-
-		room.cardPiocheGoToDefausse(); // pioche to discard
-
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-		
-		//debug foutu bug 
-
-
-
+		// émission de la défausse et de la pioche
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 	});
 
+	/**
+	*  Socket qui est recu lorsque un joueur souhaite tourner une carte de son plateau
+	*  le joueur à tout d'abord mis une carte dans la defausse
+	*  @param  player     Object  player qui souhaite tourner une carte de son plateau
+	*/
     socket.on("turnCard", (player)=> {
-		console.log("turn card")
+		console.log(player.username + "tourne une carte sur son plateau")
 		
+		// chercher room
 		let room = getRoom(player.roomId)
 
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-
+		// tourner la carte souhaite
 		room.turnCardPlateau(player);
 
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
+		// emission de la nouvelle main du joueur
         io.in(room.id).emit("deck", room.getPlayers());
 	});
 
 	socket.on("intervertir", (player, choice)=> { // choice pioche defausse
 		console.log("intervertir card")
+
+		// chercher la room
 		let room = getRoom(player.roomId);
 
-		let sizePioche = room.getSizePioche();
-		let sizeDiscard = room.getSizeDiscard();
-		let cd = room.getDiscard2Cards()[0];
-		let cp = room.getPioche2Cards()[0];
-	
-
-		
-
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-
-
-
+		// retourner la carte du plateau qui à été selectionner par le joueur
 		room.turnCardGoToDefausse(player);
-		//console.log("d2.5",room.getDiscard2Cards())
-		//console.log("size discard",room.getSizeDiscard());
+		
+		// internertir la carte du plateau avec soit la carte du dessus de la pioche ou défausse
 		room.intervertirCarte(player, choice);
 		
-
-		//console.log("d",room.getDiscard2Cards());
-		//console.log("p",room.getPioche2Cards());
-
-		
-
+		// émission de la défausse, pioche et la nouvelle main du joueur
 		io.in(room.id).emit("defausse", room.getDiscard2Cards(), room.getSizeDiscard());
 		io.in(room.id).emit("pioche", room.getPioche2Cards(), room.getSizePioche());
 		io.in(room.id).emit("deck", room.getPlayers());
 	})
 
+	/**
+	*  Fonction pour chercher une room dans le tableau de rooms en focntion de sont id
+	*  @param  id     int  id de la room cherché
+	*/
 	function getRoom(id) {
 		let room;
 		

@@ -1,4 +1,12 @@
+/**
+*  Classe représentant une carte
+*/
 class Carte {
+    
+    /**
+	*  Consctructeur de la classe
+	*  @param  value  int  valeur de la carte (entre -2 et 12)
+	*/
     constructor(value) {
         this.value = value;
         this.back = true;
@@ -6,6 +14,9 @@ class Carte {
         this.choosed = false;
     }
 
+    /**
+	*  Definis la couleur de la carte
+	*/
     setColor() {
         switch(this.value){
 			case -2:
@@ -56,8 +67,18 @@ class Carte {
 		}
     }
 
+    /**
+	*  Retourne une carte
+	*/
     retourner() {
-        this.back =false;    
+        this.back = false;    
+    }
+
+    /**
+	*  cache une carte
+	*/
+    cacher() {
+        this.back = true;    
     }
 }
 

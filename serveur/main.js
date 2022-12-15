@@ -1,9 +1,20 @@
+/**
+*  Classe représentant une main d'un joueur
+*/
 class Main {
+    
+    /**
+	*  Constructeur de la classe
+	*/
     constructor() {
-        this.cartes = [];
-        this.points = null;
+        this.cartes = []; // sa main
+        this.points = null; // points du joueur => valuer cartes retournées
     }
 
+    /**
+	*  Fonction qui ajoute une carte à la main d'un joueur
+    *  @param carte Object respresentant la carte à ajoutée dans la main
+	*/
     addCarte(carte) {
         let size = this.cartes.length;
         
@@ -30,6 +41,9 @@ class Main {
         }
     }
 
+    /**
+	*  Calcul la valeur de toutes ses cartes retournées
+	*/
     calculatePoints() {
         this.points = 0;
         this.cartes.forEach(e => {
@@ -43,14 +57,18 @@ class Main {
         return this.points;
     }
 
+    /**
+	* Verifie si dans la main il ya une colonne avec des cartes 
+    * toutes retournées et de même valeur
+    * @param discard Object reprensentant la défausse 
+	*/
     verifierMain(discard) {
-        //console.log(this.cartes)
-        //console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaa :" , discard)
         for (let i = 0; i < 4; i++) {
+            // si une des cartes de la colonne est null (pas de carte)
             if(this.cartes[0][i] === null || this.cartes[1][i] === null || this.cartes[2][i].value === null) {
                 continue;
             }
-            //console.log("la,",this.cartes[0][i].value , this.cartes[1][i].value ,this.cartes[2][i].value);
+            // si une des cartes de la colonne est retourner (impossible de faire une colonne)
             if(this.cartes[0][i].back || this.cartes[1][i].back || this.cartes[2][i].back) {
                 continue;
             }
@@ -65,11 +83,13 @@ class Main {
                     this.cartes[2][i] = null;
                 }
             }
-            //console.log("la,",this.cartes[0][i], this.cartes[1][i] ,this.cartes[2][i]);
         }
-        //console.log("discard pares verif mai :" , discard)
     }
 
+    /**
+	* Fonction qui compte le nombre de cartes retournéées dans sa main
+    * @return int le nombre de cartes retournées
+	*/
     getNbCartesRetourne() {
         let nb = 0;
         for (let i = 0; i < 3; ++i) {
@@ -82,6 +102,10 @@ class Main {
         return nb;
     }
 
+    /**
+	* Fonction qui compte le nombre de cartes retournéées dans sa main
+    * @return bool true si toutes les cartes de la main sont retournées, false sinon
+	*/
     isAllReturn() {
         let bool = true;
         for (let i = 0; i < 3; ++i) {
@@ -94,17 +118,20 @@ class Main {
         return bool;    
     }
 
+    /**
+	* Fonction qui retourne des cartes de la main d'un joueur
+	*/
     majMain(cardsChange) {
-        //console.log("retourner", this.cartes[c.ligne][c.colonne])
         cardsChange.forEach(c => {
-            console.log("retourner", this.cartes[c.ligne][c.colonne])
             if(this.cartes[c.ligne][c.colonne] != null) {
                 this.cartes[c.ligne][c.colonne].retourner();
             }
-            //console.log("retourner", this.cartes[c.ligne][c.colonne].back)
         });
     }
     
+    /**
+	* Fonction qui retourne  toutes les cartes de la main d'un joueur
+	*/
     returnAll() {
         for (let i = 0; i < 3; ++i) {
             for (let j = 0; j < 4; ++j) {
@@ -114,6 +141,5 @@ class Main {
             }
         }
     }
-    
 }
 module.exports = Main;
