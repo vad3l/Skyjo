@@ -270,7 +270,7 @@ header{
 
 	#content main{
 		width : auto !important;
-		height : 300px !important;
+		height : 200px !important;
 
 
 	}
@@ -284,7 +284,7 @@ header{
 
 #content {
 	margin: 50px auto ;
-    height: 500px;
+    height: 200px;
     width: 700px;
     background-color: beige;
     padding: 10px;
