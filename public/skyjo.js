@@ -1132,18 +1132,14 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Ecouteurs clavier
      */
 	document.getElementsByTagName("body")[0].addEventListener("keydown",function(e){
-		if(e.keyCode == 17){
-			document.getElementsByTagName("body")[0].addEventListener("keydown",function(ee){
-				if(ee.keyCode == 89){
-					if(document.body.classList[0] === "dark"){
-						document.body.classList.remove("dark");
-						document.body.classList.add("light");
-					}else{
-						document.body.classList.remove("light");
-						document.body.classList.add("dark");
-					}
-				}
-			})
+		if((e.keyCode == 17 || e.ctrlKey) && e.keyCode == 89){
+			if(document.body.classList[0] === "dark"){
+				document.body.classList.remove("dark");
+				document.body.classList.add("light");
+			}else{
+				document.body.classList.remove("light");
+				document.body.classList.add("dark");
+			}
 		}
 	})
 
