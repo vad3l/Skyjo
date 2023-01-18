@@ -536,6 +536,27 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			//speech.voice = voices[9];
 			speechSynthesis.speak(speech);
         }
+		
+		//Auto scrool down chat
+        const chatWindow = document.getElementById("chat-window");
+
+        function autoScroll(){
+          const scrollHeight = chatWindow.scrollHeight;
+          const distance = scrollHeight - chatWindow.scrollTop;
+          const step = distance / 20;
+
+          (function scroll() {
+            if (chatWindow.scrollTop + chatWindow.clientHeight === scrollHeight) {
+              return;
+            }
+
+            chatWindow.scrollTop = chatWindow.scrollTop + step;
+            setTimeout(scroll, 10);
+          })();
+        }
+
+        autoScroll();
+		
                 
         // affichage de la date format ISO pour avoir les HH:MM:SS finales qu'on extrait ensuite
         var date = getLocalTime(msg.date);
