@@ -69,12 +69,13 @@ Anthony Gasca-Gimeno
 ### University tutor
 Dorine Tabary
 
-
 ### Server config
-nvm which node
 
-nano /etc/systemd/system/skyjo.service
+`nvm which node`
 
+`nano /etc/systemd/system/skyjo.service`
+
+```bash
 [Unit]
 Description=Skyjo Node App
 
@@ -86,22 +87,24 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
+```
 
-sudo systemctl daemon-reload
+`sudo systemctl daemon-reload`
 
-sudo systemctl enable skyjo
+`sudo systemctl enable skyjo`
 
-sudo service skyjo start
+`sudo service skyjo start`
 
-systemctl status skyjo.service
+`systemctl status skyjo.service`
 
-sudo apt-get install nginx screen
+`sudo apt-get install nginx screen
+`
+`sudo systemctl start nginx
+sudo systemctl enable nginx`
 
-sudo systemctl start nginx
-sudo systemctl enable nginx
+`nano /etc/nginx/sites-available/skyjo`
 
-nano /etc/nginx/sites-available/skyjo
-
+```bash
 server {
     listen 80;
     server_name localhost;
@@ -114,11 +117,12 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
 
-sudo ln -s /etc/nginx/sites-available/skyjo /etc/nginx/sites-enabled/skyjo
+`sudo ln -s /etc/nginx/sites-available/skyjo /etc/nginx/sites-enabled/skyjo`
 
-sudo rm /etc/nginx/sites-enabled/default
+`sudo rm /etc/nginx/sites-enabled/default`
 
-sudo nginx -t
+`sudo nginx -t`
 
-sudo systemctl restart nginx
+`sudo systemctl restart nginx`
