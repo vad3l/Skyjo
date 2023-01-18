@@ -1171,7 +1171,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
                 completion.reset();
         }
     });
-	document.querySelector("#scroll").addEventListener("dblclick", function(e) {
+	document.querySelector("#scroll").addEventListener("click", function(e) {
         if (e.target.tagName == "LI") {
             rejoindreRoom(e.target.value);
         }
