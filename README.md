@@ -71,6 +71,14 @@ Dorine Tabary
 
 ### Server config
 
+`sudo apt update`
+
+`sudo apt install build-essential libssl-dev`
+
+`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`
+
+`nvm install node`
+
 `nvm which node`
 
 `nano /etc/systemd/system/skyjo.service`
