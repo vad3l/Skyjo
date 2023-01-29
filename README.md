@@ -69,7 +69,7 @@ Anthony Gasca-Gimeno
 ### University tutor
 Dorine Tabary
 
-### Server config
+## Server config
 #### Works on Ubuntu 20.04
 
 `sudo apt update`
