@@ -70,7 +70,7 @@ Anthony Gasca-Gimeno
 Dorine Tabary
 
 ### Server config
-## Ubuntu 20.04
+#### Works on Ubuntu 20.04
 
 `sudo apt update`
 
