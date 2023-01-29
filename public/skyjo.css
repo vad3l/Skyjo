@@ -23,6 +23,7 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
@@ -103,6 +104,11 @@ header{
 	height : 80px;
 	background : grey;
 }
+
+/*header.quitheader {
+	display: none !important;
+}/*
+
 /*
 #btnLogout:hover{
 	cursor:pointer;
@@ -241,6 +247,10 @@ header{
  *
  * ******************/
 
+#chat-window {
+    overflow-y: scroll;
+}
+
 
 @media (max-width: 900px) {
 
@@ -270,7 +280,7 @@ header{
 
 	#content main{
 		width : auto !important;
-		height : 300px !important;
+		height : 200px !important;
 
 
 	}
@@ -284,7 +294,7 @@ header{
 
 #content {
 	margin: 50px auto ;
-    height: 500px;
+    height: 200px;
     width: 700px;
     background-color: beige;
     padding: 10px;

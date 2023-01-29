@@ -457,6 +457,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 	 *
 	 * @param bool			est un booléen pour choisir si on swipe à gauche ou à droite
 	 */
+	 
+	 
+	 
+	 
+	 
 	function swipeMain(choice){
 
 		let localUser = document.getElementById("username").innerHTML;
@@ -536,6 +541,39 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 			//speech.voice = voices[9];
 			speechSynthesis.speak(speech);
         }
+		
+		//Auto scroll down chat
+var chatWindow = document.getElementById("chat-window");
+
+// Auto scroll down
+var chatWindow = document.getElementById("chat-window");
+
+// Function to auto-scroll down when a new message is posted
+function autoScrollDown() {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Flag to track whether the user is interacting with chat-window or not
+var userIsInteracting = false;
+
+// Event listener to check if the user is interacting with chat-window
+chatWindow.addEventListener("scroll", function() {
+    userIsInteracting = true;
+});
+
+// Function to check if the user has finished interacting with chat-window
+setInterval(function() {
+    if (!userIsInteracting) {
+        autoScrollDown();
+    } else {
+        userIsInteracting = false;
+    }
+}, 500);
+
+
+
+
+		
                 
         // affichage de la date format ISO pour avoir les HH:MM:SS finales qu'on extrait ensuite
         var date = getLocalTime(msg.date);
@@ -1132,18 +1170,14 @@ document.addEventListener("DOMContentLoaded", function(_e) {
      *  Ecouteurs clavier
      */
 	document.getElementsByTagName("body")[0].addEventListener("keydown",function(e){
-		if(e.keyCode == 17){
-			document.getElementsByTagName("body")[0].addEventListener("keydown",function(ee){
-				if(ee.keyCode == 89){
-					if(document.body.classList[0] === "dark"){
-						document.body.classList.remove("dark");
-						document.body.classList.add("light");
-					}else{
-						document.body.classList.remove("light");
-						document.body.classList.add("dark");
-					}
-				}
-			})
+		if((e.keyCode == 17 || e.ctrlKey) && e.keyCode == 89){
+			if(document.body.classList[0] === "dark"){
+				document.body.classList.remove("dark");
+				document.body.classList.add("light");
+			}else{
+				document.body.classList.remove("light");
+				document.body.classList.add("dark");
+			}
 		}
 	})
 
@@ -1171,7 +1205,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
                 completion.reset();
         }
     });
-	document.querySelector("#scroll").addEventListener("dblclick", function(e) {
+	document.querySelector("#scroll").addEventListener("click", function(e) {
         if (e.target.tagName == "LI") {
             rejoindreRoom(e.target.value);
         }

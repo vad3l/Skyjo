@@ -68,3 +68,70 @@ Anthony Gasca-Gimeno
 
 ### University tutor
 Dorine Tabary
+
+### Server config
+#### Works on Ubuntu 20.04
+
+`sudo apt update`
+
+`sudo apt install build-essential libssl-dev`
+
+`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`
+
+`nvm install node`
+
+`nvm which node`
+
+`nano /etc/systemd/system/skyjo.service`
+
+```bash
+[Unit]
+Description=Skyjo Node App
+
+[Service]
+Type=simple
+ExecStart=/root/.nvm/versions/node/v19.4.0/bin/node /root/Skyjo/
+WorkingDirectory=/root/Skyjo/
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+`sudo systemctl daemon-reload`
+
+`sudo systemctl enable skyjo`
+
+`sudo service skyjo start`
+
+`systemctl status skyjo.service`
+
+`sudo apt-get install nginx screen
+`
+`sudo systemctl start nginx
+sudo systemctl enable nginx`
+
+`nano /etc/nginx/sites-available/skyjo`
+
+```bash
+server {
+    listen 80;
+    server_name localhost;
+    
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+`sudo ln -s /etc/nginx/sites-available/skyjo /etc/nginx/sites-enabled/skyjo`
+
+`sudo rm /etc/nginx/sites-enabled/default`
+
+`sudo nginx -t`
+
+`sudo systemctl restart nginx`

@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
 
-<head>
+<head>	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <meta charset="UTF-8">
 	<title>Skyjo</title>
 	<link rel="icon" type="image/png" href="./img/Skyjo.png">
@@ -11,9 +12,13 @@
     <script src="skyjo.js"></script>
 </head>
 
-<body class="light">
+
+
+<body class="light" >
+
+
     
-	<header>
+	<header class="quitheader">
 		<input type="button" value="Quitter" id="btnLogout">
 	</header>
 
@@ -87,8 +92,10 @@
 			<aside>
 			</aside>
 			<h2>Chat</h2>
-			<main>
+
+			<main id="chat-window">
 			</main>
+			
 			<footer>
 				<input type="text" id="monMessage">
 				<input type="button" value="Envoyer" id="btnEnvoyerMessage">
@@ -96,6 +103,8 @@
 			</footer>
 		</div>
 	</div>
+	
+	
 	<!--				lobby screen			-->
 
 	<nav id="lobby">
