@@ -105,9 +105,9 @@ header{
 	background : grey;
 }
 
-header.quitheader {
+/*header.quitheader {
 	display: none !important;
-}
+}/*
 
 /*
 #btnLogout:hover{
@@ -246,6 +246,10 @@ header.quitheader {
  *		Chat
  *
  * ******************/
+
+#chat-window {
+    overflow-y: scroll;
+}
 
 
 @media (max-width: 900px) {
